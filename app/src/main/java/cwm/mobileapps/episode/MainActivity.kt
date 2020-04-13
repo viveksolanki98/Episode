@@ -32,10 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        sign_in_button.setOnClickListener{
+        sign_in_button.setOnClickListener {
+            //trigger
             signIn()
         }
-
     }
 
     override fun onStart() {
