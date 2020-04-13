@@ -49,4 +49,14 @@
         app:layout_constraintBottom_toTopOf="@+id/signOut_btn"
         app:layout_constraintTop_toBottomOf="@+id/personID_txt"
         tools:layout_editor_absoluteX="151dp" />
+
+    <Button
+        android:id="@+id/homeLaunch_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signOut_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

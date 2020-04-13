@@ -33,8 +33,11 @@ class MainActivity : AppCompatActivity() {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         sign_in_button.setOnClickListener {
-            //trigger
             signIn()
+        }
+
+        launch_btn.setOnClickListener{
+            launchUser()
         }
     }
 
@@ -64,8 +67,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchUser(){
-        val intent = Intent(this, SignInIDDisplay::class.java)
-        startActivity(intent)
+        val intentToSignInIDDisplay = Intent(this, SignInIDDisplay::class.java)
+        startActivity(intentToSignInIDDisplay)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -107,8 +110,8 @@ class MainActivity : AppCompatActivity() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
                 // Update your UI here
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                val intentToSignInIDDisplay = Intent(this, MainActivity::class.java)
+                startActivity(intentToSignInIDDisplay)
             }
     }
 }

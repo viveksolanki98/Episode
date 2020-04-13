@@ -1,5 +1,10 @@
 alpha Initial - 13/04/2020
 - initial commit with stock codebase
 
-alpha 0.1 - 13/04/2020
+alpha 0.1.0 - 13/04/2020
 - google sign in working with log out.
+
+alpha 0.1.1 - 13/04/2020
+- light security tests
+    -launch button added to home, this should return to home if no user is logged in
+    -home button added tp SignInIDDisplay, this should return to SignInIDDisplay if user is logged in

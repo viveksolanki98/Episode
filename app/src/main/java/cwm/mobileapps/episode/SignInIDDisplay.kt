@@ -37,11 +37,29 @@ class SignInIDDisplay : AppCompatActivity() {
 
             name_txt.text = personName
             personID_txt.text = personId
+            email_txt.text = personEmail
         }
 
 
         signOut_btn.setOnClickListener{
             signOut()
+        }
+
+        homeLaunch_btn.setOnClickListener {
+            val intentToMainActivity = Intent(this, MainActivity::class.java)
+            startActivity(intentToMainActivity)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        if (account == null){
+            val intentToMainActivity = Intent(this, MainActivity::class.java)
+            startActivity(intentToMainActivity)
         }
     }
 
@@ -49,8 +67,8 @@ class SignInIDDisplay : AppCompatActivity() {
     private fun signOut() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                val intentToMainActivity = Intent(this, MainActivity::class.java)
+                startActivity(intentToMainActivity)
             }
     }
 }
