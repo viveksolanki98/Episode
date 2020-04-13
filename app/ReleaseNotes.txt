@@ -1,0 +1,5 @@
+alpha Initial - 13/04/2020
+- initial commit with stock codebase
+
+alpha 0.1 - 13/04/2020
+- google sign in working with log out.
