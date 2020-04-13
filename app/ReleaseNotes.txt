@@ -8,3 +8,8 @@ alpha 0.1.1 - 13/04/2020
 - light security tests
     -launch button added to home, this should return to home if no user is logged in
     -home button added tp SignInIDDisplay, this should return to SignInIDDisplay if user is logged in
+
+alpha 0.2.0 - 13/04/2020
+- added Firebase dependencies
+- connected to (FireBase DataBase) FBDB
+- tested insert to FBDB in experimental structure

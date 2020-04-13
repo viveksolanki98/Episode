@@ -67,8 +67,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchUser(){
-        val intentToSignInIDDisplay = Intent(this, SignInIDDisplay::class.java)
-        startActivity(intentToSignInIDDisplay)
+        val intentToUserHomeActivity = Intent(this, UserHomeActivity::class.java)
+        startActivity(intentToUserHomeActivity)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -79,39 +79,11 @@ class MainActivity : AppCompatActivity() {
             // Signed in successfully
             launchUser()
 
-            val googleId = account?.id ?: ""
-            Log.i("Google ID",googleId)
-
-            val googleFirstName = account?.givenName ?: ""
-            Log.i("Google First Name", googleFirstName)
-
-            val googleLastName = account?.familyName ?: ""
-            Log.i("Google Last Name", googleLastName)
-
-            val googleEmail = account?.email ?: ""
-            Log.i("Google Email", googleEmail)
-
-            val googleProfilePicURL = account?.photoUrl.toString()
-            Log.i("Google Profile Pic URL", googleProfilePicURL)
-
-            val googleIdToken = account?.idToken ?: ""
-            Log.i("Google ID Token", googleIdToken)
-
         } catch (e: ApiException) {
             // Sign in was unsuccessful
             Log.e(
                 "failed code=", e.statusCode.toString()
             )
         }
-    }
-
-    private fun signOut() {
-
-        mGoogleSignInClient.signOut()
-            .addOnCompleteListener(this) {
-                // Update your UI here
-                val intentToSignInIDDisplay = Intent(this, MainActivity::class.java)
-                startActivity(intentToSignInIDDisplay)
-            }
     }
 }

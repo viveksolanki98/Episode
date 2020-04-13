@@ -2,20 +2,25 @@ package cwm.mobileapps.episode
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_in_i_d_display.*
+import kotlinx.android.synthetic.main.activity_user_home2.*
 
-
-class SignInIDDisplay : AppCompatActivity() {
+class UserHomeActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in_i_d_display)
+        setContentView(R.layout.activity_user_home2)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("700140263399-6u7use2ta07uanlm80d23hg3eokvrkpb.apps.googleusercontent.com")
@@ -34,17 +39,21 @@ class SignInIDDisplay : AppCompatActivity() {
             val personPhoto: Uri? = acct.photoUrl
 
 
-            name_txt_siid.text = personName
-            personID_txt_siid.text = personId
-            email_txt_siid.text = personEmail
+            name_txt.text = personName
+            personID_txt.text = personId
+            email_txt.text = personEmail
         }
 
+        //TEST FIREBASE DB----------
+        database = Firebase.database.reference
+        database.child("UserData").child("123123").child("shows").setValue(listOf(1,2,3,4,5,6))
+        //--------------------------
 
-        signOut_btn_siid.setOnClickListener{
+        signOut_btn.setOnClickListener{
             signOut()
         }
 
-        homeLaunch_btn_siid.setOnClickListener {
+        homeLaunch_btn.setOnClickListener {
             val intentToMainActivity = Intent(this, MainActivity::class.java)
             startActivity(intentToMainActivity)
         }
