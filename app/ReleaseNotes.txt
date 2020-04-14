@@ -13,3 +13,9 @@ alpha 0.2.0 - 13/04/2020
 - added Firebase dependencies
 - connected to (FireBase DataBase) FBDB
 - tested insert to FBDB in experimental structure
+
+alpha 0.3.0 14/04/2020
+- small FBDB testing. New structure ready for data
+- created fragments for watchlist and discover and search.
+- Layout experimentation with view pager (userHome_vp)
+- small swipe area working in user home

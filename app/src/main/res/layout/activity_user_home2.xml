@@ -12,9 +12,10 @@
         android:layout_height="30dp"
         android:text="Email"
         app:layout_constraintBottom_toTopOf="@+id/personID_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_txt"
-        app:layout_constraintVertical_bias="0.324"
-        tools:layout_editor_absoluteX="118dp" />
+        app:layout_constraintVertical_bias="0.324" />
 
     <TextView
         android:id="@+id/name_txt"
@@ -49,10 +50,10 @@
         android:text="Sign Out"
         app:layout_constraintBottom_toTopOf="@+id/name_txt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
+        app:layout_constraintHorizontal_bias="0.399"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.216" />
+        app:layout_constraintVertical_bias="0.784" />
 
     <Button
         android:id="@+id/homeLaunch_btn"
@@ -66,4 +67,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/personID_txt"
         app:layout_constraintVertical_bias="0.519" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/userHome_vp"
+        android:layout_width="0dp"
+        android:layout_height="274dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

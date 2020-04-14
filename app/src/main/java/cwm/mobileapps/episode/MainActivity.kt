@@ -12,6 +12,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -19,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     //Google sign in code frim: https://johncodeos.com/how-to-add-google-login-button-to-your-android-app-using-kotlin/
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = 9001
+
+    private lateinit var database: DatabaseReference
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,9 +78,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account = completedTask.getResult(
-                ApiException::class.java
-            )
+            val account = completedTask.getResult(ApiException::class.java)
+            database = Firebase.database.reference
+            if (account != null) {
+                database.child("UserData").child((account.id).toString()).child("shows").child("1").setValue("Init")
+            }
             // Signed in successfully
             launchUser()
 

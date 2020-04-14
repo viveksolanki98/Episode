@@ -44,9 +44,16 @@ class UserHomeActivity : AppCompatActivity() {
             email_txt.text = personEmail
         }
 
+        val adapter = viewPagerAdapter(supportFragmentManager)
+        adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
+        adapter.addFragment(WatchListFragment(), " Watch List ")
+        userHome_vp.adapter = adapter
+
+
+
         //TEST FIREBASE DB----------
         database = Firebase.database.reference
-        database.child("UserData").child("123123").child("shows").setValue(listOf(1,2,3,4,5,6))
+        database.child("UserData").child("123123").child("shows").child("4567").setValue("Billions")
         //--------------------------
 
         signOut_btn.setOnClickListener{
@@ -54,6 +61,8 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         homeLaunch_btn.setOnClickListener {
+            database.child("UserData").child("123123").child("shows").child("1234").removeValue()
+
             val intentToMainActivity = Intent(this, MainActivity::class.java)
             startActivity(intentToMainActivity)
         }
