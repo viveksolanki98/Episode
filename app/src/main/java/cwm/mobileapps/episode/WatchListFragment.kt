@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_discover_and_search.*
 class WatchListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_discover_and_search, container, false)
+        return inflater.inflate(R.layout.fragment_watch_list, container, false)
         //super.onCreateView(inflater, container, savedInstanceState)
     }
 

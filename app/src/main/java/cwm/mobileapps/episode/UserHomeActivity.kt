@@ -1,9 +1,12 @@
 package cwm.mobileapps.episode
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -12,6 +15,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_in_i_d_display.*
 import kotlinx.android.synthetic.main.activity_user_home2.*
+import kotlinx.android.synthetic.main.fragment_discover_and_search.*
 
 class UserHomeActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -39,9 +43,9 @@ class UserHomeActivity : AppCompatActivity() {
             val personPhoto: Uri? = acct.photoUrl
 
 
-            name_txt.text = personName
-            personID_txt.text = personId
-            email_txt.text = personEmail
+            //name_txt.text = personName
+            //personID_txt.text = personId
+            //email_txt.text = personEmail
         }
 
         val adapter = viewPagerAdapter(supportFragmentManager)
@@ -56,16 +60,6 @@ class UserHomeActivity : AppCompatActivity() {
         database.child("UserData").child("123123").child("shows").child("4567").setValue("Billions")
         //--------------------------
 
-        signOut_btn.setOnClickListener{
-            signOut()
-        }
-
-        homeLaunch_btn.setOnClickListener {
-            database.child("UserData").child("123123").child("shows").child("1234").removeValue()
-
-            val intentToMainActivity = Intent(this, MainActivity::class.java)
-            startActivity(intentToMainActivity)
-        }
     }
 
     override fun onStart() {
@@ -80,10 +74,12 @@ class UserHomeActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun signOut() {
+    fun signOut() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
+                val myLogInPref: SharedPreferences = getSharedPreferences("LogInStatusPref", Context.MODE_PRIVATE)
+                myLogInPref.edit().putBoolean("login", false)
+                myLogInPref.edit().apply()
                 val intentToMainActivity = Intent(this, MainActivity::class.java)
                 startActivity(intentToMainActivity)
             }

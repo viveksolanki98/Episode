@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,10 +20,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    //Google sign in code frim: https://johncodeos.com/how-to-add-google-login-button-to-your-android-app-using-kotlin/
+    //Google sign in code from: https://johncodeos.com/how-to-add-google-login-button-to-your-android-app-using-kotlin/
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = 9001
-
     private lateinit var database: DatabaseReference
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         launch_btn.setOnClickListener{
             launchUser()
         }
+
+
     }
 
     override fun onStart() {
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             database = Firebase.database.reference
             if (account != null) {
                 database.child("UserData").child((account.id).toString()).child("shows").child("1").setValue("Init")
+                database.child("UserData").child((account.id).toString()).child("userName").setValue((account.displayName).toString())
             }
             // Signed in successfully
             launchUser()
@@ -92,5 +95,13 @@ class MainActivity : AppCompatActivity() {
                 "failed code=", e.statusCode.toString()
             )
         }
+    }
+
+    fun signOut() {
+        mGoogleSignInClient.signOut()
+            .addOnCompleteListener(this) {
+                val intentToMainActivity = Intent(this, MainActivity::class.java)
+                startActivity(intentToMainActivity)
+            }
     }
 }

@@ -19,3 +19,9 @@ alpha 0.3.0 14/04/2020
 - created fragments for watchlist and discover and search.
 - Layout experimentation with view pager (userHome_vp)
 - small swipe area working in user home
+
+alpha 0.3.1 14/04/2020
+- added FBDB code to include userName to user initialisation insert when signing in
+- Sign out buton working in the fragment
+    - took a lot of work as mGoogleSignInClient wasn't initialising in the fragment
+    - signout function called by -> (activity as UserHomeActivity).signOut() <- in button listener
