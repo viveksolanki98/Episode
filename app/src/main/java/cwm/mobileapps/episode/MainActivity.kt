@@ -41,10 +41,6 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
-        launch_btn.setOnClickListener{
-            launchUser()
-        }
-
 
     }
 
@@ -95,13 +91,5 @@ class MainActivity : AppCompatActivity() {
                 "failed code=", e.statusCode.toString()
             )
         }
-    }
-
-    fun signOut() {
-        mGoogleSignInClient.signOut()
-            .addOnCompleteListener(this) {
-                val intentToMainActivity = Intent(this, MainActivity::class.java)
-                startActivity(intentToMainActivity)
-            }
     }
 }

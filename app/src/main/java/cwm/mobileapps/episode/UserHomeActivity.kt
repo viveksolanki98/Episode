@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.database.DatabaseReference
@@ -33,24 +34,11 @@ class UserHomeActivity : AppCompatActivity() {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        val acct = GoogleSignIn.getLastSignedInAccount(this)
-        if (acct != null) {
-            val personName = acct.displayName
-            val personGivenName = acct.givenName
-            val personFamilyName = acct.familyName
-            val personEmail = acct.email
-            val personId = acct.id
-            val personPhoto: Uri? = acct.photoUrl
-
-
-            //name_txt.text = personName
-            //personID_txt.text = personId
-            //email_txt.text = personEmail
-        }
 
         val adapter = viewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
         adapter.addFragment(WatchListFragment(), " Watch List ")
+        adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
+        adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
 
 
@@ -83,5 +71,21 @@ class UserHomeActivity : AppCompatActivity() {
                 val intentToMainActivity = Intent(this, MainActivity::class.java)
                 startActivity(intentToMainActivity)
             }
+    }
+
+    fun getGoogleAccountInfo(): GoogleSignInAccount? {
+        val acct = GoogleSignIn.getLastSignedInAccount(this)
+        if (acct != null) {
+            /*
+            val personName = acct.displayName
+            val personGivenName = acct.givenName
+            val personFamilyName = acct.familyName
+            val personEmail = acct.email
+            val personId = acct.id
+            val personPhoto: Uri? = acct.photoUrl
+             */
+            return acct
+        }
+        return null
     }
 }

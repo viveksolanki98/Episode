@@ -25,3 +25,9 @@ alpha 0.3.1 14/04/2020
 - Sign out buton working in the fragment
     - took a lot of work as mGoogleSignInClient wasn't initialising in the fragment
     - signout function called by -> (activity as UserHomeActivity).signOut() <- in button listener
+
+alpha 0.3.2 15/04/2020
+- Removed testing launch! and home buttons
+- Added My Account fragment
+- Sign Out button moved to My Account Fragment
+- getGoogleAccountInfo() function added ready to be accessed by fragments
