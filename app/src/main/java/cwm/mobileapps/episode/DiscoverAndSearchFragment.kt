@@ -7,8 +7,10 @@ import android.view.*
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.beust.klaxon.Klaxon
 import com.google.firebase.database.DatabaseReference
 import okhttp3.*
+import org.json.JSONObject
 import java.io.IOException
 
 class DiscoverAndSearchFragment : Fragment() {
@@ -42,7 +44,9 @@ class DiscoverAndSearchFragment : Fragment() {
 
             override fun onResponse(call: Call, response: Response) {
                 val body = response?.body?.string()
-                println("SUCCESS API")
+                val result = JSONObject(body)
+                val showName = result.getJSONArray("results").getJSONObject(0).getString("name")
+                println("SUCCESS API $showName")
             }
         })
 

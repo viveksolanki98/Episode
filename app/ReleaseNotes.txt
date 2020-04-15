@@ -35,3 +35,7 @@ alpha 0.3.2 15/04/2020
 alpha 0.4.0 15/04/2020
 - added search bar framework - https://www.youtube.com/watch?v=vqh6TPLQ5-Q
 - made a successful api call - https://www.youtube.com/watch?v=53BsyxwSBJk
+
+alpha 0.4.1 15/04/2020
+- successful JSON parsing
+- Successful access of item inside of JSON object
