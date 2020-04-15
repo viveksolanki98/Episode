@@ -31,3 +31,7 @@ alpha 0.3.2 15/04/2020
 - Added My Account fragment
 - Sign Out button moved to My Account Fragment
 - getGoogleAccountInfo() function added ready to be accessed by fragments
+
+alpha 0.4.0 15/04/2020
+- added search bar framework - https://www.youtube.com/watch?v=vqh6TPLQ5-Q
+- made a successful api call - https://www.youtube.com/watch?v=53BsyxwSBJk

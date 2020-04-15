@@ -21,15 +21,24 @@
 
     <TextView
         android:id="@+id/discoverSearchTitle_txt"
-        android:layout_width="391dp"
-        android:layout_height="119dp"
+        android:layout_width="398dp"
+        android:layout_height="51dp"
         android:gravity="center"
         android:text="@string/hello_blank_fragment"
         android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/apiResponse_txt"
+        android:layout_width="334dp"
+        android:layout_height="542dp"
+        android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42000002" />
+        app:layout_constraintTop_toBottomOf="@+id/discoverSearchTitle_txt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
