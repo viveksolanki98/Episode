@@ -43,4 +43,5 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.5.0"
     implementation 'com.beust:klaxon:5.0.1'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'khttp:khttp:1.0.0'
 }

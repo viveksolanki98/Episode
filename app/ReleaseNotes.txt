@@ -42,3 +42,6 @@ alpha 0.4.1 15/04/2020
 
 alpha 0.4.2 16/04/2020
 - implemented recycler view for discover page
+
+alpha 0.4.3 16/04/2020
+- Using an API call with the recycler view created to display show names
