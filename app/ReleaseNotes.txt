@@ -39,3 +39,6 @@ alpha 0.4.0 15/04/2020
 alpha 0.4.1 15/04/2020
 - successful JSON parsing
 - Successful access of item inside of JSON object
+
+alpha 0.4.2 16/04/2020
+- implemented recycler view for discover page
