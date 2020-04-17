@@ -45,3 +45,10 @@ alpha 0.4.2 16/04/2020
 
 alpha 0.4.3 16/04/2020
 - Using an API call with the recycler view created to display show names
+
+alpha 0.4.4 17/04/20
+- Added Poster image to card views in recyclers
+- removed show name from card
+- added '+' button to card
+- discover sections are now popular, top rated and airing today
+- new function displayDiscoverSection() that handles getting and building discover sections data recyclers

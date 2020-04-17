@@ -22,9 +22,19 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater?.inflate(R.layout.fragment_discover_and_search, container, false)
 
-        val trendingShowsRV: RecyclerView? = view?.findViewById((R.id.trendingShows_rv))
+        val trendingShowsRV: RecyclerView? = view?.findViewById((R.id.popularShows_rv))
         trendingShowsRV?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        displayTrending(trendingShowsRV)
+        displayDiscoverSection(trendingShowsRV,"popular")
+
+        val topRatedShowsRV: RecyclerView? = view?.findViewById((R.id.topRatedShows_rv))
+        topRatedShowsRV?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        displayDiscoverSection(topRatedShowsRV,"top_rated")
+
+
+        val latestShowsRV: RecyclerView? = view?.findViewById((R.id.airingToday_rv))
+        latestShowsRV?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        displayDiscoverSection(latestShowsRV,"airing_today")
+
 
         /*
         val homeLaunchBTN: Button? = view?.findViewById(R.id.homeLaunch_btn)
@@ -64,10 +74,9 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
 
     }
 
-    fun displayTrending(rView : RecyclerView?) {
+    fun displayDiscoverSection(rView : RecyclerView?, section : String?) {
         //image URL: https://image.tmdb.org/t/p/w500/lbIMe94gXNGBzlFACqbrUyEXpyN.jpg
-        var searchTerm = "strange"
-        var urlSTR = "https://api.themoviedb.org/3/search/tv?api_key=9b05770b260d801f3b9e84fd281f2064&language=en-US&page=1&query=$searchTerm&include_adult=false"
+        var urlSTR = "https://api.themoviedb.org/3/tv/$section?api_key=9b05770b260d801f3b9e84fd281f2064&language=en-US&page=1"
         val request = Request.Builder().url(urlSTR).build()
         val client = OkHttpClient()
 
@@ -83,13 +92,15 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
                 println("API Search Success")
 
                 val showNames = ArrayList<String>()
+                val showImageLocations = ArrayList<String>()
                 var searchResultsObject = result.getJSONArray("results")
                 for (i in 0 until searchResultsObject.length()) {
                     val item = searchResultsObject.getJSONObject(i)
                     showNames.add(item.getString("name"))
+                    showImageLocations.add(item.getString("poster_path"))
                 }
 
-                activity?.runOnUiThread(Runnable { rView?.adapter = PostsAdapter(showNames) })
+                activity?.runOnUiThread(Runnable { rView?.adapter = PostsAdapter(showNames,showImageLocations) })
 
             }
         })
