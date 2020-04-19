@@ -29,7 +29,7 @@ class ShowPageActivity : AppCompatActivity() {
         //Glide.with(holder.itemView.context).load("https://image.tmdb.org/t/p/w500/" + showImageLocations[position]).into(holder.showPosterIV)
 
         // Set background image
-        var posterURI = "https://image.tmdb.org/t/p/w500/" + intent.getStringExtra("show_poster")
+        var posterURI =  intent.getStringExtra("show_poster")
                 Glide
             .with(applicationContext)
             .asBitmap()

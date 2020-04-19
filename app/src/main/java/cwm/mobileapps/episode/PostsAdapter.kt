@@ -10,19 +10,23 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 import java.security.AccessController.getContext
 
-class PostsAdapter(val posts : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
+class PostsAdapter(val posts : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
 
     override fun getItemCount() = posts.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.showTitleTXT.text = posts[position]
-        Glide.with(holder.itemView.context).load("https://image.tmdb.org/t/p/w500/" + showImageLocations[position]).into(holder.showPosterIV)
-        //https://image.tmdb.org/t/p/w500/lbIMe94gXNGBzlFACqbrUyEXpyN.jpg
-        //Picasso.get().load("https://image.tmdb.org/t/p/w500/" + showImageLocations[position]).into(holder.showPosterIM);
-        println("My Image: " + "https://image.tmdb.org/t/p/w500/" + showImageLocations[position])
+        //"https://image.tmdb.org/t/p/w500/"
+        Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
+//------------------------------
 
+
+//------------------------------
         holder.showPosterIV.setOnClickListener {
             val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
             intentToShowPageActivity.putExtra("show_title", posts[position])

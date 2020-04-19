@@ -58,3 +58,9 @@ alpha 0.5.0 18/04/2020
 - each show on discover section goes to new activity
 - new activity background is blurred show poster
 - show name is at the top of new activity
+
+alpha 0.5.1 19/04/2020
+- api change to track it api and fanart api
+- experimentation with 2 API's
+- new method now works
+- section in displayDiscoverSection() set statically to 'trending'
