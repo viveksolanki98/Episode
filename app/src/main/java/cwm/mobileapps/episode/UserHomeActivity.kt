@@ -3,12 +3,8 @@ package cwm.mobileapps.episode
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.widget.Button
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,9 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_sign_in_i_d_display.*
 import kotlinx.android.synthetic.main.activity_user_home2.*
-import kotlinx.android.synthetic.main.fragment_discover_and_search.*
 
 class UserHomeActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient

@@ -1,21 +1,15 @@
 package cwm.mobileapps.episode
 
-import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import okhttp3.*
-import org.json.JSONObject
-import java.io.IOException
-import java.security.AccessController.getContext
 
-class PostsAdapter(val posts : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
+class RecyclerAdapterDSLists(val posts : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>() {
 
     override fun getItemCount() = posts.size
 
@@ -38,7 +32,7 @@ class PostsAdapter(val posts : ArrayList<String>, val showIDs : ArrayList<String
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_posts, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.discover_lists_rv_card, parent, false)
         return ViewHolder(view)
 
     }

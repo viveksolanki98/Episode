@@ -64,3 +64,13 @@ alpha 0.5.1 19/04/2020
 - experimentation with 2 API's
 - new method now works
 - section in displayDiscoverSection() set statically to 'trending'
+
+alpha 0.6.0 19/04/2020
+- deleted experimental signin_id_display framework
+- changed PostsAdapter name to RecyclerAdapterDSLists
+- changed row_posts to discover_lists_rv_card
+- added discover_sections_rv_card  to turn the sections in Discover & Search into a recycler view
+- Discover sections now populated by a recycler view
+- api call is done in launchDiscoverSection through the adapter
+- section still static to trending
+
