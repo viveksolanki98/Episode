@@ -81,3 +81,10 @@ alpha 0.6.2 19/04/2020
 - add button in discover and search now links to FBDB
 - add button is now hidden on add and hidden if on load it is found to be added
 
+alpha 0.6.3 19/04/2020
+- added description to show page
+- added show details to show page
+- created a drawable for the rounded corners for elements in the show page
+- created a drawable for the faded show title in show page
+
+

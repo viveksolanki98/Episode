@@ -67,6 +67,8 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
                     var showData = if(section == "popular") item else item.getJSONObject("show")
 
                     val tvdbID = showData.getJSONObject("ids").getString("tvdb")
+                    val imdbID = showData.getJSONObject("ids").getString("imdb")
+
                     var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
                     val requestImage = Request.Builder().url(urlSTRImage).build()
                     val clientImage = OkHttpClient()
@@ -82,7 +84,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
                     println("appdebug: imageLocation(tvdb): " + imageLocation)
 
                     showNames.add(showData.getString("title"))
-                    showIDs.add(showData.getJSONObject("ids").getString("tvdb"))
+                    showIDs.add(imdbID)
                     showImageLocations.add(imageLocation)
                 }
 

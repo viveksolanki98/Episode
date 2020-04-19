@@ -47,7 +47,9 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
             val intentToShowPageActivity =
                 Intent(holder.itemView.context, ShowPageActivity::class.java)
             intentToShowPageActivity.putExtra("show_title", showTitle[position])
+            intentToShowPageActivity.putExtra("show_id", showIDs[position])
             intentToShowPageActivity.putExtra("show_poster", showImageLocations[position])
+
             holder.itemView.context.startActivity(intentToShowPageActivity)
         }
 
