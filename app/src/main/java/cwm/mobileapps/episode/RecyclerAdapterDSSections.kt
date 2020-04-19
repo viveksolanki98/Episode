@@ -12,14 +12,15 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 
-class RecyclerAdapterDSSections(val sections : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
+class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
 
     override fun getItemCount() = sections.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.sectionTitleTXT.text = sections[position].split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
+
+        holder.sectionTitleTXT.text = sections[position][0].split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
         holder.sectionRV?.layoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
-        launchDiscoverSection(holder, sections[position])
+        launchDiscoverSection(holder, sections[position][1])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{
@@ -36,7 +37,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<String>) : RecyclerView
     fun launchDiscoverSection(holder : ViewHolder?, section : String?) {
         //image URL: https://image.tmdb.org/t/p/w500/lbIMe94gXNGBzlFACqbrUyEXpyN.jpg
         //var urlSTR = "https://api.themoviedb.org/3/tv/$section?api_key=9b05770b260d801f3b9e84fd281f2064&language=en-US&page=1"
-        var urlSTR = "https://api.trakt.tv/shows/trending"
+        var urlSTR = "https://api.trakt.tv/shows/$section"
 
         val request = Request
             .Builder()
@@ -63,8 +64,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<String>) : RecyclerView
                 val showImageLocations = ArrayList<String>()
                 for (i in 0 until result.length()) {
                     val item = result.getJSONObject(i)
-                    val showData = item.getJSONObject("show")
-
+                    var showData = if(section == "popular") item else item.getJSONObject("show")
 
                     val tvdbID = showData.getJSONObject("ids").getString("tvdb")
                     var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"

@@ -17,17 +17,14 @@ class RecyclerAdapterDSLists(val posts : ArrayList<String>, val showIDs : ArrayL
         holder.showTitleTXT.text = posts[position]
         //"https://image.tmdb.org/t/p/w500/"
         Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
-//------------------------------
 
-
-//------------------------------
         holder.showPosterIV.setOnClickListener {
-            val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
+            val intentToShowPageActivity =
+                Intent(holder.itemView.context, ShowPageActivity::class.java)
             intentToShowPageActivity.putExtra("show_title", posts[position])
             intentToShowPageActivity.putExtra("show_poster", showImageLocations[position])
             holder.itemView.context.startActivity(intentToShowPageActivity)
         }
-
 
     }
 

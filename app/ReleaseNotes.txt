@@ -74,3 +74,6 @@ alpha 0.6.0 19/04/2020
 - api call is done in launchDiscoverSection through the adapter
 - section still static to trending
 
+alpha 0.6.1 19/04/2020
+- Sections are now dynamic, adapter takes in the api path and the section title
+

@@ -27,9 +27,12 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
 
         val discoverSectionsRV: RecyclerView? = view?.findViewById((R.id.discoverSections_rv))
         discoverSectionsRV?.layoutManager = LinearLayoutManager(context)
-        val sections = ArrayList<String>()
-        sections.add("trending")
-        sections.add("popular")
+        val sections = ArrayList<List<String>>()
+        //listOf("Section Title", "API path")
+        sections.add(listOf("Trending", "trending"))
+        sections.add(listOf("Popular", "popular"))
+        sections.add(listOf("Most Played","played/daily"))
+        sections.add(listOf("Most Saved","collected/weekly"))
         discoverSectionsRV?.adapter = RecyclerAdapterDSSections(sections)
 
         /*
