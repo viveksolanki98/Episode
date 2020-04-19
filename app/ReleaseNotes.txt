@@ -77,3 +77,7 @@ alpha 0.6.0 19/04/2020
 alpha 0.6.1 19/04/2020
 - Sections are now dynamic, adapter takes in the api path and the section title
 
+alpha 0.6.2 19/04/2020
+- add button in discover and search now links to FBDB
+- add button is now hidden on add and hidden if on load it is found to be added
+

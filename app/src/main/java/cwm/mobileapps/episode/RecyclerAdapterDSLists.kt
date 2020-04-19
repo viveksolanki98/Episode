@@ -4,26 +4,56 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.FirebaseError
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
-class RecyclerAdapterDSLists(val posts : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>() {
+class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>() {
+    private lateinit var database: DatabaseReference
 
-    override fun getItemCount() = posts.size
+    override fun getItemCount() = showTitle.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.showTitleTXT.text = posts[position]
+        val userAccountDetails= GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
+        database = Firebase.database.reference
+        val allShowsReference = database.child("UserData").child((userAccountDetails?.id).toString()).child("shows")
+
+        holder.showTitleTXT.text = showTitle[position]
         //"https://image.tmdb.org/t/p/w500/"
         Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
+
+        var showExists = false
+        allShowsReference.child(showIDs[position]).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                println("appdebug: showExists: " + dataSnapshot.getValue())
+                holder.addShowBTN.visibility = if (dataSnapshot.getValue() != null) View.GONE else View.VISIBLE
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("FBDB Error getting show ${databaseError.toException()}")
+            }
+        })
 
         holder.showPosterIV.setOnClickListener {
             val intentToShowPageActivity =
                 Intent(holder.itemView.context, ShowPageActivity::class.java)
-            intentToShowPageActivity.putExtra("show_title", posts[position])
+            intentToShowPageActivity.putExtra("show_title", showTitle[position])
             intentToShowPageActivity.putExtra("show_poster", showImageLocations[position])
             holder.itemView.context.startActivity(intentToShowPageActivity)
+        }
+
+        holder.addShowBTN.setOnClickListener {
+            database.child("UserData").child((userAccountDetails?.id).toString()).child("shows").child(showIDs[position]).setValue(showTitle[position])
+            holder.addShowBTN.visibility = View.GONE
         }
 
     }
@@ -37,5 +67,6 @@ class RecyclerAdapterDSLists(val posts : ArrayList<String>, val showIDs : ArrayL
     class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         val showTitleTXT: TextView = itemView.findViewById(R.id.showTitle_txt)
         val showPosterIV: ImageView = itemView.findViewById(R.id.showPoster_iv)
+        val addShowBTN : Button = itemView.findViewById(R.id.addShow_btn)
     }
 }
