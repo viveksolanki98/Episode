@@ -19,12 +19,11 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 class ShowPageActivity : AppCompatActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_page)
@@ -107,7 +106,10 @@ class ShowPageActivity : AppCompatActivity() {
                 FBDBhandler.addRecord("tt1", showID, (userAccountDetails?.id)!!.toString())
                 addRemoveShow_btn.text = "-"
             }else{
-                FBDBhandler.delete("UserID_ShowID", "${userAccountDetails?.id}_${showID}")
+                FBDBhandler.deleteRecord("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(){
+                    println("appdebug: delete: show page: SUCCESS")}, fun(){
+                    println("appdebug: delete: show page: FAIL")
+                })
                 addRemoveShow_btn.text = "+"
             }
         }

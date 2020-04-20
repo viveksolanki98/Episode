@@ -94,6 +94,10 @@ alpha 0.7.0 20/04/2020
 - this framework is used across the app
 
 alpha 0.7.1 20/04/2020
+- FBDBhandler delete now takes on success and on failure callbacks
+- FBDBhandler delete method changed to deleteRecord
+
+alpha 0.7.2 20/04/2020
 - add/remove button now in show page
 - delete function in FBDBhandler creted to remove a show
 

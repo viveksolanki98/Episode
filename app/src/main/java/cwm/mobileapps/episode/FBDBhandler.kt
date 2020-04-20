@@ -1,5 +1,8 @@
 package cwm.mobileapps.episode
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -39,10 +42,32 @@ object FBDBhandler {
         })
 
     }
-    fun delete(recordKey : String, recordValue : String){
-        query(recordKey, recordValue, fun(data : DataSnapshot?){
+
+    fun deleteRecord(recordKey: String, recordValue: String, successCallback: () -> Unit, failCallback: () -> Unit){
+        query(recordKey, recordValue,
+        fun(data : DataSnapshot?){
+            val querySize  = data?.childrenCount?.toInt()
+            var count = 0
+            var successTracker = true
             for (singleSnapshot in data!!.getChildren()) {
-                singleSnapshot.ref.removeValue()
+                count++
+                if(count == querySize){
+                    singleSnapshot.ref.removeValue().addOnSuccessListener {
+                        if (successTracker) {
+                            successCallback()
+                        } else{
+                            failCallback()
+                        }
+                    }.addOnFailureListener{
+                        failCallback()
+                    }
+                }else {
+                    singleSnapshot.ref.removeValue().addOnSuccessListener {
+
+                    }.addOnFailureListener {
+                        successTracker = false
+                    }
+                }
             }
         })
     }
