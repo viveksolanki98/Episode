@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
 import okhttp3.*
@@ -26,6 +28,8 @@ class ShowPageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_page)
+
+        val userAccountDetails= GoogleSignIn.getLastSignedInAccount(this)
 
         val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
@@ -89,6 +93,24 @@ class ShowPageActivity : AppCompatActivity() {
 
             }
         })
+
+        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
+            if (data!!.getValue() == null){
+                addRemoveShow_btn.text = "+"
+            }else{
+                addRemoveShow_btn.text = "-"
+            }
+        })
+
+        addRemoveShow_btn.setOnClickListener {
+            if (addRemoveShow_btn.text == "+"){
+                FBDBhandler.addRecord("tt1", showID, (userAccountDetails?.id)!!.toString())
+                addRemoveShow_btn.text = "-"
+            }else{
+                FBDBhandler.delete("UserID_ShowID", "${userAccountDetails?.id}_${showID}")
+                addRemoveShow_btn.text = "+"
+            }
+        }
 
     }
 }

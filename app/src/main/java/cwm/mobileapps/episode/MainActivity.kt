@@ -84,11 +84,11 @@ class MainActivity : AppCompatActivity() {
             val account = completedTask.getResult(ApiException::class.java)
             database = Firebase.database.reference
             if (account != null) {
-                FBDBhandler.query("UserID_ShowID", (account.id)!!.toString() + "_tt1", fun(data:Any?){
-                    if (data == null) {
-                        println("appdebug: Sign In: newUserAdded: " + data)
+                FBDBhandler.query("UserID_ShowID", (account.id)!!.toString() + "_tt1", fun(data:DataSnapshot?){
+                    if (data?.getValue() == null) {
+                        println("appdebug: Sign In: newUserAdded: " +  data?.getValue())
                         FBDBhandler.addRecord("tt1", "tt1", (account.id)!!.toString())
-                    }else{println("appdebug: Sign In: existingUser: " + data)}
+                    }else{println("appdebug: Sign In: existingUser: " + data?.getValue())}
                 })
             }
             // Signed in successfully

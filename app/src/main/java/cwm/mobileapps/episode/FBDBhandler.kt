@@ -1,6 +1,5 @@
 package cwm.mobileapps.episode
 
-import android.view.View
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -24,14 +23,14 @@ object FBDBhandler {
         dbRecordRef.child("ShowID_EpisodeID").setValue("${showID}_${episodeID}")
     }
 
-    fun query(recordKey : String, recordValue : String, callBack : (Any?) -> Unit) {
+    fun query(recordKey : String, recordValue : String, callBack : (DataSnapshot?) -> Unit) {
         database = Firebase.database.reference
 
         getRootRef().orderByChild(recordKey).equalTo(recordValue).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 println("appdebug: In FBDB Query Handler: " + dataSnapshot.getValue())
-                callBack(dataSnapshot.getValue())
+                callBack(dataSnapshot)
 
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -39,6 +38,13 @@ object FBDBhandler {
             }
         })
 
+    }
+    fun delete(recordKey : String, recordValue : String){
+        query(recordKey, recordValue, fun(data : DataSnapshot?){
+            for (singleSnapshot in data!!.getChildren()) {
+                singleSnapshot.ref.removeValue()
+            }
+        })
     }
 
     private fun getRootRef(): DatabaseReference {

@@ -32,12 +32,10 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         holder.showTitleTXT.text = showTitle[position]
         //"https://image.tmdb.org/t/p/w500/"
         Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
-        fun call(){
 
-        }
-        FBDBhandler.query("UserID_ShowID", "${(userAccountDetails?.id).toString()}_${showIDs[position]}", fun(data : Any?) {
-            println("appdebug: showExistsNEW: " + data)
-            holder.addShowBTN.visibility = if (data != null) View.GONE else View.VISIBLE
+        FBDBhandler.query("UserID_ShowID", "${(userAccountDetails?.id).toString()}_${showIDs[position]}", fun(data : DataSnapshot?) {
+            println("appdebug: showExistsNEW: " + data!!.getValue())
+            holder.addShowBTN.visibility = if (data!!.getValue() != null) View.GONE else View.VISIBLE
         })
 
         holder.showPosterIV.setOnClickListener {

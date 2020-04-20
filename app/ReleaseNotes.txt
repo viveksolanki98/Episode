@@ -93,3 +93,7 @@ alpha 0.7.0 20/04/2020
 - FBDBhandler has a query function to handle filtering. Accepts a callback function to perform actions on the data.
 - this framework is used across the app
 
+alpha 0.7.1 20/04/2020
+- add/remove button now in show page
+- delete function in FBDBhandler creted to remove a show
+
