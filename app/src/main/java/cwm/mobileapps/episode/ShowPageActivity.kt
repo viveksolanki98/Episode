@@ -17,7 +17,6 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
 import okhttp3.*
 import org.json.JSONObject
-import java.io.IOException
 import java.math.RoundingMode
 
 
@@ -58,39 +57,19 @@ class ShowPageActivity : AppCompatActivity() {
                 }
             })
 
-        var urlSTR = "https://api.trakt.tv/shows/$showID?extended=full"
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID?extended=full", fun(response : Response){
+            val showDataObj = JSONObject(response.body!!.string())
+            val showStartYear = showDataObj.getString("first_aired").split("-")[0]
 
-        val request = Request
-            .Builder()
-            .url(urlSTR)
-            .addHeader("Content-Type","application/json")
-            .addHeader("trakt-api-version","2")
-            .addHeader("trakt-api-key","60208da48cb89f83f54f9686b0027df865b8aa8e51d2af64e7e4429b2cac7b28")
-            .build()
+            val showRating = showDataObj.getDouble("rating").toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+            val showStatus = showDataObj.getString("status").split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
 
-        val client = OkHttpClient()
+            val showDetails = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
+            runOnUiThread(Runnable {
+                showDescription_txt.text = showDataObj.getString("overview")
+                showDetails_txt.text = showDetails
 
-        client.newCall(request).enqueue(object: Callback {
-            override fun onFailure(call: Call, e: IOException){
-                println("FAIL API")
-            }
-
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onResponse(call: Call, response: Response) {
-                val showDataObj = JSONObject(response.body!!.string())
-                val showStartYear = showDataObj.getString("first_aired").split("-")[0]
-
-                val showRating = showDataObj.getDouble("rating").toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
-                val showStatus = showDataObj.getString("status").split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
-
-                val showDetails = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
-                runOnUiThread(Runnable {
-                    showDescription_txt.text = showDataObj.getString("overview")
-                    showDetails_txt.text = showDetails
-
-                })
-
-            }
+            })
         })
 
         FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){

@@ -101,3 +101,6 @@ alpha 0.7.2 20/04/2020
 - add/remove button now in show page
 - delete function in FBDBhandler creted to remove a show
 
+alpha 0.7.3 20/04/2020
+- built API framework
+- all api calls now use the framework

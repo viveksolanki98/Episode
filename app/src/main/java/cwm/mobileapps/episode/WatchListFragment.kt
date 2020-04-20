@@ -14,6 +14,8 @@ class WatchListFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater?.inflate(R.layout.fragment_watch_list, container, false)
 
+
+
         return view
     }
 

@@ -19,15 +19,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>() {
-    private lateinit var database: DatabaseReference
 
     override fun getItemCount() = showTitle.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userAccountDetails= GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
-        database = Firebase.database.reference
-
-        val dbRootRef = database.child("EpisodeData")
 
         holder.showTitleTXT.text = showTitle[position]
         //"https://image.tmdb.org/t/p/w500/"
@@ -39,8 +35,7 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         })
 
         holder.showPosterIV.setOnClickListener {
-            val intentToShowPageActivity =
-                Intent(holder.itemView.context, ShowPageActivity::class.java)
+            val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
             intentToShowPageActivity.putExtra("show_title", showTitle[position])
             intentToShowPageActivity.putExtra("show_id", showIDs[position])
             intentToShowPageActivity.putExtra("show_poster", showImageLocations[position])
@@ -49,7 +44,6 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         }
 
         holder.addShowBTN.setOnClickListener {
-            //database.child("UserData").child((userAccountDetails?.id).toString()).child("shows").child(showIDs[position]).setValue(showTitle[position])
             FBDBhandler.addRecord("tt1", showIDs[position], (userAccountDetails?.id)!!.toString())
             holder.addShowBTN.visibility = View.GONE
         }
