@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -13,10 +14,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -79,8 +84,12 @@ class MainActivity : AppCompatActivity() {
             val account = completedTask.getResult(ApiException::class.java)
             database = Firebase.database.reference
             if (account != null) {
-                database.child("UserData").child((account.id).toString()).child("shows").child("1").setValue("Init")
-                database.child("UserData").child((account.id).toString()).child("userName").setValue((account.displayName).toString())
+                FBDBhandler.query("UserID_ShowID", (account.id)!!.toString() + "_tt1", fun(data:Any?){
+                    if (data == null) {
+                        println("appdebug: Sign In: newUserAdded: " + data)
+                        FBDBhandler.addRecord("tt1", "tt1", (account.id)!!.toString())
+                    }else{println("appdebug: Sign In: existingUser: " + data)}
+                })
             }
             // Signed in successfully
             launchUser()

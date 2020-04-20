@@ -26,21 +26,18 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userAccountDetails= GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
         database = Firebase.database.reference
-        val allShowsReference = database.child("UserData").child((userAccountDetails?.id).toString()).child("shows")
+
+        val dbRootRef = database.child("EpisodeData")
 
         holder.showTitleTXT.text = showTitle[position]
         //"https://image.tmdb.org/t/p/w500/"
         Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
+        fun call(){
 
-        var showExists = false
-        allShowsReference.child(showIDs[position]).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                println("appdebug: showExists: " + dataSnapshot.getValue())
-                holder.addShowBTN.visibility = if (dataSnapshot.getValue() != null) View.GONE else View.VISIBLE
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("FBDB Error getting show ${databaseError.toException()}")
-            }
+        }
+        FBDBhandler.query("UserID_ShowID", "${(userAccountDetails?.id).toString()}_${showIDs[position]}", fun(data : Any?) {
+            println("appdebug: showExistsNEW: " + data)
+            holder.addShowBTN.visibility = if (data != null) View.GONE else View.VISIBLE
         })
 
         holder.showPosterIV.setOnClickListener {
@@ -54,7 +51,8 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         }
 
         holder.addShowBTN.setOnClickListener {
-            database.child("UserData").child((userAccountDetails?.id).toString()).child("shows").child(showIDs[position]).setValue(showTitle[position])
+            //database.child("UserData").child((userAccountDetails?.id).toString()).child("shows").child(showIDs[position]).setValue(showTitle[position])
+            FBDBhandler.addRecord("tt1", showIDs[position], (userAccountDetails?.id)!!.toString())
             holder.addShowBTN.visibility = View.GONE
         }
 
