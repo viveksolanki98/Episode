@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,6 +64,15 @@ class ShowPageActivity : AppCompatActivity() {
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
             })
+
+
+        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
+            if (data!!.getValue() == null){
+                addRemoveShow_btn.text = "+"
+            }else{
+                addRemoveShow_btn.text = "-"
+            }
+        })
 
 
         addRemoveShow_btn.setOnClickListener {

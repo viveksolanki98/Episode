@@ -45,15 +45,6 @@ class ShowTrackingSPFragment : Fragment() {
             })
         })
 
-        val addRemoveBTN : Button? = view?.findViewById(R.id.addRemoveShow_btn)
-        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
-            if (data!!.getValue() == null){
-                addRemoveBTN?.text = "+"
-            }else{
-                addRemoveBTN?.text = "-"
-            }
-        })
-
         val episodeListRV: RecyclerView? = view.findViewById((R.id.episodeList_rv))
         episodeListRV?.layoutManager = LinearLayoutManager(activity)
 
