@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
@@ -16,11 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class RecyclerAdapterWLNextEpisode(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterWLNextEpisode.ViewHolder>() {
 
@@ -29,61 +29,87 @@ class RecyclerAdapterWLNextEpisode(val episodeIDs : ArrayList<String>) : Recycle
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        if (episodeIDs[position] != "null") {
+            APIhandler.trackitAPIAsync(
+                "https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full",
+                fun(data: Response) {
+                    val userAccountDetails =
+                        GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
 
-        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full", fun (data : Response){
-            val userAccountDetails= GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
+                    var dataObj = JSONArray(data.body!!.string()).getJSONObject(0)
+                    val showID =
+                        dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
+                    val showTitle = dataObj.getJSONObject("show").getString("title")
+                    val episodeTitle = dataObj.getJSONObject("episode").getString("title")
+                    val season = dataObj.getJSONObject("episode").getInt("season")
+                    val episode = dataObj.getJSONObject("episode").getInt("number")
+                    val airDateString = dataObj.getJSONObject("episode").getString("first_aired")
 
-            var dataObj = JSONArray(data.body!!.string()).getJSONObject(0)
-            val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
-            val showTitle = dataObj.getJSONObject("show").getString("title")
-            val episodeTitle = dataObj.getJSONObject("episode").getString("title")
-            val season = dataObj.getJSONObject("episode").getInt("season")
-            val episode = dataObj.getJSONObject("episode").getInt("number")
-            val airDateString =  dataObj.getJSONObject("episode").getString("first_aired")
-
-            val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
-            val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
-            val date = LocalDate.parse(airDateString, inputFormatter)
-            val airDateFormatted: String = outputFormatter.format(date)
+                    val inputFormatter =
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+                    val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
+                    val date = LocalDate.parse(airDateString, inputFormatter)
+                    val airDateFormatted: String = outputFormatter.format(date)
 
 
-            val tvdbID = dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb")
-            var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
-            val imageObj = JSONObject(APIhandler.fanartAPISync(urlSTRImage).body!!.string())
-            var imageLocation = try {
-                imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
-            }catch (e : Exception){
-                "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
-            }
-
-            (holder?.itemView?.context as UserHomeActivity)?.runOnUiThread(Runnable {
-                holder.showTitleTXT.text = showTitle
-                holder.episodeTitleTXT.text = episodeTitle
-                holder.episodeDetailsTXT.text ="Season $season, Episode $episode, $airDateFormatted"
-                Glide.with(holder?.itemView?.context as UserHomeActivity).load(imageLocation).into(holder.showPosterIV)
-
-                holder.showPosterIV.setOnClickListener {
-                    val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
-                    intentToShowPageActivity.putExtra("show_title", showTitle)
-                    intentToShowPageActivity.putExtra("show_id", showID)
-                    intentToShowPageActivity.putExtra("show_poster", imageLocation)
-
-                    holder.itemView.context.startActivity(intentToShowPageActivity)
-                }
-
-                holder.watchedToggleSWT.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        FBDBhandler.addRecord(episodeIDs[position], showID, (userAccountDetails?.id)!!.toString())
-                        Toast.makeText(holder.itemView.context,"Show Marked Watched!", Toast.LENGTH_SHORT).show()
-                    }else{
-                        FBDBhandler.deleteRecord("UserID_EpisodeID", "${(userAccountDetails?.id)!!.toString()}_${episodeIDs[position]}", fun(){
-                            Toast.makeText(holder.itemView.context,"Show Marked Not Watched", Toast.LENGTH_SHORT).show()
-                        }, fun(){})
+                    val tvdbID = dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb")
+                    var urlSTRImage =
+                        "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
+                    val imageObj = JSONObject(APIhandler.fanartAPISync(urlSTRImage).body!!.string())
+                    var imageLocation = try {
+                        imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
+                    } catch (e: Exception) {
+                        "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
                     }
-                }
 
-            })
-        })
+                    (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
+                        holder.showTitleTXT.text = showTitle
+                        holder.episodeTitleTXT.text = episodeTitle
+                        holder.episodeDetailsTXT.text =
+                            "Season $season, Episode $episode, $airDateFormatted"
+                        Glide.with(holder.itemView.context as Activity).load(imageLocation)
+                            .into(holder.showPosterIV)
+
+                        holder.showPosterIV.setOnClickListener {
+                            val intentToShowPageActivity =
+                                Intent(holder.itemView.context, ShowPageActivity::class.java)
+                            intentToShowPageActivity.putExtra("show_title", showTitle)
+                            intentToShowPageActivity.putExtra("show_id", showID)
+                            intentToShowPageActivity.putExtra("show_poster", imageLocation)
+
+                            holder.itemView.context.startActivity(intentToShowPageActivity)
+                        }
+
+                        holder.watchedToggleSWT.setOnCheckedChangeListener { _, isChecked ->
+                            if (isChecked) {
+                                FBDBhandler.addRecord(
+                                    episodeIDs[position],
+                                    showID,
+                                    (userAccountDetails?.id)!!.toString()
+                                )
+                                Toast.makeText(
+                                    holder.itemView.context,
+                                    "Show Marked Watched!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                FBDBhandler.deleteRecord(
+                                    "UserID_EpisodeID",
+                                    "${(userAccountDetails?.id)!!.toString()}_${episodeIDs[position]}",
+                                    fun() {
+                                        Toast.makeText(
+                                            holder.itemView.context,
+                                            "Show Marked Not Watched",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    fun() {})
+                            }
+                        }
+
+                    })
+                })
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{

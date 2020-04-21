@@ -7,7 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -16,6 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
 import okhttp3.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.math.RoundingMode
 
@@ -29,21 +33,22 @@ class ShowPageActivity : AppCompatActivity() {
 
         val userAccountDetails= GoogleSignIn.getLastSignedInAccount(this)
 
+
+        val adapter = viewPagerAdapter(supportFragmentManager)
+        adapter.addFragment(ShowTrackingSPFragment(), " Show Tracking ")
+        showPage_vp.adapter = adapter
+
+
         val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
+        var posterURI =  intent.getStringExtra("show_poster")
 
         showTitle_txt.text = showTitle
-        //https://image.tmdb.org/t/p/w500//AkFlhbRl7HZVWpIqaMPVXCuOQHI.jpg
-
-        //Glide.with(holder.itemView.context).load("https://image.tmdb.org/t/p/w500/" + showImageLocations[position]).into(holder.showPosterIV)
-
-        // Set background image
-        var posterURI =  intent.getStringExtra("show_poster")
-                Glide
-            .with(applicationContext)
+        Glide
+            .with(this)
             .asBitmap()
             .load(posterURI)
-            .apply(bitmapTransform(BlurTransformation(8, 3)))
+            .apply(RequestOptions.bitmapTransform(BlurTransformation(8, 3)))
             .into(object : CustomTarget<Bitmap?>(100, 100) {
                 override fun onResourceReady(
                     resource: Bitmap,
@@ -57,28 +62,6 @@ class ShowPageActivity : AppCompatActivity() {
                 }
             })
 
-        APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID?extended=full", fun(response : Response){
-            val showDataObj = JSONObject(response.body!!.string())
-            val showStartYear = showDataObj.getString("first_aired").split("-")[0]
-
-            val showRating = showDataObj.getDouble("rating").toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
-            val showStatus = showDataObj.getString("status").split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
-
-            val showDetails = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
-            runOnUiThread(Runnable {
-                showDescription_txt.text = showDataObj.getString("overview")
-                showDetails_txt.text = showDetails
-
-            })
-        })
-
-        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
-            if (data!!.getValue() == null){
-                addRemoveShow_btn.text = "+"
-            }else{
-                addRemoveShow_btn.text = "-"
-            }
-        })
 
         addRemoveShow_btn.setOnClickListener {
             if (addRemoveShow_btn.text == "+"){
@@ -92,6 +75,11 @@ class ShowPageActivity : AppCompatActivity() {
                 addRemoveShow_btn.text = "+"
             }
         }
+
+        //---------------------------------------
+
+
+
 
     }
 }

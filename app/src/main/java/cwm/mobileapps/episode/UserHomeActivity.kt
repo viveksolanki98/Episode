@@ -37,13 +37,6 @@ class UserHomeActivity : AppCompatActivity() {
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
 
-
-
-        //TEST FIREBASE DB----------
-        database = Firebase.database.reference
-        database.child("UserData").child("123123").child("shows").child("4567").setValue("Billions")
-        //--------------------------
-
     }
 
     override fun onStart() {

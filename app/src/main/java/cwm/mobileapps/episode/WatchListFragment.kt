@@ -2,7 +2,6 @@ package cwm.mobileapps.episode
 
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +25,6 @@ class WatchListFragment : Fragment() {
 
         val nextEpisodesRV: RecyclerView? = view?.findViewById((R.id.nextEpisodes_rv))
         nextEpisodesRV?.layoutManager = LinearLayoutManager(context)
-        val sections = ArrayList<List<String>>()
-        //listOf("Section Title", "API path")
-        sections.add(listOf("Trending", "trending"))
-        sections.add(listOf("Popular", "popular"))
-        sections.add(listOf("Most Played","played/daily"))
-        sections.add(listOf("Most Saved","collected/weekly"))
-
-
 
         FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
