@@ -1,8 +1,5 @@
 package cwm.mobileapps.episode
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,14 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
-import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.activity_show_page.*
 import kotlinx.android.synthetic.main.fragment_show_tracking_sp.*
 import okhttp3.Response
 import org.json.JSONArray
@@ -82,7 +73,7 @@ class ShowTrackingSPFragment : Fragment() {
                     }
                 }
             }
-            activity?.runOnUiThread(Runnable { episodeListRV?.adapter = RecyclerAdapterWLNextEpisode(allEpisodesArr)})
+            activity?.runOnUiThread(Runnable { episodeListRV?.adapter = RecyclerAdapterEpisodeCard(allEpisodesArr)})
         })
 
 

@@ -34,8 +34,10 @@ class ShowPageActivity : AppCompatActivity() {
         val userAccountDetails= GoogleSignIn.getLastSignedInAccount(this)
 
 
+
         val adapter = viewPagerAdapter(supportFragmentManager)
         adapter.addFragment(ShowTrackingSPFragment(), " Show Tracking ")
+        adapter.addFragment(ShowCommentsSpFragment(), " Show Comments ")
         showPage_vp.adapter = adapter
 
 

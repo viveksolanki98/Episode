@@ -134,3 +134,7 @@ alpha 0.9.0 21/04/2020
 - transformed Show Page activity to have a view pager ready for comments section
 - added episode list to Show Page activity
 - Toggle switch not reading from FBDB yet
+
+alpha 0.9.1 21/04/2020
+- New fragment added to show page -> comments section
+- recyclerAdapter for new episodes changed name to RecyclerAdapterEpisodeCard

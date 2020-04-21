@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-class RecyclerAdapterWLNextEpisode(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterWLNextEpisode.ViewHolder>() {
+class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterEpisodeCard.ViewHolder>() {
 
     override fun getItemCount() = episodeIDs.size
 

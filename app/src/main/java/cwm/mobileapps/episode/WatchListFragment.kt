@@ -58,7 +58,7 @@ class WatchListFragment : Fragment() {
 
                             nextEpisodesList.add(allEpisodesArr[0])
                             if(counter == snapLength?.minus(1)){
-                                activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterWLNextEpisode(nextEpisodesList)})
+                                activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)})
                             }
 
                         })
