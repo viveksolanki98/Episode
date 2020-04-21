@@ -25,7 +25,7 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
 
         FBDBhandler.query("UserID_ShowID", "${(userAccountDetails?.id).toString()}_${showIDs[position]}", fun(data : DataSnapshot?) {
             println("appdebug: showExistsNEW: " + data!!.getValue())
-            holder.addShowBTN.visibility = if (data!!.getValue() != null) View.GONE else View.VISIBLE
+            holder.addShowBTN.visibility = if (data.getValue() != null) View.GONE else View.VISIBLE
         })
 
         holder.showPosterIV.setOnClickListener {

@@ -29,7 +29,7 @@ object APIhandler {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call, response: Response) {
                 println("appdebug: API Success: $urlSTR")
-                //val showDataObj = JSONObject(response.body!!.string())
+                //var dataString = data.body!!.string()
                 callback(response)
             }
         })

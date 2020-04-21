@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/showTitle_txt"
+            android:id="@+id/showTitleInCard_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -25,7 +25,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-
         <TextView
             android:id="@+id/episodeTitle_txt"
             android:layout_width="wrap_content"
@@ -34,7 +33,7 @@
             android:layout_marginTop="8dp"
             android:text="TextView"
             app:layout_constraintStart_toEndOf="@+id/showPoster_iv"
-            app:layout_constraintTop_toBottomOf="@+id/showTitle_txt" />
+            app:layout_constraintTop_toBottomOf="@+id/showTitleInCard_txt" />
 
         <ImageView
             android:id="@+id/showPoster_iv"
