@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerAdapterWLNextEpisode(val sections : ArrayList<List<String>>) : RecyclerView.Adapter<RecyclerAdapterWLNextEpisode.ViewHolder>() {
+class RecyclerAdapterWLNextEpisode(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterWLNextEpisode.ViewHolder>() {
 
-    override fun getItemCount() = sections.size
+    override fun getItemCount() = episodeIDs.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.showTitleTXT.text = sections[position][0]
+        holder.showTitleTXT.text = episodeIDs[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{

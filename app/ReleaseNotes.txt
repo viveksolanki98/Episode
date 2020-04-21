@@ -109,3 +109,7 @@ alpha 0.8.0 20/04/2020
 - created the recycler view framework for watch list next episode
     - created the adapter and layout file
 - this RV is using example data to prove function
+
+alpha 0.8.1 21/04/2020
+- logic for getting next episode partially complete, need to fix async timing issues
+- no errors
