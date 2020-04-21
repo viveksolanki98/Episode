@@ -2,6 +2,7 @@ package cwm.mobileapps.episode
 
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,46 +33,44 @@ class WatchListFragment : Fragment() {
         sections.add(listOf("Most Played","played/daily"))
         sections.add(listOf("Most Saved","collected/weekly"))
 
+
+
         FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
-
             val snapLength = data?.childrenCount?.toInt()
-            var counter = 0
-            for (singleSnapshot in data!!.getChildren()) {
+            for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
 
-                counter++
                 if (userShowID != "tt1") {
                     APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$userShowID/seasons?extended=episodes", fun(data: Response) {
                         var dataString = data.body!!.string()
                         val allShowEpisodesArray = JSONArray(dataString)
                         val numberOfSeasons = allShowEpisodesArray.length()
-                        var loopContinue = true
-                        var i = 0
-                        while (loopContinue and (i < numberOfSeasons)){
-                            var j = 0
-                            var allEpisodes = allShowEpisodesArray.getJSONObject(i)
-                            while (loopContinue and (j < allEpisodes.length())){
-                                val singleEpisode = allEpisodes.getJSONArray("episodes").getJSONObject(j)
-                                val singleEpisodeID = singleEpisode.getJSONObject("ids").getString("imdb")
-                                if (singleEpisode.getInt("season") != 0){
-                                    FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_$singleEpisodeID", fun (showData : DataSnapshot?){
-                                        println("appdebug: watch list: in fbdb")
-                                        if (showData?.getValue() == null){
-                                            nextEpisodesList.add("$userShowID _ $singleEpisodeID _ s${singleEpisode.getInt("season")} _ e${singleEpisode.getInt("number")}")
-                                            loopContinue = false
-                                        }
-                                        if (counter == snapLength) {
-                                            activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterWLNextEpisode(nextEpisodesList)})
-                                        }
-                                    })
-                                }else{
-                                    j = allEpisodes.length()
+                        var allEpisodesArr = ArrayList<String>()
+
+                        for (i in 0 until numberOfSeasons) {
+                            var singleSeasonData = allShowEpisodesArray.getJSONObject(i)
+                            var allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
+                            if(singleSeasonData.getInt("number") != 0) {
+                                for (j in 0 until allEpisodesInSeason.length()) {
+                                    var singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
+                                    allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("imdb"))
                                 }
-                                j++
                             }
-                            i++
                         }
+                        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id.toString()}_$userShowID", fun(showData : DataSnapshot?){
+                            for(singleShowSnapshot in showData!!.children){
+                                val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
+                                //allUserEpisodesArr.add(userEpisodeID)
+                                allEpisodesArr.remove(userEpisodeID)
+                            }
+
+                            nextEpisodesList.add(allEpisodesArr[0])
+                            if(counter == snapLength?.minus(1)){
+                                activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterWLNextEpisode(nextEpisodesList)})
+                            }
+
+                        })
                     })
                 }
             }

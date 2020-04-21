@@ -12,6 +12,8 @@ class RecyclerAdapterWLNextEpisode(val episodeIDs : ArrayList<String>) : Recycle
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.showTitleTXT.text = episodeIDs[position]
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{

@@ -113,3 +113,9 @@ alpha 0.8.0 20/04/2020
 alpha 0.8.1 21/04/2020
 - logic for getting next episode partially complete, need to fix async timing issues
 - no errors
+
+alpha 0.8.2 21/04/2020
+- changed logic for getting next episodes to {availableEpisodes-watchedEpisodes}[0]
+- logic for getting next episode now complete
+- successfully calling recycler view adapter
+
