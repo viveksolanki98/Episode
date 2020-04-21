@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.database.DataSnapshot
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
@@ -28,33 +29,36 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val userAccountDetails = GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
+
+        (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
+            FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails!!.id.toString()}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
+                if (episodeCheckData?.getValue() != null){
+                    holder.watchedToggleSWT.isChecked = true
+                }
+            })
+        })
 
         if (episodeIDs[position] != "null") {
             APIhandler.trackitAPIAsync(
                 "https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full",
                 fun(data: Response) {
-                    val userAccountDetails =
-                        GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
-
                     var dataObj = JSONArray(data.body!!.string()).getJSONObject(0)
-                    val showID =
-                        dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
+                    val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
                     val showTitle = dataObj.getJSONObject("show").getString("title")
                     val episodeTitle = dataObj.getJSONObject("episode").getString("title")
                     val season = dataObj.getJSONObject("episode").getInt("season")
                     val episode = dataObj.getJSONObject("episode").getInt("number")
                     val airDateString = dataObj.getJSONObject("episode").getString("first_aired")
 
-                    val inputFormatter =
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
                     val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
                     val date = LocalDate.parse(airDateString, inputFormatter)
                     val airDateFormatted: String = outputFormatter.format(date)
 
 
                     val tvdbID = dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb")
-                    var urlSTRImage =
-                        "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
+                    var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
                     val imageObj = JSONObject(APIhandler.fanartAPISync(urlSTRImage).body!!.string())
                     var imageLocation = try {
                         imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
@@ -82,20 +86,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
 
                         holder.watchedToggleSWT.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
-                                FBDBhandler.addRecord(
-                                    episodeIDs[position],
-                                    showID,
-                                    (userAccountDetails?.id)!!.toString()
-                                )
-                                Toast.makeText(
-                                    holder.itemView.context,
-                                    "Show Marked Watched!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                FBDBhandler.addRecord(episodeIDs[position], showID,(userAccountDetails?.id)!!.toString())
+                                Toast.makeText(holder.itemView.context,"Show Marked Watched!", Toast.LENGTH_SHORT).show()
                             } else {
-                                FBDBhandler.deleteRecord(
-                                    "UserID_EpisodeID",
-                                    "${(userAccountDetails?.id)!!.toString()}_${episodeIDs[position]}",
+                                FBDBhandler.deleteRecord("UserID_EpisodeID", "${(userAccountDetails?.id)!!.toString()}_${episodeIDs[position]}",
                                     fun() {
                                         Toast.makeText(
                                             holder.itemView.context,
