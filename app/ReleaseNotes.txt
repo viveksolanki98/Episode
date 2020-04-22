@@ -1,3 +1,7 @@
+Bugs:
+- toggle switches sometimes add episodes twice to FBDB
+
+
 alpha Initial - 13/04/2020
 - initial commit with stock codebase
 
@@ -144,3 +148,11 @@ alpha 0.9.2 21/04/2020
 
 alpha 0.9.3 21/04/2020
 - fixed issue with add/remove button in show page not changing if you are watching the show or not
+
+alpha 1.0.0 22/04/2020
+- created show initialiser in APIhandler if an episode is marked watched but the initial "tt1" is not in FBDB
+- minor error catching in launchDiscoverSection()
+- added functionality to go back if show is marked not watching
+- changed query for toggle switch in episode card adapter to listener type to reflect changed in show page
+- changed query for add button in DS Lists adapter to listener type to reflect changed in show page
+- BASIC WORKFLOW COMPLETE!

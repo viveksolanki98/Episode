@@ -36,7 +36,10 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
     fun launchDiscoverSection(holder : ViewHolder?, section : String?) {
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section", fun(response : Response){
             val body = response.body!!.string()
-            val result = JSONArray(body)
+            var result = JSONArray()
+            try {
+                result = JSONArray(body)
+            }catch (e :Exception){}
             println("API Search Success")
 
             val showNames = ArrayList<String>()

@@ -32,7 +32,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         val userAccountDetails = GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
 
         (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
-            FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails!!.id.toString()}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
+            FBDBhandler.queryListener("UserID_EpisodeID", "${userAccountDetails!!.id.toString()}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
                 if (episodeCheckData?.getValue() != null){
                     holder.watchedToggleSWT.isChecked = true
                 }

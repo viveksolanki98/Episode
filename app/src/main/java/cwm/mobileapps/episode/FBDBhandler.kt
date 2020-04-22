@@ -16,6 +16,13 @@ object FBDBhandler {
 
 
     fun addRecord(episodeID : String, showID : String, userID : String){
+        if ((episodeID != "tt1") and (showID != "tt1")){
+            query("UserID_ShowID", "${userID}_${showID}", fun(data : DataSnapshot?){
+                if (data?.getValue() == null){
+                 addRecord("tt1", showID, userID)
+                }
+            })
+        }
         database = Firebase.database.reference
         var dbRecordRef = getRootRef().child(UUID.randomUUID().toString())
         dbRecordRef.child("UserID").setValue(userID)
@@ -30,6 +37,23 @@ object FBDBhandler {
         database = Firebase.database.reference
 
         getRootRef().orderByChild(recordKey).equalTo(recordValue).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                println("appdebug: In FBDB Query Handler: " + dataSnapshot.getValue())
+                callBack(dataSnapshot)
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("apperror: FBDB Error in query: $recordKey: $recordValue: ${databaseError.toException()}")
+            }
+        })
+
+    }
+
+    fun queryListener(recordKey : String, recordValue : String, callBack : (DataSnapshot?) -> Unit) {
+        database = Firebase.database.reference
+
+        getRootRef().orderByChild(recordKey).equalTo(recordValue).addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 println("appdebug: In FBDB Query Handler: " + dataSnapshot.getValue())

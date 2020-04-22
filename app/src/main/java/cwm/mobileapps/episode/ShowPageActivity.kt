@@ -66,7 +66,7 @@ class ShowPageActivity : AppCompatActivity() {
             })
 
 
-        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
             if (data!!.getValue() == null){
                 addRemoveShow_btn.text = "+"
             }else{
@@ -85,6 +85,7 @@ class ShowPageActivity : AppCompatActivity() {
                     println("appdebug: delete: show page: FAIL")
                 })
                 addRemoveShow_btn.text = "+"
+                finish()
             }
         }
 
