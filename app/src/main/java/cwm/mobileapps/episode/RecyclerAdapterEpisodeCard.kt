@@ -107,7 +107,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.watch_list_next_episode_rv_card, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.episode_rv_card, parent, false)
         return ViewHolder(view)
 
     }

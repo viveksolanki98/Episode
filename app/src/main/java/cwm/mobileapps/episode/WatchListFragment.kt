@@ -26,7 +26,7 @@ class WatchListFragment : Fragment() {
         val nextEpisodesRV: RecyclerView? = view?.findViewById((R.id.nextEpisodes_rv))
         nextEpisodesRV?.layoutManager = LinearLayoutManager(context)
 
-        FBDBhandler.query("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {

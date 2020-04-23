@@ -12,7 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ShowPageActivity"></activity>
+        <activity android:name=".SearchActivity"></activity>
+        <activity
+            android:name=".Search"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ShowPageActivity" />
         <activity android:name=".UserHomeActivity" />
         <activity android:name=".SignInIDDisplay" />
         <activity android:name=".MainActivity">

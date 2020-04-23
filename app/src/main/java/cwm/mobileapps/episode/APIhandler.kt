@@ -9,6 +9,10 @@ import java.io.IOException
 import java.math.RoundingMode
 
 object APIhandler {
+    //API Documentation
+    //https://trakt.docs.apiary.io/ -> https://trakt.tv/
+    //https://fanarttv.docs.apiary.io/ -> https://fanart.tv/
+
     fun trackitAPIAsync(urlSTR: String, callback : (Response) -> Unit){
 
         val request = Request

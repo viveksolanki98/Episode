@@ -156,3 +156,14 @@ alpha 1.0.0 22/04/2020
 - changed query for toggle switch in episode card adapter to listener type to reflect changed in show page
 - changed query for add button in DS Lists adapter to listener type to reflect changed in show page
 - BASIC WORKFLOW COMPLETE!
+
+alpha 1.1.0 23/04/2020
+- changed query for watch list to listener to reflect changes from discover section
+- changed layout file for next episode card to just episode card as it is used in the show page as well
+- search activity created
+- search view created in discover fragment
+- search api call made and data is ready
+- recycler view created for search results
+- data has been applied to ui elements in RV adapter
+- search results layout created
+- recycler view not showing results yet
