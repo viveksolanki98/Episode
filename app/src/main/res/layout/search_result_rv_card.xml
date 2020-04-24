@@ -18,7 +18,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:height="30dp"
-            android:gravity="top|left"
             android:text="Show Title"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/showPosterInSearchCard_iv"
@@ -35,7 +34,9 @@
             android:text="Description"
             app:layout_constraintBottom_toTopOf="@+id/showDetailsInSearchCard_txt"
             app:layout_constraintStart_toEndOf="@+id/showPosterInSearchCard_iv"
-            app:layout_constraintTop_toBottomOf="@+id/showTitleInSearchCard_txt" />
+            app:layout_constraintTop_toBottomOf="@+id/showTitleInSearchCard_txt"
+            android:ellipsize="end"
+            android:maxLines="4"/>
 
         <ImageView
             android:id="@+id/showPosterInSearchCard_iv"

@@ -167,3 +167,10 @@ alpha 1.1.0 23/04/2020
 - data has been applied to ui elements in RV adapter
 - search results layout created
 - recycler view not showing results yet
+
+alpha 1.1.1 24/04/2020
+- show image is populated in search card
+- recycler view is now showing results
+- show image links to show page
+- back button in search bar of search activity now goes back to discover page
+- ellipses added to overflowing text in show description

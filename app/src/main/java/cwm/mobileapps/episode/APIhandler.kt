@@ -51,6 +51,26 @@ object APIhandler {
         return res
     }
 
+    fun async(urlSTR: String, callback : (Response) -> Unit){
+
+        val request = Request.Builder().url(urlSTR).build()
+
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object: Callback {
+            override fun onFailure(call: Call, e: IOException){
+                println("appdebug: API Fail: $urlSTR")
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onResponse(call: Call, response: Response) {
+                println("appdebug: API Success: $urlSTR")
+                //var dataString = data.body!!.string()
+                callback(response)
+            }
+        })
+    }
+
     fun fanartAPISync(urlSTR: String): Response {
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()

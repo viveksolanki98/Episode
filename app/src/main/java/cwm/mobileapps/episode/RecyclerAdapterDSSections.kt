@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +68,9 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
                 showImageLocations.add(imageLocation)
             }
 
-            (holder?.itemView?.context as UserHomeActivity)?.runOnUiThread(Runnable { holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations) })
+            (holder?.itemView?.context as Activity?)?.runOnUiThread(Runnable {
+                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations)
+            })
         })
     }
 }

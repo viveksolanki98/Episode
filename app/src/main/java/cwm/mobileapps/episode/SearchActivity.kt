@@ -2,6 +2,7 @@ package cwm.mobileapps.episode
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,18 @@ class SearchActivity : AppCompatActivity() {
 
         val searchItem = menu.findItem(R.id.menu_search)
         searchItem.expandActionView()
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                finish()
+                return true
+            }
+
+        })
+
         if (searchItem != null){
             val searchView = searchItem.actionView as SearchView
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -53,11 +66,15 @@ class SearchActivity : AppCompatActivity() {
                         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$newText&extended=full", fun(response : Response){
                             apiResultsArray = JSONArray(response.body!!.string())
                             println("appdebug: search activity: API get search results: $apiResultsArray")
-                            runOnUiThread(Runnable {searchResult_rv.adapter?.notifyDataSetChanged()})
+                            runOnUiThread(Runnable {searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)})
+                            //runOnUiThread(Runnable {searchResult_rv.adapter?.notifyDataSetChanged()})
                         })
 
 
                     }else {
+                        apiResultsArray = JSONArray()
+                        //searchResult_rv.adapter?.notifyDataSetChanged()
+                        searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)
 
                     }
                     //searchResult_rv.adapter?.notifyDataSetChanged()
