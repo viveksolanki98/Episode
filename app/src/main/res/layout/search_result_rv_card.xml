@@ -2,8 +2,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchResultContainer_cv"
     android:layout_width="match_parent"
-    android:layout_height="157.5dp"
+    android:layout_height="wrap_content"
     android:layout_marginTop="12sp"
     android:layout_marginBottom="12sp">
 
@@ -31,17 +32,17 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
             android:text="Description"
             app:layout_constraintBottom_toTopOf="@+id/showDetailsInSearchCard_txt"
             app:layout_constraintStart_toEndOf="@+id/showPosterInSearchCard_iv"
-            app:layout_constraintTop_toBottomOf="@+id/showTitleInSearchCard_txt"
-            android:ellipsize="end"
-            android:maxLines="4"/>
+            app:layout_constraintTop_toBottomOf="@+id/showTitleInSearchCard_txt" />
 
         <ImageView
             android:id="@+id/showPosterInSearchCard_iv"
             android:layout_width="105dp"
-            android:layout_height="0dp"
+            android:layout_height="157.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

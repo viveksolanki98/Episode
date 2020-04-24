@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_search.*
 import okhttp3.Response
 import org.json.JSONArray
@@ -28,13 +27,12 @@ class SearchActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //inflater.inflate(R.menu.main, menu);
-        //super.onCreateOptionsMenu(menu,inflater);
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main,menu)
 
         val searchItem = menu.findItem(R.id.menu_search)
         searchItem.expandActionView()
+
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 return true
@@ -57,11 +55,6 @@ class SearchActivity : AppCompatActivity() {
                 override fun onQueryTextChange(newText: String?): Boolean {
 
                     if (newText!!.isNotEmpty()){
-                        /*
-                        resultsArr.clear()
-                        var epiID = "tt1480055"
-                        resultsArr.add(epiID)
-                         */
 
                         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$newText&extended=full", fun(response : Response){
                             apiResultsArray = JSONArray(response.body!!.string())
@@ -73,7 +66,6 @@ class SearchActivity : AppCompatActivity() {
 
                     }else {
                         apiResultsArray = JSONArray()
-                        //searchResult_rv.adapter?.notifyDataSetChanged()
                         searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)
 
                     }

@@ -44,15 +44,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <SearchView
-                android:id="@+id/searchLaunch_sv"
+            <Button
+                android:id="@+id/searchLauncher_btn"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusableInTouchMode="false"
+                android:layout_marginEnd="8dp"
+                android:text="Search"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/discoverSearchTitle_txt" />
 
@@ -64,7 +66,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/searchLaunch_sv">
+                app:layout_constraintTop_toBottomOf="@+id/searchLauncher_btn">
 
             </androidx.recyclerview.widget.RecyclerView>
 

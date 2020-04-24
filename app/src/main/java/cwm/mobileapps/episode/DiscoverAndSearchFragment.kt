@@ -6,6 +6,7 @@ package cwm.mobileapps.episode
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,11 +42,13 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         }
         */
 
-        val searchLaunchSV : SearchView? = view?.findViewById(R.id.searchLaunch_sv)
-        searchLaunchSV?.setOnClickListener {
+        val searchLaunchBTN : Button? = view?.findViewById(R.id.searchLauncher_btn)
+        searchLaunchBTN?.setOnClickListener {
             val intentToSearchActivity = Intent(context, SearchActivity::class.java)
             startActivity(intentToSearchActivity)
         }
+
+
 
         val discoverSearchTitleTXT: TextView? = view?.findViewById(R.id.discoverSearchTitle_txt)
         discoverSearchTitleTXT?.text = "Discover & Search"
