@@ -1,6 +1,8 @@
 Bugs:
 - toggle switches sometimes add episodes twice to FBDB
 
+FEATURES:
+- increase swipe distance for refreshing  in watch list recycler view
 
 alpha Initial - 13/04/2020
 - initial commit with stock codebase
@@ -179,3 +181,7 @@ alpha 1.1.2 24/04/2020
 - search launcher changed from search view to button
 - now hiding results with null values for IMDB ID.
 - the hiding of results leaves gaps between results where they are hidden.
+
+alpha 1.1.3 25/04/2020
+- added "if (!(holder.itemView.context as Activity).isFinishing)" to episode card adapter
+- implemented pull to refresh in watch list recycler view

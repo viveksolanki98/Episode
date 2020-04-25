@@ -70,7 +70,9 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                         holder.showTitleTXT.text = showTitle
                         holder.episodeTitleTXT.text = episodeTitle
                         holder.episodeDetailsTXT.text = "Season $season, Episode $episode, $airDateFormatted"
-                        Glide.with(holder.itemView.context as Activity).load(imageLocation).into(holder.showPosterIV)
+                        if (!(holder.itemView.context as Activity).isFinishing) {
+                            Glide.with(holder.itemView.context as Activity).load(imageLocation).into(holder.showPosterIV)
+                        }
 
                         holder.showPosterIV.setOnClickListener {
                             val intentToShowPageActivity =

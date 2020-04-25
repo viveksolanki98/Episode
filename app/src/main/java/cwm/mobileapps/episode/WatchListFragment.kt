@@ -8,24 +8,42 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.fragment_watch_list.*
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 class WatchListFragment : Fragment() {
 
+
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater?.inflate(R.layout.fragment_watch_list, container, false)
-
-        val userAccountDetails= GoogleSignIn.getLastSignedInAccount(context)
+        val view = inflater.inflate(R.layout.fragment_watch_list, container, false)
 
         val nextEpisodesRV: RecyclerView? = view?.findViewById((R.id.nextEpisodes_rv))
         nextEpisodesRV?.layoutManager = LinearLayoutManager(context)
 
+        val watchListNextEpisodeRefreshLayoutSRL : SwipeRefreshLayout? = view?.findViewById(R.id.watchListNextEpisodeRefreshLayout_SRL)
+        watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
+            populateNextEpisodeRV(watchListNextEpisodeRefreshLayoutSRL, nextEpisodesRV)
+        }
+
+        populateNextEpisodeRV(watchListNextEpisodeRefreshLayoutSRL, nextEpisodesRV)
+
+
+        return view
+    }
+
+    private fun populateNextEpisodeRV(refreshLayer: SwipeRefreshLayout?, nextEpisodesRV: RecyclerView? ) {
+        val userAccountDetails = GoogleSignIn.getLastSignedInAccount(context)
+        refreshLayer?.isRefreshing = true
         FBDBhandler.queryListener("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
@@ -52,26 +70,25 @@ class WatchListFragment : Fragment() {
                         FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id.toString()}_$userShowID", fun(showData : DataSnapshot?){
                             for(singleShowSnapshot in showData!!.children){
                                 val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
-                                //allUserEpisodesArr.add(userEpisodeID)
                                 allEpisodesArr.remove(userEpisodeID)
                             }
 
                             nextEpisodesList.add(allEpisodesArr[0])
                             if(counter == snapLength?.minus(1)){
+                                nextEpisodesList.sort()
                                 activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)})
+                                refreshLayer?.isRefreshing = false
                             }
 
                         })
                     })
                 }
+                if(counter == snapLength?.minus(1)){
+                    refreshLayer?.isRefreshing = false
+                }
             }
         })
-
-
-
-        return view
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         watchListTitle_txt.text = "My Watch List"
     }
