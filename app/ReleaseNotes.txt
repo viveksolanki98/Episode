@@ -3,6 +3,7 @@ Bugs:
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
+- if main activity triggered by back button, finish app
 
 alpha Initial - 13/04/2020
 - initial commit with stock codebase
@@ -190,3 +191,7 @@ alpha 1.2.0 26/04/2020
 - added IMDb button in show page
 - move to another app with intent now complete
 - changed linear layout to constraint layout where IMDb button is
+
+alpha 1.2.1 26/04/2020
+- minor UI changes with imdb button area
+- fixed bug where last show in watch list not being removed if marked remove

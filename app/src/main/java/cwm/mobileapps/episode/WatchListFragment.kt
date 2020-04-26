@@ -84,6 +84,7 @@ class WatchListFragment : Fragment() {
                     })
                 }
                 if(counter == snapLength?.minus(1)){
+                    activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)})
                     refreshLayer?.isRefreshing = false
                 }
             }
