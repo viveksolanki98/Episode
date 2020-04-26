@@ -1,5 +1,8 @@
 package cwm.mobileapps.episode
 
+import android.content.Intent
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,6 +32,21 @@ class ShowTrackingSPFragment : Fragment() {
         val userAccountDetails= GoogleSignIn.getLastSignedInAccount(context)
 
         val showID = activity?.intent?.extras?.getString("show_id")
+
+        val IMDbShowPageBTN : Button? = view?.findViewById(R.id.IMDbShowPage_btn)
+        IMDbShowPageBTN?.setOnClickListener {
+            //https://developer.android.com/training/basics/intents/sending#kotlin
+            // Build the intent
+            val imdbPage = Uri.parse("imdb:///title/$showID")
+            val imdbIntent = Intent(Intent.ACTION_VIEW, imdbPage)
+
+            // Verify it resolves
+            val activities: List<ResolveInfo>? = activity?.packageManager?.queryIntentActivities(imdbIntent, 0)
+            // Start an activity if it's safe
+            if (activities?.isNotEmpty()!!) {
+                startActivity(imdbIntent)
+            }
+        }
 
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID?extended=full", fun(response : Response){
             val showDataObj = JSONObject(response.body!!.string())
