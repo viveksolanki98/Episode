@@ -29,4 +29,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <SearchView
+        android:id="@+id/testSearch"
+        android:layout_width="340dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.619"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

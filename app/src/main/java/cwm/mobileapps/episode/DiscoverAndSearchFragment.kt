@@ -35,6 +35,8 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         sections.add(listOf("Most Played","played/daily"))
         sections.add(listOf("Most Saved","collected/weekly"))
         discoverSectionsRV?.adapter = RecyclerAdapterDSSections(sections as ArrayList<List<String>>)
+        discoverSectionsRV?.scrollToPosition(1)
+
 
         /*
         val homeLaunchBTN: Button? = view?.findViewById(R.id.homeLaunch_btn)
@@ -58,6 +60,16 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         return view
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
+        println("appdebug: discover and search: scroll position: ${discoverSectionsRV?.verticalScrollbarPosition}")
 
+        discoverSectionsRV?.verticalScrollbarPosition?.let {
+            outState.putInt("scroll_position_sections",
+                it
+            )
+        }
+
+    }
 }

@@ -5,7 +5,8 @@
     android:id="@+id/showPage_cl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShowPageActivity">
+    tools:context=".ShowPageActivity"
+    android:screenOrientation="portrait">
 
 
     <TextView

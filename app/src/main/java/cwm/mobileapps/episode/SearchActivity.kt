@@ -1,6 +1,10 @@
 package cwm.mobileapps.episode
 
+import android.app.SearchManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +17,7 @@ import org.json.JSONArray
 
 class SearchActivity : AppCompatActivity() {
     var apiResultsArray = JSONArray()
+    var mQuery : String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,13 +27,35 @@ class SearchActivity : AppCompatActivity() {
         searchResult_rv.layoutManager = LinearLayoutManager(this)
         searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)
 
+        mQuery = savedInstanceState?.getString("search_query")
+
+        handleIntent(intent)
     }
 
+    private fun handleIntent(intent: Intent?) {
+        if (Intent.ACTION_SEARCH == intent?.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                applySearch(query)
+            }
+        }
+    }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main,menu)
+
+        // Get the SearchView and set the searchable configuration
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+            // Assumes current activity is the searchable activity
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+        }
 
         val searchItem = menu.findItem(R.id.menu_search)
         searchItem.expandActionView()
@@ -47,29 +74,23 @@ class SearchActivity : AppCompatActivity() {
 
         if (searchItem != null){
             val searchView = searchItem.actionView as SearchView
+            searchView.setQuery(mQuery,false)
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
+                    searchView.setQuery(query,false)
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
 
                     if (newText!!.isNotEmpty()){
-
-                        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$newText&extended=full", fun(response : Response){
-                            apiResultsArray = JSONArray(response.body!!.string())
-                            println("appdebug: search activity: API get search results: $apiResultsArray")
-                            runOnUiThread(Runnable {searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)})
-                            //runOnUiThread(Runnable {searchResult_rv.adapter?.notifyDataSetChanged()})
-                        })
-
-
+                        mQuery = newText
+                        applySearch(newText)
                     }else {
                         apiResultsArray = JSONArray()
                         searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)
 
                     }
-                    //searchResult_rv.adapter?.notifyDataSetChanged()
                     return true
                 }
 
@@ -81,7 +102,21 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun runSearchQuery(searchTerm : String){
+    private fun applySearch(searchTerm : String?){
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$searchTerm&extended=full", fun(response : Response){
+            apiResultsArray = JSONArray(response.body!!.string())
+            println("appdebug: search activity: API get search results: $apiResultsArray")
+            runOnUiThread(Runnable {searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)})
+        })
+    }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        mQuery = savedInstanceState?.getString("search_query")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("search_query", mQuery)
     }
 }
