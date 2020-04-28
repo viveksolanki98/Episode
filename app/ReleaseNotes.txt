@@ -212,3 +212,8 @@ alpha 1.4.1 28/04/2020
 
 alpha 1.4.2 28/04/2020
 - implemented storage permission request
+
+alpha 1.4.3 28/04/2020
+- fixed bug where onRequestPermissionsResult was not being called after permission dialog box input
+- small change to handle unsuccessful uploads
+- removed progress listener

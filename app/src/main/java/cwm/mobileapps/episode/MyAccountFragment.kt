@@ -18,8 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -50,26 +48,19 @@ class MyAccountFragment : Fragment() {
                 // Permission is not granted
                 if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    // Show an explanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
                     println("appdebug: myAccount: storage permission has been revoked")
                     Toast.makeText(context, "Storage permission required to change profile picture.", Toast.LENGTH_LONG).show()
-                    ActivityCompat.requestPermissions(activity!!,
+                    requestPermissions(
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        1)
+                        1);
                 } else {
                     println("appdebug: myAccount: storage permission has never been requested")
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(activity!!,
+                    requestPermissions(
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        1)
-
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
+                        1);
                 }
             }else {
+                // Permission is already granted
                 FileChooser()
             }
         }
@@ -123,14 +114,10 @@ class MyAccountFragment : Fragment() {
             println("appdebug: myAccount: image uri: ${imguri?.lastPathSegment}")
             var uploadTask = mStorageRef?.putFile(imguri!!)
 
-// Listen for state changes, errors, and completion of the upload.
-            uploadTask?.addOnProgressListener { taskSnapshot ->
-                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
-                println("Upload is $progress% done")
-            }?.addOnPausedListener {
-                println("Upload is paused")
-            }?.addOnFailureListener {
+            uploadTask?.addOnFailureListener {
                 // Handle unsuccessful uploads
+                println("appdebug: myAccount: image upload FAIL")
+                Toast.makeText(context, "Profile picture upload unsuccessful, try again.", Toast.LENGTH_LONG).show()
             }?.addOnSuccessListener {
                 // Handle successful uploads on complete
                 mStorageRef?.downloadUrl?.addOnSuccessListener {
