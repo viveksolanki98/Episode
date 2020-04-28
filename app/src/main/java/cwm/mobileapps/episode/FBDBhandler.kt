@@ -12,7 +12,7 @@ import com.google.firebase.ktx.Firebase
 import java.util.*
 
 object FBDBhandler {
-    private lateinit var database: DatabaseReference
+    lateinit var database: DatabaseReference
 
 
     fun addRecord(episodeID : String, showID : String, userID : String){

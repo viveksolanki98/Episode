@@ -223,13 +223,23 @@ FULFILLED CRITERIA
 a, c, d, e, i
 ------------------------
 
-alpha 2.0.0
+alpha 2.0.0 28/04/2020
 - added code in Main Activity to store user id in a shared preference
 - retrieved user ID from a shared preference and used it in my account fragment
 
-alpha 2.1.0
+alpha 2.1.0 28/04/2020
 - changed all places where GoogleSignIn is called to shared preference
 ------------------------
 FULFILLED CRITERIA
 g
+------------------------
+
+alpha 3.0.0 28/04/2020
+- created DataBaseHandler with insert, select, delete and update functions
+- created a data class for the DB handler
+- tested the DB in user home onCreate
+
+------------------------
+FULFILLED CRITERIA
+h
 ------------------------

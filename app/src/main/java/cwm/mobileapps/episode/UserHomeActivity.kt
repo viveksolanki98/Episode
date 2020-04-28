@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -35,6 +36,27 @@ class UserHomeActivity : AppCompatActivity() {
         adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
+
+
+        var insertDataClass = NextEpisodeDBDataClass("tt1234", "tt6789")
+        var db = DataBaseHandler(this)
+        db.insertData(insertDataClass)
+
+        var data = db.getNextEpisode("tt1234")
+        for (i in 0..(data.size - 1)) {
+            println("appdebug: userHome: database results: ${data.get(i).showID} ${data.get(i).episodeID}")
+        }
+
+        db.updateData("tt1234", "tt4455")
+        println("appdebug: userHome: database update")
+
+        var data2 = db.getNextEpisode("tt1234")
+        println("appdebug: userHome: data 2 size: ${data2.size}")
+        for (i in 0..(data2.size - 1)) {
+            println("appdebug: userHome: database results 2: ${data2.get(i).showID} ${data2.get(i).episodeID}")
+        }
+
+
 
     }
 
