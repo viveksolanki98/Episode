@@ -87,8 +87,11 @@ class ShowPageActivity : AppCompatActivity() {
                 addRemoveShow_btn.text = "-"
             }else{
                 FBDBhandler.deleteRecord("UserID_ShowID", "${userID}_${showID}", fun(){
-                    println("appdebug: delete: show page: SUCCESS")}, fun(){
-                    println("appdebug: delete: show page: FAIL")
+                    println("appdebug: showPage: delete from FBDB: SUCCESS")
+                    var deleteRes = ContentProviderHandler().delete(contentResolver, showID)
+                    println("appdebug: showPage: delete from SQLDb: $deleteRes")
+                }, fun(){
+                    println("appdebug: showPage: delete from FBDB: FAIL")
                 })
                 addRemoveShow_btn.text = "+"
                 finish()
@@ -101,4 +104,5 @@ class ShowPageActivity : AppCompatActivity() {
 
 
     }
+
 }

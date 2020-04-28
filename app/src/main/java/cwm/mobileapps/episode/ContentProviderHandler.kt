@@ -50,6 +50,7 @@ class ContentProviderHandler() {
 
     fun delete(contentResolver: ContentResolver, showID : String) : Int{
         var deletedNumber = contentResolver.delete(uri, "showID", arrayOf(showID))
+        println("appdebug: contentProviderHandler: DELETE: $deletedNumber")
         return deletedNumber
     }
 }

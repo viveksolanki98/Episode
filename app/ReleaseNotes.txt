@@ -270,6 +270,10 @@ alpha 4.2.1 28/04/2020
 alpha 4.2.2 28/04/2020
 - added delete functionality to contentProvider
 - modified query in contentProvider so that a null result can be returned id no record exists
+
+alpha 4.3.0 28/04/2020
+- implemented the content provider in watch list fragment and show page activity to add and remove shows from SQLDb
+- removed toast notifications form MyContentProvider
 ------------------------
 FULFILLED CRITERIA
 f

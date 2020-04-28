@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.app.PendingIntent.getActivity
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
@@ -16,26 +17,19 @@ class MyContentProvider : ContentProvider() {
         val db = dbHandler?.writableDatabase
         var numDeleted : Int?
         numDeleted = db?.delete(TABLE_NAME, selection + "=?", selectionArgs)
-        db?.close()
+
         return numDeleted!!
     }
 
     override fun getType(uri: Uri): String? {
-        TODO(
-            "Implement this to handle requests for the MIME type of the data" +
-                    "at the given URI"
-        )
+        return null
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         val db = dbHandler?.writableDatabase
 
-        var result = db?.insert(TABLE_NAME, null, values)
-        if (result == -1.toLong()){
-            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-        }else {
-            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-        }
+        db?.insert(TABLE_NAME, null, values)
+
         return uri
     }
 
@@ -64,7 +58,7 @@ class MyContentProvider : ContentProvider() {
         val db = dbHandler?.writableDatabase
 
         updatedRows = db?.update(TABLE_NAME, values, "$selection = ?", selectionArgs)
-        db?.close()
+
         return updatedRows!!
     }
 }

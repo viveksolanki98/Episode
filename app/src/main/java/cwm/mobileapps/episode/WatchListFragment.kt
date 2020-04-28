@@ -62,6 +62,10 @@ class WatchListFragment : Fragment() {
                         val numberOfSeasons = allShowEpisodesArray.length()
                         var allEpisodesArr = ArrayList<String>()
 
+                        var lastSeasonEpisodes = allShowEpisodesArray.getJSONObject(numberOfSeasons-1).getJSONArray("episodes")
+                        var lastEpisodeID = lastSeasonEpisodes.getJSONObject(lastSeasonEpisodes.length()-1).getJSONObject("ids").getString("imdb")
+                        updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
+
                         for (i in 0 until numberOfSeasons) {
                             var singleSeasonData = allShowEpisodesArray.getJSONObject(i)
                             var allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
@@ -95,6 +99,22 @@ class WatchListFragment : Fragment() {
             }
         })
     }
+
+    private fun updateNextEpisodeInSQLDb(showID : String, episodeID : String){
+
+        var cpResultQuery = ContentProviderHandler().query(activity!!.contentResolver, showID)
+        if (cpResultQuery == null){
+            println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: NO RECORD EXISTS")
+            ContentProviderHandler().insert(activity!!.contentResolver, showID, episodeID)
+            println("appdebug: watchList: updateNextEpisodeInSQLDb: INSERT: done $showID $episodeID")
+
+        }else {
+            println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: ${cpResultQuery.get(0).showID} ${cpResultQuery.get(0).episodeID}")
+            var updateRes = ContentProviderHandler().update(activity!!.contentResolver, showID, episodeID)
+            println("appdebug: watchList: updateNextEpisodeInSQLDb: UPDATE: $updateRes $showID $episodeID")
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         watchListTitle_txt.text = "My Watch List"
     }

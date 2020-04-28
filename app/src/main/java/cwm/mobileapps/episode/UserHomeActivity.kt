@@ -35,111 +35,32 @@ class UserHomeActivity : AppCompatActivity() {
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
 
-
-
-
+        //CONTENT PROVIDER EXAMPLES
         /*
-        var insertDataClass = NextEpisodeDBDataClass("tt1234", "tt6789")
-        var db = DataBaseHandler(this)
-        db.insertData(insertDataClass)
-
-        var data = db.getNextEpisode("tt1234")
-        for (i in 0..(data.size - 1)) {
-            println("appdebug: userHome: database results: ${data.get(i).showID} ${data.get(i).episodeID}")
-        }
-
-        db.updateData("tt1234", "tt4455")
-        println("appdebug: userHome: database update")
-
-        var data2 = db.getNextEpisode("tt1234")
-        println("appdebug: userHome: data 2 size: ${data2.size}")
-        for (i in 0..(data2.size - 1)) {
-            println("appdebug: userHome: database results 2: ${data2.get(i).showID} ${data2.get(i).episodeID}")
-        }
-        */
-
         //INSERT--------------------------------
-
-        var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
-        /*
-        var cv = ContentValues()
-        cv.put("showID","tt1111")
-        cv.put("episodeID","tt2222")
-        contentResolver.insert(uri,cv)
-        */
         ContentProviderHandler().insert(contentResolver, "ttHELLO", "ttTHERE")
         println("appdebug: userHome: database results with CP Handler: INSERTED")
         //--------------------------------------
 
-        //QUERY--------------------------------
-        /*
-        var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1111"), null)
-        var list = ArrayList<NextEpisodeDBDataClass>()
-        if(queryCursor!!.moveToFirst()){
-            do {
-                var nextEpisodeDC = NextEpisodeDBDataClass()
-                nextEpisodeDC.showID = queryCursor.getString(0)
-                nextEpisodeDC.episodeID = queryCursor.getString(1)
-                list.add(nextEpisodeDC)
-            }while (queryCursor.moveToNext())
-        }
-
-        println("appdebug: userHome: database results with CP: ${list.get(0).showID} ${list.get(0).episodeID}")
-        */
-
-        var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database QUERY with CP Handler: ${result?.get(0)?.showID} ${result?.get(0)?.episodeID}")
-        //-------------------------------------
-
         //UPDATE--------------------------------
-        /*
-        val contentValues = ContentValues()
-        contentValues.put(COL_SHOW, "tt1234")
-        contentValues.put(COL_EPISODE, "tt7766")
-        contentResolver.update(uri, contentValues, "showID", arrayOf("tt1234"))
-        */
-
         var updateRes = ContentProviderHandler().update(contentResolver, "ttHELLO", "ttBYEEE")
         println("appdebug: userHome: database UPDATE with CP Handler: $updateRes")
-        //UPDATE TEST-------
-        result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database QUERY with CP Handler 2: ${result?.get(0)?.showID} ${result?.get(0)?.episodeID}")
         //--------------------------------------
 
         //DELETE--------------------------------
-        /*
-        var deletedNumber = contentResolver.delete(uri, "showID", arrayOf("tt1234"))
-        println("appdebug: userHome: database delete with CP: $deletedNumber")
-        */
-
         var numberOfDeleted = ContentProviderHandler().delete(contentResolver, "ttHELLO")
         println("appdebug: userHome: database DELETE with CP Handler: $numberOfDeleted")
         //--------------------------------------
 
-        //QUERY2--------------------------------
-        /*
-        queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
-        list = ArrayList<NextEpisodeDBDataClass>()
-        if(queryCursor!!.moveToFirst()){
-            println("appdebug: userHome: database results with CP 2: ${list.get(0).showID} ${list.get(0).episodeID}")
-            do {
-                var nextEpisodeDC = NextEpisodeDBDataClass()
-                nextEpisodeDC.showID = queryCursor.getString(0)
-                nextEpisodeDC.episodeID = queryCursor.getString(1)
-                list.add(nextEpisodeDC)
-            }while (queryCursor.moveToNext())
-        }else{
-            println("appdebug: userHome: database results with CP 2: NO SHOW LISTED")
-        }
-        */
-
-        result = ContentProviderHandler().query(contentResolver, "ttHELLO")
+        //QUERY--------------------------------
+        var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
         if (result == null){
             println("appdebug: userHome: database QUERY with CP Handler 3: NO RECORD EXISTS")
         }else {
             println("appdebug: userHome: database QUERY with CP Handler 3: ${result.get(0).showID} ${result.get(0).episodeID}")
         }
         //-------------------------------------
+        */
 
     }
 
