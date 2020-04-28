@@ -4,8 +4,11 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import android.widget.Toast
 
 class MyContentProvider : ContentProvider() {
+    val DATABASE_NAME = "MyDB"
+    val TABLE_NAME = "NextEpisode"
 
     private var dbHandler: DataBaseHandler? = null
 
@@ -21,7 +24,15 @@ class MyContentProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("Implement this to handle requests to insert a new row.")
+        val db = dbHandler?.writableDatabase
+
+        var result = db?.insert(TABLE_NAME, null, values)
+        if (result == -1.toLong()){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+        }else {
+            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+        }
+        return uri
     }
 
     override fun onCreate(): Boolean {
@@ -36,16 +47,20 @@ class MyContentProvider : ContentProvider() {
         //selectionArgs is data  in where clause (right side of equals)
 
         val db = dbHandler?.readableDatabase
-        val query = "SELECT * FROM NextEpisode WHERE $selection =  \"${selectionArgs!![0]}\""
+        val query = "SELECT * FROM $TABLE_NAME WHERE $selection =  \"${selectionArgs!![0]}\""
         val result = db?.rawQuery(query,null)
 
         return result
     }
 
-    override fun update(
-        uri: Uri, values: ContentValues?, selection: String?,
-        selectionArgs: Array<String>?
-    ): Int {
-        TODO("Implement this to handle requests to update one or more rows.")
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        //selection is column in where clause
+        //selectionArgs is data  in where clause (right side of equals)
+        val updatedRows : Int?
+        val db = dbHandler?.writableDatabase
+
+        updatedRows = db?.update(TABLE_NAME, values, "$selection = ?", selectionArgs)
+        db?.close()
+        return updatedRows!!
     }
 }

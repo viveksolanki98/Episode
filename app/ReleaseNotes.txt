@@ -253,6 +253,10 @@ alpha 4.0.0 28/04/2020
 - got query method working
 - testing is done in UserHomeActivity
 
+alpha 4.1.0 28/04/2020
+- added insert and update function to content provider
+- testing in UserHomeActivity
+
 ------------------------
 FULFILLED CRITERIA
 f

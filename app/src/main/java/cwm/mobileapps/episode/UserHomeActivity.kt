@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -35,6 +36,8 @@ class UserHomeActivity : AppCompatActivity() {
 
 
 
+
+
         var insertDataClass = NextEpisodeDBDataClass("tt1234", "tt6789")
         var db = DataBaseHandler(this)
         db.insertData(insertDataClass)
@@ -55,7 +58,13 @@ class UserHomeActivity : AppCompatActivity() {
         */
 
         var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
-        var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
+        var cv = ContentValues()
+        cv.put("showID","tt1111")
+        cv.put("episodeID","tt2222")
+        contentResolver.insert(uri,cv)
+
+
+        var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1111"), null)
         var list = ArrayList<NextEpisodeDBDataClass>()
         if(queryCursor!!.moveToFirst()){
             do {
@@ -67,6 +76,26 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         println("appdebug: userHome: database results with CP: ${list.get(0).showID} ${list.get(0).episodeID}")
+
+
+        val contentValues = ContentValues()
+        contentValues.put(COL_SHOW, "tt1234")
+        contentValues.put(COL_EPISODE, "tt7766")
+        contentResolver.update(uri, contentValues, "showID", arrayOf("tt1234"))
+
+
+        queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
+        list = ArrayList<NextEpisodeDBDataClass>()
+        if(queryCursor!!.moveToFirst()){
+            do {
+                var nextEpisodeDC = NextEpisodeDBDataClass()
+                nextEpisodeDC.showID = queryCursor.getString(0)
+                nextEpisodeDC.episodeID = queryCursor.getString(1)
+                list.add(nextEpisodeDC)
+            }while (queryCursor.moveToNext())
+        }
+
+        println("appdebug: userHome: database results with CP 2: ${list.get(0).showID} ${list.get(0).episodeID}")
 
     }
 

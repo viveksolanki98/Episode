@@ -18,7 +18,7 @@
             android:name=".MyContentProvider"
             android:authorities="cwm.mobileapps.episode.PROVIDER"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="false"></provider>
 
         <activity
             android:name=".SearchActivity"
