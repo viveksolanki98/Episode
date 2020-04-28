@@ -1,6 +1,8 @@
 package cwm.mobileapps.episode
 
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,9 +21,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class WatchListFragment : Fragment() {
-
-
-
+    var userID : String? = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -42,9 +42,10 @@ class WatchListFragment : Fragment() {
     }
 
     private fun populateNextEpisodeRV(refreshLayer: SwipeRefreshLayout?, nextEpisodesRV: RecyclerView? ) {
-        val userAccountDetails = GoogleSignIn.getLastSignedInAccount(context)
+        val myPref: SharedPreferences = this.activity!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
+        userID = myPref?.getString("user_id_google", "")
         refreshLayer?.isRefreshing = true
-        FBDBhandler.queryListener("UserID_EpisodeID", "${userAccountDetails?.id.toString()}_tt1", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_EpisodeID", "$userID}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
@@ -67,7 +68,7 @@ class WatchListFragment : Fragment() {
                                 }
                             }
                         }
-                        FBDBhandler.query("UserID_ShowID", "${userAccountDetails?.id.toString()}_$userShowID", fun(showData : DataSnapshot?){
+                        FBDBhandler.query("UserID_ShowID", "${userID}_$userShowID", fun(showData : DataSnapshot?){
                             for(singleShowSnapshot in showData!!.children){
                                 val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
                                 allEpisodesArr.remove(userEpisodeID)

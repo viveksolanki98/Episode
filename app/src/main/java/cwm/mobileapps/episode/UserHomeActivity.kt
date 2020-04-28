@@ -18,8 +18,6 @@ import kotlinx.android.synthetic.main.activity_user_home2.*
 class UserHomeActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private lateinit var database: DatabaseReference
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_home2)
@@ -61,22 +59,6 @@ class UserHomeActivity : AppCompatActivity() {
                 val intentToMainActivity = Intent(this, MainActivity::class.java)
                 startActivity(intentToMainActivity)
             }
-    }
-
-    fun getGoogleAccountInfo(): GoogleSignInAccount? {
-        val acct = GoogleSignIn.getLastSignedInAccount(this)
-        if (acct != null) {
-            /*
-            val personName = acct.displayName
-            val personGivenName = acct.givenName
-            val personFamilyName = acct.familyName
-            val personEmail = acct.email
-            val personId = acct.id
-            val personPhoto: Uri? = acct.photoUrl
-             */
-            return acct
-        }
-        return null
     }
 
 }

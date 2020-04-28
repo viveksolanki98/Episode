@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.fragment_show_tracking_sp.*
 import okhttp3.Response
 import org.json.JSONArray
@@ -27,9 +25,6 @@ class ShowTrackingSPFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater?.inflate(R.layout.fragment_show_tracking_sp, container, false)
-
-
-        val userAccountDetails= GoogleSignIn.getLastSignedInAccount(context)
 
         val showID = activity?.intent?.extras?.getString("show_id")
 

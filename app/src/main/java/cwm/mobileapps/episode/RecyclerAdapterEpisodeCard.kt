@@ -1,7 +1,9 @@
 package cwm.mobileapps.episode
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -24,15 +26,20 @@ import java.util.*
 
 
 class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterEpisodeCard.ViewHolder>() {
+    var userID : String? = ""
 
     override fun getItemCount() = episodeIDs.size
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val userAccountDetails = GoogleSignIn.getLastSignedInAccount(holder.itemView.context)
+        //Get user ID from shared preferences
+        val myPref: SharedPreferences = holder.itemView.context!!.getSharedPreferences("Episode_pref",
+            Context.MODE_PRIVATE
+        )
+        userID = myPref?.getString("user_id_google", "")
 
         (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
-            FBDBhandler.queryListener("UserID_EpisodeID", "${userAccountDetails!!.id.toString()}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
+            FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
                 if (episodeCheckData?.getValue() != null){
                     holder.watchedToggleSWT.isChecked = true
                 }
@@ -86,10 +93,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
 
                         holder.watchedToggleSWT.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
-                                FBDBhandler.addRecord(episodeIDs[position], showID,(userAccountDetails?.id)!!.toString())
+                                FBDBhandler.addRecord(episodeIDs[position], showID,userID!!)
                                 Toast.makeText(holder.itemView.context,"Show Marked Watched!", Toast.LENGTH_SHORT).show()
                             } else {
-                                FBDBhandler.deleteRecord("UserID_EpisodeID", "${(userAccountDetails?.id)!!.toString()}_${episodeIDs[position]}",
+                                FBDBhandler.deleteRecord("UserID_EpisodeID", "${userID}_${episodeIDs[position]}",
                                     fun() {
                                         Toast.makeText(
                                             holder.itemView.context,

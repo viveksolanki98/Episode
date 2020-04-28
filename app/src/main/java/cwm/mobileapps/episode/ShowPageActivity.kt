@@ -1,5 +1,7 @@
 package cwm.mobileapps.episode
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -26,13 +28,17 @@ import java.math.RoundingMode
 
 
 class ShowPageActivity : AppCompatActivity() {
-
+    var userID : String? = ""
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_page)
 
-        val userAccountDetails= GoogleSignIn.getLastSignedInAccount(this)
+        //Get user ID from shared preferences
+        val myPref: SharedPreferences = this.getSharedPreferences("Episode_pref",
+            Context.MODE_PRIVATE
+        )
+        userID = myPref?.getString("user_id_google", "")
 
 
 
@@ -66,7 +72,7 @@ class ShowPageActivity : AppCompatActivity() {
             })
 
 
-        FBDBhandler.queryListener("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_ShowID", "${userID}_${showID}", fun(data : DataSnapshot?){
             if (data!!.getValue() == null){
                 addRemoveShow_btn.text = "+"
             }else{
@@ -77,10 +83,10 @@ class ShowPageActivity : AppCompatActivity() {
 
         addRemoveShow_btn.setOnClickListener {
             if (addRemoveShow_btn.text == "+"){
-                FBDBhandler.addRecord("tt1", showID, (userAccountDetails?.id)!!.toString())
+                FBDBhandler.addRecord("tt1", showID, userID!!)
                 addRemoveShow_btn.text = "-"
             }else{
-                FBDBhandler.deleteRecord("UserID_ShowID", "${userAccountDetails?.id}_${showID}", fun(){
+                FBDBhandler.deleteRecord("UserID_ShowID", "${userID}_${showID}", fun(){
                     println("appdebug: delete: show page: SUCCESS")}, fun(){
                     println("appdebug: delete: show page: FAIL")
                 })

@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         // the GoogleSignInAccount will be non-null.
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account != null){
+            putSharedPrefUserID((account.id)!!.toString())
             launchUser()
         }
     }
@@ -77,11 +78,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             if (account != null) {
-                val myPref = getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
-                val myEditor = myPref.edit()
-                myEditor.clear()
-                myEditor.putString("user_id_google", (account.id)!!.toString())
-                myEditor.apply()
+                putSharedPrefUserID((account.id)!!.toString())
 
                 FBDBhandler.query("UserID_ShowID", (account.id)!!.toString() + "_tt1", fun(data:DataSnapshot?){
                     if (data?.getValue() == null) {
@@ -99,5 +96,13 @@ class MainActivity : AppCompatActivity() {
                 "failed code=", e.statusCode.toString()
             )
         }
+    }
+
+    private fun putSharedPrefUserID(googleUserID : String){
+        val myPref = getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
+        val myEditor = myPref.edit()
+        myEditor.clear()
+        myEditor.putString("user_id_google", googleUserID)
+        myEditor.apply()
     }
 }

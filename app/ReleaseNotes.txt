@@ -227,6 +227,8 @@ alpha 2.0.0
 - added code in Main Activity to store user id in a shared preference
 - retrieved user ID from a shared preference and used it in my account fragment
 
+alpha 2.1.0
+- changed all places where GoogleSignIn is called to shared preference
 ------------------------
 FULFILLED CRITERIA
 g
