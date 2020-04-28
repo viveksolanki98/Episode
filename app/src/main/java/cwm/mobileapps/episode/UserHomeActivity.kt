@@ -3,16 +3,12 @@ package cwm.mobileapps.episode
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_user_home2.*
 
@@ -38,10 +34,11 @@ class UserHomeActivity : AppCompatActivity() {
         userHome_vp.adapter = adapter
 
 
+
         var insertDataClass = NextEpisodeDBDataClass("tt1234", "tt6789")
         var db = DataBaseHandler(this)
         db.insertData(insertDataClass)
-
+        /*
         var data = db.getNextEpisode("tt1234")
         for (i in 0..(data.size - 1)) {
             println("appdebug: userHome: database results: ${data.get(i).showID} ${data.get(i).episodeID}")
@@ -55,8 +52,21 @@ class UserHomeActivity : AppCompatActivity() {
         for (i in 0..(data2.size - 1)) {
             println("appdebug: userHome: database results 2: ${data2.get(i).showID} ${data2.get(i).episodeID}")
         }
+        */
 
+        var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
+        var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
+        var list = ArrayList<NextEpisodeDBDataClass>()
+        if(queryCursor!!.moveToFirst()){
+            do {
+                var nextEpisodeDC = NextEpisodeDBDataClass()
+                nextEpisodeDC.showID = queryCursor.getString(0)
+                nextEpisodeDC.episodeID = queryCursor.getString(1)
+                list.add(nextEpisodeDC)
+            }while (queryCursor.moveToNext())
+        }
 
+        println("appdebug: userHome: database results with CP: ${list.get(0).showID} ${list.get(0).episodeID}")
 
     }
 

@@ -14,6 +14,12 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
+        <provider
+            android:name=".MyContentProvider"
+            android:authorities="cwm.mobileapps.episode.PROVIDER"
+            android:enabled="true"
+            android:exported="true"></provider>
+
         <activity
             android:name=".SearchActivity"
             android:launchMode="singleTop">

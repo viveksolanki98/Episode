@@ -247,3 +247,13 @@ alpha 3.0.1 28/04/2020
 FULFILLED CRITERIA
 h
 ------------------------
+
+alpha 4.0.0 28/04/2020
+- created content provider
+- got query method working
+- testing is done in UserHomeActivity
+
+------------------------
+FULFILLED CRITERIA
+f
+------------------------
