@@ -1,11 +1,12 @@
 package cwm.mobileapps.episode
 
 
+import android.R.attr.key
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -15,13 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -82,6 +77,12 @@ class MainActivity : AppCompatActivity() {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             if (account != null) {
+                val myPref = getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
+                val myEditor = myPref.edit()
+                myEditor.clear()
+                myEditor.putString("user_id_google", (account.id)!!.toString())
+                myEditor.apply()
+
                 FBDBhandler.query("UserID_ShowID", (account.id)!!.toString() + "_tt1", fun(data:DataSnapshot?){
                     if (data?.getValue() == null) {
                         println("appdebug: Sign In: newUserAdded: " +  data?.getValue())

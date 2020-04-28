@@ -2,10 +2,12 @@ package cwm.mobileapps.episode
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +27,18 @@ import com.google.firebase.storage.StorageReference
 class MyAccountFragment : Fragment() {
     private var mStorageRef: StorageReference? = null
     var userProfileImageIV : ImageView? = null
+    var userID : String? = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         // Inflate the layout for this fragment
         val view = inflater?.inflate(R.layout.fragment_my_account, container, false)
 
-        mStorageRef = FirebaseStorage.getInstance().getReference()?.child("UserProfilePics/${GoogleSignIn.getLastSignedInAccount(context)?.id}")
+        //Get user ID from shared preferences
+        val myPref: SharedPreferences = this.activity!!.getSharedPreferences("Episode_pref", MODE_PRIVATE)
+        userID = myPref?.getString("user_id_google", "")
 
+        //Connect to FireBase FireStore and get profile picture reference
+        mStorageRef = FirebaseStorage.getInstance().getReference()?.child("UserProfilePics/$userID")
 
         val myAccountHeaddingTXT: TextView? = view?.findViewById(R.id.myAccountHeadding_txt)
         myAccountHeaddingTXT?.text = "My Account"
@@ -111,7 +118,6 @@ class MyAccountFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode==1 && resultCode==RESULT_OK && data!=null && data.data!=null){
             val imguri = data.data
-            println("appdebug: myAccount: image uri: ${imguri?.lastPathSegment}")
             var uploadTask = mStorageRef?.putFile(imguri!!)
 
             uploadTask?.addOnFailureListener {
