@@ -32,6 +32,7 @@ class WatchListFragment : Fragment() {
 
         val watchListNextEpisodeRefreshLayoutSRL : SwipeRefreshLayout? = view?.findViewById(R.id.watchListNextEpisodeRefreshLayout_SRL)
         watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
+            println("appdebug: watchList: in refresh listener")
             populateNextEpisodeRV(watchListNextEpisodeRefreshLayoutSRL, nextEpisodesRV)
         }
 
@@ -42,10 +43,13 @@ class WatchListFragment : Fragment() {
     }
 
     private fun populateNextEpisodeRV(refreshLayer: SwipeRefreshLayout?, nextEpisodesRV: RecyclerView? ) {
-        val myPref: SharedPreferences = this.activity!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
+        //val userAccountDetails = GoogleSignIn.getLastSignedInAccount(context)
+        val myPref: SharedPreferences = context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref?.getString("user_id_google", "")
+
+        //userAccountDetails?.id.toString()
         refreshLayer?.isRefreshing = true
-        FBDBhandler.queryListener("UserID_EpisodeID", "$userID}_tt1", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
             var nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {

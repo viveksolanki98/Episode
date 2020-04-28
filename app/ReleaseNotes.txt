@@ -239,6 +239,10 @@ alpha 3.0.0 28/04/2020
 - created a data class for the DB handler
 - tested the DB in user home onCreate
 
+alpha 3.0.1 28/04/2020
+- fixed bug with watch list. Infinite load
+- restored the populateNextEpisodeRV to alpha 2.0.0 and changed the user id to shared preferences again
+
 ------------------------
 FULFILLED CRITERIA
 h
