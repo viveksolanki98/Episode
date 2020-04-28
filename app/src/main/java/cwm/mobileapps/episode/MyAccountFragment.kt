@@ -1,7 +1,9 @@
 package cwm.mobileapps.episode
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +12,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -40,8 +45,33 @@ class MyAccountFragment : Fragment() {
 
         userProfileImageIV = view?.findViewById(R.id.userProfileImage_iv)
         userProfileImageIV?.setOnClickListener{
-            println("appdebug: myAccount: in click listener")
-            FileChooser()
+            if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    println("appdebug: myAccount: storage permission has been revoked")
+                    Toast.makeText(context, "Storage permission required to change profile picture.", Toast.LENGTH_LONG).show()
+                    ActivityCompat.requestPermissions(activity!!,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        1)
+                } else {
+                    println("appdebug: myAccount: storage permission has never been requested")
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(activity!!,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        1)
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            }else {
+                FileChooser()
+            }
         }
 
         //Load profile picture from storage if it exists
@@ -51,6 +81,32 @@ class MyAccountFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        println("appdebug: myAccount: onRequestPermissionsResult")
+        when (requestCode) {
+            1 -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission was granted, yay!
+                    FileChooser()
+                    println("appdebug: myAccount: permission was granted")
+                } else {
+                    // permission denied,
+                    println("appdebug: myAccount: permission was denied")
+                    Toast.makeText(context, "Storage permission required to change profile picture.", Toast.LENGTH_LONG).show()
+                }
+                return
+            }
+
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                println("appdebug: myAccount: this is another permission request")
+                // Ignore all other requests.
+            }
+        }
     }
 
     private fun FileChooser(){
