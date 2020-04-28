@@ -88,7 +88,7 @@ class UserHomeActivity : AppCompatActivity() {
         */
 
         var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database QUERY with CP Handler: ${result.get(0).showID} ${result.get(0).episodeID}")
+        println("appdebug: userHome: database QUERY with CP Handler: ${result?.get(0)?.showID} ${result?.get(0)?.episodeID}")
         //-------------------------------------
 
         //UPDATE--------------------------------
@@ -103,12 +103,17 @@ class UserHomeActivity : AppCompatActivity() {
         println("appdebug: userHome: database UPDATE with CP Handler: $updateRes")
         //UPDATE TEST-------
         result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database QUERY with CP Handler 2: ${result.get(0).showID} ${result.get(0).episodeID}")
+        println("appdebug: userHome: database QUERY with CP Handler 2: ${result?.get(0)?.showID} ${result?.get(0)?.episodeID}")
         //--------------------------------------
 
         //DELETE--------------------------------
+        /*
         var deletedNumber = contentResolver.delete(uri, "showID", arrayOf("tt1234"))
         println("appdebug: userHome: database delete with CP: $deletedNumber")
+        */
+
+        var numberOfDeleted = ContentProviderHandler().delete(contentResolver, "ttHELLO")
+        println("appdebug: userHome: database DELETE with CP Handler: $numberOfDeleted")
         //--------------------------------------
 
         //QUERY2--------------------------------
@@ -127,6 +132,13 @@ class UserHomeActivity : AppCompatActivity() {
             println("appdebug: userHome: database results with CP 2: NO SHOW LISTED")
         }
         */
+
+        result = ContentProviderHandler().query(contentResolver, "ttHELLO")
+        if (result == null){
+            println("appdebug: userHome: database QUERY with CP Handler 3: NO RECORD EXISTS")
+        }else {
+            println("appdebug: userHome: database QUERY with CP Handler 3: ${result.get(0).showID} ${result.get(0).episodeID}")
+        }
         //-------------------------------------
 
     }

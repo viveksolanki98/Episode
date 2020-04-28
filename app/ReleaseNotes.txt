@@ -266,6 +266,10 @@ alpha 4.2.0 28/04/2020
 
 alpha 4.2.1 28/04/2020
 - added update functionality to ContentProviderHandler
+
+alpha 4.2.2 28/04/2020
+- added delete functionality to contentProvider
+- modified query in contentProvider so that a null result can be returned id no record exists
 ------------------------
 FULFILLED CRITERIA
 f

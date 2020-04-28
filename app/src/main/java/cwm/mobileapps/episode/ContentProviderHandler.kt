@@ -17,18 +17,22 @@ class ContentProviderHandler() {
         println("appdebug: contentProviderHandler: INSERTED")
     }
 
-    fun query(contentResolver: ContentResolver, showID : String): ArrayList<NextEpisodeDBDataClass> {
+    fun query(contentResolver: ContentResolver, showID : String): ArrayList<NextEpisodeDBDataClass>? {
         var queryCursor = contentResolver.query(uri, null, "showID", arrayOf(showID), null)
-        var list = ArrayList<NextEpisodeDBDataClass>()
+        var list : ArrayList<NextEpisodeDBDataClass>? = arrayListOf(NextEpisodeDBDataClass())
         if(queryCursor!!.moveToFirst()){
+            list?.removeAt(0)
             do {
                 var nextEpisodeDC = NextEpisodeDBDataClass()
                 nextEpisodeDC.showID = queryCursor.getString(0)
                 nextEpisodeDC.episodeID = queryCursor.getString(1)
-                list.add(nextEpisodeDC)
+                list?.add(nextEpisodeDC)
             }while (queryCursor.moveToNext())
+            println("appdebug: contentProviderHandler: QUERY: ${list?.get(0)?.showID} ${list?.get(0)?.episodeID}")
+        }else{
+            list = null
+            println("appdebug: contentProviderHandler: QUERY: NO RECORD EXISTS")
         }
-        println("appdebug: contentProviderHandler: QUERY: ${list.get(0).showID} ${list.get(0).episodeID}")
 
         return list
 
@@ -42,5 +46,10 @@ class ContentProviderHandler() {
 
         println("appdebug: contentProviderHandler: UPDATE: $updatedRows")
         return updatedRows
+    }
+
+    fun delete(contentResolver: ContentResolver, showID : String) : Int{
+        var deletedNumber = contentResolver.delete(uri, "showID", arrayOf(showID))
+        return deletedNumber
     }
 }
