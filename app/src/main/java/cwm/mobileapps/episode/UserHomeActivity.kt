@@ -57,13 +57,15 @@ class UserHomeActivity : AppCompatActivity() {
         }
         */
 
+        //INSERT--------------------------------
         var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
         var cv = ContentValues()
         cv.put("showID","tt1111")
         cv.put("episodeID","tt2222")
         contentResolver.insert(uri,cv)
+        //--------------------------------------
 
-
+        //QUERY--------------------------------
         var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1111"), null)
         var list = ArrayList<NextEpisodeDBDataClass>()
         if(queryCursor!!.moveToFirst()){
@@ -76,26 +78,35 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         println("appdebug: userHome: database results with CP: ${list.get(0).showID} ${list.get(0).episodeID}")
+        //-------------------------------------
 
-
+        //UPDATE--------------------------------
         val contentValues = ContentValues()
         contentValues.put(COL_SHOW, "tt1234")
         contentValues.put(COL_EPISODE, "tt7766")
         contentResolver.update(uri, contentValues, "showID", arrayOf("tt1234"))
+        //--------------------------------------
 
+        //DELETE--------------------------------
+        var deletedNumber = contentResolver.delete(uri, "showID", arrayOf("tt1234"))
+        println("appdebug: userHome: database delete with CP: $deletedNumber")
+        //--------------------------------------
 
+        //QUERY2--------------------------------
         queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
         list = ArrayList<NextEpisodeDBDataClass>()
         if(queryCursor!!.moveToFirst()){
+            println("appdebug: userHome: database results with CP 2: ${list.get(0).showID} ${list.get(0).episodeID}")
             do {
                 var nextEpisodeDC = NextEpisodeDBDataClass()
                 nextEpisodeDC.showID = queryCursor.getString(0)
                 nextEpisodeDC.episodeID = queryCursor.getString(1)
                 list.add(nextEpisodeDC)
             }while (queryCursor.moveToNext())
+        }else{
+            println("appdebug: userHome: database results with CP 2: NO SHOW LISTED")
         }
-
-        println("appdebug: userHome: database results with CP 2: ${list.get(0).showID} ${list.get(0).episodeID}")
+        //-------------------------------------
 
     }
 

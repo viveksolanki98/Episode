@@ -13,7 +13,11 @@ class MyContentProvider : ContentProvider() {
     private var dbHandler: DataBaseHandler? = null
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        TODO("Implement this to handle requests to delete one or more rows")
+        val db = dbHandler?.writableDatabase
+        var numDeleted : Int?
+        numDeleted = db?.delete(TABLE_NAME, selection + "=?", selectionArgs)
+        db?.close()
+        return numDeleted!!
     }
 
     override fun getType(uri: Uri): String? {

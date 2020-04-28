@@ -257,6 +257,9 @@ alpha 4.1.0 28/04/2020
 - added insert and update function to content provider
 - testing in UserHomeActivity
 
+alpha 4.1.1 28/04/2020
+- implemented delete functionality into content provider
+
 ------------------------
 FULFILLED CRITERIA
 f
