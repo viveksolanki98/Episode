@@ -33,4 +33,14 @@ class ContentProviderHandler() {
         return list
 
     }
+
+    fun update(contentResolver: ContentResolver,showID : String, episodeID : String): Int {
+        val contentValues = ContentValues()
+        contentValues.put("showID", showID)
+        contentValues.put("episodeID", episodeID)
+        var updatedRows = contentResolver.update(uri, contentValues, "showID", arrayOf(showID))
+
+        println("appdebug: contentProviderHandler: UPDATE: $updatedRows")
+        return updatedRows
+    }
 }

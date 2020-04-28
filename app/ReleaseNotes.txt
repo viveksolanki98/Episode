@@ -263,6 +263,9 @@ alpha 4.1.1 28/04/2020
 alpha 4.2.0 28/04/2020
 - implemented a ContentProviderHandler class to keep related actions consistent
 - there is insert and query functionality in the new handler
+
+alpha 4.2.1 28/04/2020
+- added update functionality to ContentProviderHandler
 ------------------------
 FULFILLED CRITERIA
 f

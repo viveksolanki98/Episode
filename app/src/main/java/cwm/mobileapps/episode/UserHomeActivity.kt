@@ -88,14 +88,22 @@ class UserHomeActivity : AppCompatActivity() {
         */
 
         var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database results with CP Handler: ${result.get(0).showID} ${result.get(0).episodeID}")
+        println("appdebug: userHome: database QUERY with CP Handler: ${result.get(0).showID} ${result.get(0).episodeID}")
         //-------------------------------------
 
         //UPDATE--------------------------------
+        /*
         val contentValues = ContentValues()
         contentValues.put(COL_SHOW, "tt1234")
         contentValues.put(COL_EPISODE, "tt7766")
         contentResolver.update(uri, contentValues, "showID", arrayOf("tt1234"))
+        */
+
+        var updateRes = ContentProviderHandler().update(contentResolver, "ttHELLO", "ttBYEEE")
+        println("appdebug: userHome: database UPDATE with CP Handler: $updateRes")
+        //UPDATE TEST-------
+        result = ContentProviderHandler().query(contentResolver, "ttHELLO")
+        println("appdebug: userHome: database QUERY with CP Handler 2: ${result.get(0).showID} ${result.get(0).episodeID}")
         //--------------------------------------
 
         //DELETE--------------------------------
