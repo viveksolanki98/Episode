@@ -260,6 +260,9 @@ alpha 4.1.0 28/04/2020
 alpha 4.1.1 28/04/2020
 - implemented delete functionality into content provider
 
+alpha 4.2.0 28/04/2020
+- implemented a ContentProviderHandler class to keep related actions consistent
+- there is insert and query functionality in the new handler
 ------------------------
 FULFILLED CRITERIA
 f

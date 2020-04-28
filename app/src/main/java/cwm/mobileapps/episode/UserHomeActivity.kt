@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.insert
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -37,11 +38,11 @@ class UserHomeActivity : AppCompatActivity() {
 
 
 
-
+        /*
         var insertDataClass = NextEpisodeDBDataClass("tt1234", "tt6789")
         var db = DataBaseHandler(this)
         db.insertData(insertDataClass)
-        /*
+
         var data = db.getNextEpisode("tt1234")
         for (i in 0..(data.size - 1)) {
             println("appdebug: userHome: database results: ${data.get(i).showID} ${data.get(i).episodeID}")
@@ -58,14 +59,20 @@ class UserHomeActivity : AppCompatActivity() {
         */
 
         //INSERT--------------------------------
+
         var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
+        /*
         var cv = ContentValues()
         cv.put("showID","tt1111")
         cv.put("episodeID","tt2222")
         contentResolver.insert(uri,cv)
+        */
+        ContentProviderHandler().insert(contentResolver, "ttHELLO", "ttTHERE")
+        println("appdebug: userHome: database results with CP Handler: INSERTED")
         //--------------------------------------
 
         //QUERY--------------------------------
+        /*
         var queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1111"), null)
         var list = ArrayList<NextEpisodeDBDataClass>()
         if(queryCursor!!.moveToFirst()){
@@ -78,6 +85,10 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         println("appdebug: userHome: database results with CP: ${list.get(0).showID} ${list.get(0).episodeID}")
+        */
+
+        var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
+        println("appdebug: userHome: database results with CP Handler: ${result.get(0).showID} ${result.get(0).episodeID}")
         //-------------------------------------
 
         //UPDATE--------------------------------
@@ -93,6 +104,7 @@ class UserHomeActivity : AppCompatActivity() {
         //--------------------------------------
 
         //QUERY2--------------------------------
+        /*
         queryCursor = contentResolver.query(uri, null, "showID", arrayOf("tt1234"), null)
         list = ArrayList<NextEpisodeDBDataClass>()
         if(queryCursor!!.moveToFirst()){
@@ -106,6 +118,7 @@ class UserHomeActivity : AppCompatActivity() {
         }else{
             println("appdebug: userHome: database results with CP 2: NO SHOW LISTED")
         }
+        */
         //-------------------------------------
 
     }
