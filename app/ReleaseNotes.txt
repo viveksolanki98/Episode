@@ -200,3 +200,7 @@ alpha 1.3.0 27/04/2020
 - created a searchable configuration "searchable.xml" and added it to the search activity in the manifest
 - added search manager config to on menu create in search activity
 - added voice search to the search activity
+
+alpha 1.4.0 28/04/2020
+- code for choosing and uploading profile pic to firebase is working
+- retrieval of image and insert into IV is working
