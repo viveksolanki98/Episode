@@ -1,5 +1,6 @@
 Bugs:
 - toggle switches sometimes add episodes twice to FBDB
+- on rotate, the search results disappear in search activity
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -204,3 +205,7 @@ alpha 1.3.0 27/04/2020
 alpha 1.4.0 28/04/2020
 - code for choosing and uploading profile pic to firebase is working
 - retrieval of image and insert into IV is working
+
+alpha 1.4.1 28/04/2020
+- User profile is shown if it exists on fragment launch
+- if exists, it is displayed
