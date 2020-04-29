@@ -278,3 +278,10 @@ alpha 4.3.0 28/04/2020
 FULFILLED CRITERIA
 f
 ------------------------
+
+alpha 5.0.0 29/04/2020
+- got a notification working when app is launched.
+------------------------
+FULFILLED CRITERIA
+f
+------------------------
