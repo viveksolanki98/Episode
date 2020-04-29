@@ -2,10 +2,7 @@ package cwm.mobileapps.episode
 
 
 import android.R.attr.key
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -24,6 +21,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var builder : Notification.Builder
     private var channelId : String = ""
     private val description = "Test notification"
+
+
+    lateinit var alarmManager: AlarmManager
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +61,20 @@ class MainActivity : AppCompatActivity() {
         //-----------------------------------------
 
         //START SERVICE TEST-----------------------
-        val intent = Intent(this,MyService::class.java)
-        startService(intent)
+        //val intent = Intent(this,MyService::class.java)
+        //startService(intent)
         //-----------------------------------------
 
+        //ALARM MANAGER TEST-----------------------
+        //https://github.com/kmvignesh/AlarmManagerExample/blob/master/app/src/main/java/com/example/vicky/alarmmanagerexample/MainActivity.kt
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val second = 15 * 1000
+        val intentAlarm = Intent(this, MyReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT)
+        println("appdebug: mainActivity: Create Alarm: " + Date().toString())
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + second, pendingIntent)
+        //-----------------------------------------
     }
 
     private fun createNotificationChannel() {

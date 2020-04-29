@@ -286,7 +286,11 @@ alpha 5.1.0 29/042020
 - added broadcast receiver class and in manifest but not triggering
 - added framework for a service.
 - it is launched from main activity as test
+
+alpha 5.2.0 29/04/2020
+- created code in main activity to call alarm manager
+- alarm manager calls a broadcast receiver which starts the service
 ------------------------
 FULFILLED CRITERIA
-f
+f, m
 ------------------------
