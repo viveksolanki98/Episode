@@ -4,10 +4,16 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.drm.DrmStore.Playback.START
+import android.drm.DrmStore.Playback.STOP
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.SyncStateContract.Helpers.insert
+import android.speech.tts.TextToSpeech.STOPPED
+import android.support.v4.media.session.PlaybackStateCompat
+import android.telephony.ServiceState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -61,6 +67,20 @@ class UserHomeActivity : AppCompatActivity() {
         }
         //-------------------------------------
         */
+
+        val intent = Intent(this,MyAlarmService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            println("appdebug: userHome: Starting the service in >=26 Mode")
+            startForegroundService(intent)
+            return
+        }else{
+            println("appdebug: userHome: Starting the service in < 26 Mode")
+            startService(intent)
+        }
+
+        val intentBroadcast = Intent(this,MyService::class.java)
+        intentBroadcast.putExtra("triggerBy", "alarm")
+        startService(intentBroadcast)
     }
 
     override fun onStart() {

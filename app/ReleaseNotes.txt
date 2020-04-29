@@ -300,6 +300,9 @@ alpha 5.2.2 29/04/2020
 - changed database and content providers and handlers to enable return of "select * from ..."
 - created myAlarmService to run the alarm then trigger the background process
 
+alpha 5.2.3 29/04/2020
+- added logic to test if new episode is available
+- added start service trigger in myAlarmService to test logic
 ------------------------
 FULFILLED CRITERIA
 f, m, o, n

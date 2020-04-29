@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import org.json.JSONObject
 import java.util.*
 
 //template from https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
@@ -42,12 +43,18 @@ class MyService : Service() {
     private fun runOnAlarm(){
         channelId = getString(R.string.package_name)
         createNotificationChannel()
+        var newEpisodesAvailable = false
         val runable = Runnable {
-            for (i in 1..5) {
-                ShowLog("Service doing something." + i.toString())
-                Thread.sleep(1000)
-                if (i==5){
-                    buildAndShowNotification()
+            var result = ContentProviderHandler().query(contentResolver, null)
+            if (result == null){
+                ShowLog("database QUERY: NO RECORD EXISTS")
+            }else {
+                ShowLog("database QUERY: RECORDS EXIST")
+                result.forEach {
+                    var apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
+                    var latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
+                    newEpisodesAvailable = if (it.episodeID != latestEpisodeID) true else newEpisodesAvailable
+                    ShowLog("episode status for show ${it.showID} is ${it.episodeID != latestEpisodeID}")
                 }
             }
             stopSelf()

@@ -47,8 +47,7 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
-        val intent = Intent(this,MyAlarmService::class.java)
-        startService(intent)
+
     }
 
     override fun onStart() {
