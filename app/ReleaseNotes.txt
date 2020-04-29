@@ -281,6 +281,11 @@ f
 
 alpha 5.0.0 29/04/2020
 - got a notification working when app is launched.
+
+alpha 5.1.0 29/042020
+- added broadcast receiver class and in manifest but not triggering
+- added framework for a service.
+- it is launched from main activity as test
 ------------------------
 FULFILLED CRITERIA
 f

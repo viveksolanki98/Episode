@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
         //buildAndShowNotification()
         //-----------------------------------------
 
+        //START SERVICE TEST-----------------------
+        val intent = Intent(this,MyService::class.java)
+        startService(intent)
+        //-----------------------------------------
+
     }
 
     private fun createNotificationChannel() {
