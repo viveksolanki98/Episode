@@ -295,7 +295,12 @@ alpha 5.2.1 29/04/2020
 - notification creator and builder moved to service where it is triggered
 - alarm manager now triggers service at 7pm every day
 
+alpha 5.2.2 29/04/2020
+- bug found in with service framework, it gets destroyed
+- changed database and content providers and handlers to enable return of "select * from ..."
+- created myAlarmService to run the alarm then trigger the background process
+
 ------------------------
 FULFILLED CRITERIA
-f, m, o
+f, m, o, n
 ------------------------

@@ -61,7 +61,6 @@ class UserHomeActivity : AppCompatActivity() {
         }
         //-------------------------------------
         */
-
     }
 
     override fun onStart() {

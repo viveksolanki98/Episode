@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = 9001
 
-    lateinit var alarmManager: AlarmManager
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,31 +47,8 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
-        //ALARM MANAGER TEST-----------------------
-        //https://github.com/kmvignesh/AlarmManagerExample/blob/master/app/src/main/java/com/example/vicky/alarmmanagerexample/MainActivity.kt
-        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intentAlarm = Intent(this, MyReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT)
-        println("appdebug: mainActivity: Create Alarm: ${Date()} TRIGGER")
-
-        //From android documentation
-        // Set the alarm to start at approximately 2:00 p.m.
-
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 19)
-        }
-
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-        //-----------------------------------------
+        val intent = Intent(this,MyAlarmService::class.java)
+        startService(intent)
     }
 
     override fun onStart() {

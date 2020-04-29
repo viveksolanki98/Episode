@@ -13,9 +13,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <service
-            android:name=".MyService"
+            android:name=".MyAlarmService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name=".MyReceiver"

@@ -17,8 +17,13 @@ class ContentProviderHandler() {
         println("appdebug: contentProviderHandler: INSERTED")
     }
 
-    fun query(contentResolver: ContentResolver, showID : String): ArrayList<NextEpisodeDBDataClass>? {
-        var queryCursor = contentResolver.query(uri, null, "showID", arrayOf(showID), null)
+    fun query(contentResolver: ContentResolver, showID : String?): ArrayList<NextEpisodeDBDataClass>? {
+
+        var queryCursor = if (showID ==null) {
+            contentResolver.query(uri, null, null, null, null)
+        }else{
+            contentResolver.query(uri, null, "showID", arrayOf(showID), null)
+        }
         var list : ArrayList<NextEpisodeDBDataClass>? = arrayListOf(NextEpisodeDBDataClass())
         if(queryCursor!!.moveToFirst()){
             list?.removeAt(0)
@@ -27,8 +32,8 @@ class ContentProviderHandler() {
                 nextEpisodeDC.showID = queryCursor.getString(0)
                 nextEpisodeDC.episodeID = queryCursor.getString(1)
                 list?.add(nextEpisodeDC)
+                println("appdebug: contentProviderHandler: QUERY: ${nextEpisodeDC.showID} ${nextEpisodeDC.episodeID}")
             }while (queryCursor.moveToNext())
-            println("appdebug: contentProviderHandler: QUERY: ${list?.get(0)?.showID} ${list?.get(0)?.episodeID}")
         }else{
             list = null
             println("appdebug: contentProviderHandler: QUERY: NO RECORD EXISTS")

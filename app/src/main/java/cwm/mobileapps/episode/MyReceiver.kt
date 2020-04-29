@@ -13,6 +13,7 @@ class MyReceiver : BroadcastReceiver() {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         println("appdebug: myReceiver: A broadcast triggered the class"  + Date().toString())
         val intent = Intent(context,MyService::class.java)
+        intent.putExtra("triggerBy", "alarm")
         context.startService(intent)
     }
 }

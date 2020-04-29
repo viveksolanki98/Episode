@@ -43,11 +43,19 @@ class MyContentProvider : ContentProvider() {
         //projection is columns to select
         //selection is column in where clause
         //selectionArgs is data  in where clause (right side of equals)
-
+        val selectionFINAL = if(selection==null) null else selection + "=?"
         val db = dbHandler?.readableDatabase
-        val query = "SELECT * FROM $TABLE_NAME WHERE $selection =  \"${selectionArgs!![0]}\""
-        val result = db?.rawQuery(query,null)
-
+        //val query = "SELECT * FROM $TABLE_NAME WHERE $selection =  \"${selectionArgs!![0]}\""
+        //val result = db?.rawQuery(query,null)
+        val result = db?.query(
+            TABLE_NAME, // Table to Query
+            projection, // Columns to be selected
+            selectionFINAL, // Columns for the "where" clause
+            selectionArgs, // Values for the "where" clause
+            null, // columns to group by
+            null, // columns to filter by row groups
+            null // sort order
+        )
         return result
     }
 

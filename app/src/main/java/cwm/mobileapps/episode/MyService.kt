@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import java.util.*
 
 //template from https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
 class MyService : Service() {
@@ -17,6 +18,7 @@ class MyService : Service() {
     lateinit var builder : Notification.Builder
     private var channelId : String = ""
     private val description = "Test notification"
+    lateinit var alarmManager: AlarmManager
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -29,10 +31,17 @@ class MyService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         ShowLog("onStartCommand")
+
+        if (intent?.getStringExtra("triggerBy") == "alarm"){
+            runOnAlarm()
+        }
+
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun runOnAlarm(){
         channelId = getString(R.string.package_name)
         createNotificationChannel()
-
-
         val runable = Runnable {
             for (i in 1..5) {
                 ShowLog("Service doing something." + i.toString())
@@ -46,9 +55,6 @@ class MyService : Service() {
 
         val thread = Thread(runable)
         thread.start()
-
-
-        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
