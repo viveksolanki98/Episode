@@ -290,7 +290,12 @@ alpha 5.1.0 29/042020
 alpha 5.2.0 29/04/2020
 - created code in main activity to call alarm manager
 - alarm manager calls a broadcast receiver which starts the service
+
+alpha 5.2.1 29/04/2020
+- notification creator and builder moved to service where it is triggered
+- alarm manager now triggers service at 7pm every day
+
 ------------------------
 FULFILLED CRITERIA
-f, m
+f, m, o
 ------------------------
