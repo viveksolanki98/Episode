@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.ShareActionProvider
@@ -104,12 +105,16 @@ class ShowPageActivity : AppCompatActivity() {
         val shareItem = menu!!.findItem(R.id.action_share)
         //val shareItem: MenuItem = menu!!.findItem(R.id.action_share)
 
-
         val showTitle = intent.getStringExtra("show_title")
+        val showID = intent.getStringExtra("show_id")
+
         val myShareActionProvider: ShareActionProvider = MenuItemCompat.getActionProvider(shareItem) as ShareActionProvider
         val myShareIntent = Intent(Intent.ACTION_SEND)
-        myShareIntent.type = "text/plain"
-        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle")
+        //myShareIntent.type = "text/plain"
+        //myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle, https://www.imdb.com/title/$showID")
+
+        myShareIntent.type = "text/html";
+        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle https://www.imdb.com/title/$showID");
         myShareActionProvider.setShareIntent(myShareIntent);
 
         return super.onCreateOptionsMenu(menu)

@@ -320,3 +320,11 @@ alpha 6.0.0 30/04/2020
 - added oncreateoptionsmenu in show page
 - added share action provider to show page. Sharing simple text
 - bug found where next episode is being updated to last one in the season not last one aired
+
+alpha 6.0.1 30/04/200
+- added link to share message
+
+------------------------
+FULFILLED CRITERIA
+l
+------------------------
