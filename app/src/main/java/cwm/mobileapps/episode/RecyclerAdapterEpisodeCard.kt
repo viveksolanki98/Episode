@@ -127,5 +127,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         val watchedToggleSWT : Switch = itemView.findViewById(R.id.watchedToggle_swt)
     }
 
+    fun removeItem(viewHolder: RecyclerView.ViewHolder){
+        episodeIDs.removeAt(viewHolder.adapterPosition)
+        notifyItemRemoved(viewHolder.adapterPosition)
+    }
+
 
 }

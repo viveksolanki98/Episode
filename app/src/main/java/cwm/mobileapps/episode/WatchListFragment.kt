@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,6 +21,8 @@ import kotlin.collections.ArrayList
 
 class WatchListFragment : Fragment() {
     var userID : String? = ""
+    var nextEpisodesList = ArrayList<String>()
+    var viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -37,6 +40,20 @@ class WatchListFragment : Fragment() {
         populateNextEpisodeRV(watchListNextEpisodeRefreshLayoutSRL, nextEpisodesRV)
 
 
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                viewAdapter.removeItem(viewHolder)
+            }
+
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(nextEpisodesRV)
+
         return view
     }
 
@@ -46,7 +63,7 @@ class WatchListFragment : Fragment() {
 
         refreshLayer?.isRefreshing = true
         FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
-            val nextEpisodesList = ArrayList<String>()
+            nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
@@ -82,7 +99,8 @@ class WatchListFragment : Fragment() {
                             nextEpisodesList.add(allEpisodesArr[0])
                             if(counter == snapLength?.minus(1)){
                                 nextEpisodesList.sort()
-                                activity?.runOnUiThread{ nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)}
+                                viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+                                activity?.runOnUiThread{ nextEpisodesRV?.adapter = viewAdapter}
                                 refreshLayer?.isRefreshing = false
                             }
 
@@ -90,7 +108,8 @@ class WatchListFragment : Fragment() {
                     })
                 }
                 if(counter == snapLength?.minus(1)){
-                    activity?.runOnUiThread{nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)}
+                    viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+                    activity?.runOnUiThread{nextEpisodesRV?.adapter = viewAdapter}
                     refreshLayer?.isRefreshing = false
                 }
             }

@@ -331,3 +331,6 @@ alpha 6.0.2 30/04/2020
 FULFILLED CRITERIA
 l
 ------------------------
+
+alpha 7.0.0 30/04/2020
+- swipe to remove from next episode list in watch list is implemented (basic function)
