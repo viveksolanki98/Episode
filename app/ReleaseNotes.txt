@@ -338,3 +338,6 @@ alpha 7.0.0 30/04/2020
 alpha 7.0.1 30/04/2020
 - removed primary key from SQLDb structure
 - added function where if show card is swiped, it gets marked as watched.
+
+alpha 7.0.3 30/04/2020
+- GIT check out
