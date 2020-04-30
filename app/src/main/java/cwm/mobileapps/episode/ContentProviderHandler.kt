@@ -1,6 +1,5 @@
 package cwm.mobileapps.episode
 
-import android.content.ContentProvider
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.net.Uri
@@ -11,7 +10,7 @@ class ContentProviderHandler() {
 
     fun insert(contentResolver: ContentResolver,showID : String, episodeID : String){
         if (query(contentResolver, showID) == null){
-            var cv = ContentValues()
+            val cv = ContentValues()
             cv.put("showID",showID)
             cv.put("episodeID",episodeID)
             contentResolver.insert(uri,cv)
@@ -24,7 +23,7 @@ class ContentProviderHandler() {
 
     fun query(contentResolver: ContentResolver, showID : String?): ArrayList<NextEpisodeDBDataClass>? {
 
-        var queryCursor = if (showID ==null) {
+        val queryCursor = if (showID ==null) {
             contentResolver.query(uri, null, null, null, null)
         }else{
             contentResolver.query(uri, null, "showID", arrayOf(showID), null)
@@ -33,7 +32,7 @@ class ContentProviderHandler() {
         if(queryCursor!!.moveToFirst()){
             list?.removeAt(0)
             do {
-                var nextEpisodeDC = NextEpisodeDBDataClass()
+                val nextEpisodeDC = NextEpisodeDBDataClass()
                 nextEpisodeDC.showID = queryCursor.getString(0)
                 nextEpisodeDC.episodeID = queryCursor.getString(1)
                 list?.add(nextEpisodeDC)
@@ -43,7 +42,7 @@ class ContentProviderHandler() {
             list = null
             println("appdebug: contentProviderHandler: QUERY: NO RECORD EXISTS")
         }
-
+        queryCursor.close()
         return list
 
     }
@@ -52,7 +51,7 @@ class ContentProviderHandler() {
         val contentValues = ContentValues()
         contentValues.put("showID", showID)
         contentValues.put("episodeID", episodeID)
-        var updatedRows = contentResolver.update(uri, contentValues, "showID", arrayOf(showID))
+        val updatedRows = contentResolver.update(uri, contentValues, "showID", arrayOf(showID))
 
         println("appdebug: contentProviderHandler: UPDATE: $updatedRows")
         return updatedRows
@@ -74,7 +73,7 @@ class ContentProviderHandler() {
     }
 
     fun delete(contentResolver: ContentResolver, showID : String) : Int{
-        var deletedNumber = contentResolver.delete(uri, "showID", arrayOf(showID))
+        val deletedNumber = contentResolver.delete(uri, "showID", arrayOf(showID))
         println("appdebug: contentProviderHandler: DELETE: $deletedNumber")
         return deletedNumber
     }

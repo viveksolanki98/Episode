@@ -15,7 +15,7 @@ class MyContentProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         val db = dbHandler?.writableDatabase
-        var numDeleted : Int?
+        val numDeleted : Int?
         numDeleted = db?.delete(TABLE_NAME, selection + "=?", selectionArgs)
 
         return numDeleted!!
@@ -40,7 +40,7 @@ class MyContentProvider : ContentProvider() {
     }
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
-        //projection is columns to select
+        //projection is columns to select,
         //selection is column in where clause
         //selectionArgs is data  in where clause (right side of equals)
         val selectionFINAL = if(selection==null) null else selection + "=?"

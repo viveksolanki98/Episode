@@ -45,7 +45,7 @@ class MyAlarmService : Service() {
 
         // we're starting a loop in a coroutine
         GlobalScope.launch(Dispatchers.IO) {
-            //For Testing:
+            //For Testing::
             //startService()
 
             createAlarm()
@@ -59,6 +59,7 @@ class MyAlarmService : Service() {
 
     override fun onDestroy() {
         ShowLog("onDestroy")
+
         super.onDestroy()
     }
 

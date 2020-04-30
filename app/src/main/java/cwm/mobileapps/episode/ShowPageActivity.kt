@@ -35,7 +35,7 @@ class ShowPageActivity : AppCompatActivity() {
         val myPref: SharedPreferences = this.getSharedPreferences("Episode_pref",
             Context.MODE_PRIVATE
         )
-        userID = myPref?.getString("user_id_google", "")
+        userID = myPref.getString("user_id_google", "")
 
 
 
@@ -47,7 +47,7 @@ class ShowPageActivity : AppCompatActivity() {
 
         val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
-        var posterURI =  intent.getStringExtra("show_poster")
+        val posterURI =  intent.getStringExtra("show_poster")
 
         showTitle_txt.text = showTitle
         Glide
@@ -60,7 +60,8 @@ class ShowPageActivity : AppCompatActivity() {
                     resource: Bitmap,
                     transition: Transition<in Bitmap?>?
                 ) {
-                    val dr: Drawable = BitmapDrawable(resource)
+                    //val dr: Drawable = BitmapDrawable(resource)
+                    val dr: Drawable = BitmapDrawable(resources, resource)
                     showPage_cl.background = dr
                 }
 
@@ -80,12 +81,12 @@ class ShowPageActivity : AppCompatActivity() {
 
         addRemoveShow_btn.setOnClickListener {
             if (addRemoveShow_btn.text == "+"){
-                FBDBhandler.addRecord("tt1", showID, userID!!)
+                FBDBhandler.addRecord("tt1", showID!!, userID!!)
                 addRemoveShow_btn.text = "-"
             }else{
                 FBDBhandler.deleteRecord("UserID_ShowID", "${userID}_${showID}", fun(){
                     println("appdebug: showPage: delete from FBDB: SUCCESS")
-                    var deleteRes = ContentProviderHandler().delete(contentResolver, showID)
+                    val deleteRes = ContentProviderHandler().delete(contentResolver, showID!!)
                     println("appdebug: showPage: delete from SQLDb: $deleteRes")
                 }, fun(){
                     println("appdebug: showPage: delete from FBDB: FAIL")
@@ -100,10 +101,8 @@ class ShowPageActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = getMenuInflater();
-        inflater.inflate(R.menu.share_menu, menu);
+        menuInflater.inflate(R.menu.share_menu, menu)
         val shareItem = menu!!.findItem(R.id.action_share)
-        //val shareItem: MenuItem = menu!!.findItem(R.id.action_share)
 
         val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
@@ -113,9 +112,9 @@ class ShowPageActivity : AppCompatActivity() {
         //myShareIntent.type = "text/plain"
         //myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle, https://www.imdb.com/title/$showID")
 
-        myShareIntent.type = "text/html";
-        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle https://www.imdb.com/title/$showID");
-        myShareActionProvider.setShareIntent(myShareIntent);
+        myShareIntent.type = "text/html"
+        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle https://www.imdb.com/title/$showID")
+        myShareActionProvider.setShareIntent(myShareIntent)
 
         return super.onCreateOptionsMenu(menu)
     }

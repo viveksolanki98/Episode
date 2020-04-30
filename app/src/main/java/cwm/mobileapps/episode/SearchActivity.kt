@@ -49,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main,menu)
 
-        // Get the SearchView and set the searchable configuration
+        // Get the SearchView and set the searchable configuration:
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
             // Assumes current activity is the searchable activity
@@ -106,13 +106,13 @@ class SearchActivity : AppCompatActivity() {
         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$searchTerm&extended=full", fun(response : Response){
             apiResultsArray = JSONArray(response.body!!.string())
             println("appdebug: search activity: API get search results: $apiResultsArray")
-            runOnUiThread(Runnable {searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)})
+            runOnUiThread{searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)}
         })
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        mQuery = savedInstanceState?.getString("search_query")
+        mQuery = savedInstanceState.getString("search_query")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

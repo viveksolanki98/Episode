@@ -44,7 +44,7 @@ class UserHomeActivity : AppCompatActivity() {
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
 
-        //CONTENT PROVIDER EXAMPLES
+        //CONTENT PROVIDER EXAMPLES:
         /*
         //INSERT--------------------------------
         ContentProviderHandler().insert(contentResolver, "ttHELLO", "ttTHERE")
@@ -99,9 +99,6 @@ class UserHomeActivity : AppCompatActivity() {
     fun signOut() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
-                val myLogInPref: SharedPreferences = getSharedPreferences("LogInStatusPref", Context.MODE_PRIVATE)
-                myLogInPref.edit().putBoolean("login", false)
-                myLogInPref.edit().apply()
                 val intentToMainActivity = Intent(this, MainActivity::class.java)
                 startActivity(intentToMainActivity)
             }

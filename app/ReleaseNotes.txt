@@ -324,6 +324,9 @@ alpha 6.0.0 30/04/2020
 alpha 6.0.1 30/04/200
 - added link to share message
 
+alpha 6.0.2 30/04/2020
+- removed shared pref from userHome: signOut
+- cleared lots of warnings across several classes
 ------------------------
 FULFILLED CRITERIA
 l

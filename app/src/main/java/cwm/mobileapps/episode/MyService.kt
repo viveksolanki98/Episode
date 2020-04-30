@@ -10,7 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
 
-//template from https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
+//template from: https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
 class MyService : Service() {
     val TAG = "MyService"
     lateinit var notificationManager : NotificationManager
@@ -44,15 +44,15 @@ class MyService : Service() {
         createNotificationChannel()
         var newEpisodesAvailable = false
         val runable = Runnable {
-            var availableNewEpisodesList = ArrayList<String>()
-            var result = ContentProviderHandler().query(contentResolver, null)
+            val availableNewEpisodesList = ArrayList<String>()
+            val result = ContentProviderHandler().query(contentResolver, null)
             if (result == null){
                 ShowLog("database QUERY: NO RECORD EXISTS")
             }else {
                 ShowLog("database QUERY: RECORDS EXIST")
                 result.forEach {
-                    var apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
-                    var latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
+                    val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
+                    val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
                     if (it.episodeID != latestEpisodeID){
                         newEpisodesAvailable = true
                         availableNewEpisodesList.add(latestEpisodeID)

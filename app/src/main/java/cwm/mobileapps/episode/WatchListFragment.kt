@@ -11,13 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.fragment_watch_list.*
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 
 class WatchListFragment : Fragment() {
@@ -43,36 +41,34 @@ class WatchListFragment : Fragment() {
     }
 
     private fun populateNextEpisodeRV(refreshLayer: SwipeRefreshLayout?, nextEpisodesRV: RecyclerView? ) {
-        //val userAccountDetails = GoogleSignIn.getLastSignedInAccount(context)
         val myPref: SharedPreferences = context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
-        userID = myPref?.getString("user_id_google", "")
+        userID = myPref.getString("user_id_google", "")
 
-        //userAccountDetails?.id.toString()
         refreshLayer?.isRefreshing = true
         FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
-            var nextEpisodesList = ArrayList<String>()
+            val nextEpisodesList = ArrayList<String>()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
 
                 if (userShowID != "tt1") {
                     APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$userShowID/seasons?extended=episodes", fun(data: Response) {
-                        var dataString = data.body!!.string()
+                        val dataString = data.body!!.string()
                         val allShowEpisodesArray = JSONArray(dataString)
                         val numberOfSeasons = allShowEpisodesArray.length()
-                        var allEpisodesArr = ArrayList<String>()
+                        val allEpisodesArr = ArrayList<String>()
 
-                        var lastSeasonEpisodes = allShowEpisodesArray.getJSONObject(numberOfSeasons-1).getJSONArray("episodes")
-                        var lastEpisodeID = lastSeasonEpisodes.getJSONObject(lastSeasonEpisodes.length()-1).getJSONObject("ids").getString("imdb")
+                        val lastSeasonEpisodes = allShowEpisodesArray.getJSONObject(numberOfSeasons-1).getJSONArray("episodes")
+                        val lastEpisodeID = lastSeasonEpisodes.getJSONObject(lastSeasonEpisodes.length()-1).getJSONObject("ids").getString("imdb")
                         //updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
                         ContentProviderHandler().safeInsert(activity!!.contentResolver, userShowID, lastEpisodeID)
 
                         for (i in 0 until numberOfSeasons) {
-                            var singleSeasonData = allShowEpisodesArray.getJSONObject(i)
-                            var allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
+                            val singleSeasonData = allShowEpisodesArray.getJSONObject(i)
+                            val allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
                             if(singleSeasonData.getInt("number") != 0) {
                                 for (j in 0 until allEpisodesInSeason.length()) {
-                                    var singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
+                                    val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
                                     allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("imdb"))
                                 }
                             }
@@ -86,7 +82,7 @@ class WatchListFragment : Fragment() {
                             nextEpisodesList.add(allEpisodesArr[0])
                             if(counter == snapLength?.minus(1)){
                                 nextEpisodesList.sort()
-                                activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)})
+                                activity?.runOnUiThread{ nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)}
                                 refreshLayer?.isRefreshing = false
                             }
 
@@ -94,7 +90,7 @@ class WatchListFragment : Fragment() {
                     })
                 }
                 if(counter == snapLength?.minus(1)){
-                    activity?.runOnUiThread(Runnable { nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)})
+                    activity?.runOnUiThread{nextEpisodesRV?.adapter = RecyclerAdapterEpisodeCard(nextEpisodesList)}
                     refreshLayer?.isRefreshing = false
                 }
             }
@@ -103,7 +99,7 @@ class WatchListFragment : Fragment() {
 
     private fun updateNextEpisodeInSQLDb(showID : String, episodeID : String){
 
-        var cpResultQuery = ContentProviderHandler().query(activity!!.contentResolver, showID)
+        val cpResultQuery = ContentProviderHandler().query(activity!!.contentResolver, showID)
         if (cpResultQuery == null){
             println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: NO RECORD EXISTS")
             ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, episodeID)
@@ -111,7 +107,7 @@ class WatchListFragment : Fragment() {
 
         }else {
             println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: ${cpResultQuery.get(0).showID} ${cpResultQuery.get(0).episodeID}")
-            var updateRes = ContentProviderHandler().update(activity!!.contentResolver, showID, episodeID)
+            val updateRes = ContentProviderHandler().update(activity!!.contentResolver, showID, episodeID)
             println("appdebug: watchList: updateNextEpisodeInSQLDb: UPDATE: $updateRes $showID $episodeID")
         }
     }
