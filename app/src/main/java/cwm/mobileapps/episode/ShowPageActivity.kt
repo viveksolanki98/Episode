@@ -1,30 +1,26 @@
 package cwm.mobileapps.episode
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.widget.ShareActionProvider
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.MenuItemCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
-import okhttp3.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.math.RoundingMode
 
 
 class ShowPageActivity : AppCompatActivity() {
@@ -100,9 +96,22 @@ class ShowPageActivity : AppCompatActivity() {
 
         //---------------------------------------
 
-
-
-
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = getMenuInflater();
+        inflater.inflate(R.menu.share_menu, menu);
+        val shareItem = menu!!.findItem(R.id.action_share)
+        //val shareItem: MenuItem = menu!!.findItem(R.id.action_share)
+
+
+        val showTitle = intent.getStringExtra("show_title")
+        val myShareActionProvider: ShareActionProvider = MenuItemCompat.getActionProvider(shareItem) as ShareActionProvider
+        val myShareIntent = Intent(Intent.ACTION_SEND)
+        myShareIntent.type = "text/plain"
+        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle")
+        myShareActionProvider.setShareIntent(myShareIntent);
+
+        return super.onCreateOptionsMenu(menu)
+    }
 }

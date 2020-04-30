@@ -9,8 +9,6 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
-import java.util.*
-import kotlin.collections.ArrayList
 
 //template from https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
 class MyService : Service() {
@@ -121,5 +119,6 @@ class MyService : Service() {
             // notificationId is a unique int for each notification that you must define
             notify(1234, builder.build())
         }
+
     }
 }

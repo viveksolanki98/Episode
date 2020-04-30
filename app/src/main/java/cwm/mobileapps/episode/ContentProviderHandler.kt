@@ -10,11 +10,16 @@ class ContentProviderHandler() {
     var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
 
     fun insert(contentResolver: ContentResolver,showID : String, episodeID : String){
-        var cv = ContentValues()
-        cv.put("showID",showID)
-        cv.put("episodeID",episodeID)
-        contentResolver.insert(uri,cv)
-        println("appdebug: contentProviderHandler: INSERTED")
+        if (query(contentResolver, showID) == null){
+            var cv = ContentValues()
+            cv.put("showID",showID)
+            cv.put("episodeID",episodeID)
+            contentResolver.insert(uri,cv)
+            println("appdebug: contentProviderHandler: insert: INSERTED")
+        }else{
+            println("appdebug: contentProviderHandler: insert: RECORD EXISTS")
+        }
+
     }
 
     fun query(contentResolver: ContentResolver, showID : String?): ArrayList<NextEpisodeDBDataClass>? {
@@ -51,6 +56,21 @@ class ContentProviderHandler() {
 
         println("appdebug: contentProviderHandler: UPDATE: $updatedRows")
         return updatedRows
+    }
+
+    fun safeInsert(contentResolver: ContentResolver,showID : String, episodeID : String): Int{
+        val res : Int
+
+        if (query(contentResolver, showID) == null){
+            insert(contentResolver, showID, episodeID)
+            res =-1
+            println("appdebug: contentProviderHandler: SAFEINSERT: inserted: done $showID $episodeID $res")
+        }else{
+            res = update(contentResolver, showID, episodeID)
+            println("appdebug: contentProviderHandler: SAFEINSERT: updated: done $showID $episodeID $res")
+        }
+
+        return res
     }
 
     fun delete(contentResolver: ContentResolver, showID : String) : Int{

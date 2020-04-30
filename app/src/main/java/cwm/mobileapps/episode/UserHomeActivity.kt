@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.app.Service
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,8 @@ import android.provider.SyncStateContract.Helpers.insert
 import android.speech.tts.TextToSpeech.STOPPED
 import android.support.v4.media.session.PlaybackStateCompat
 import android.telephony.ServiceState
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startForegroundService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -71,13 +74,15 @@ class UserHomeActivity : AppCompatActivity() {
         val intent = Intent(this,MyAlarmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             println("appdebug: userHome: Starting the service in >=26 Mode")
-            startForegroundService(intent)
-            return
+            //startForegroundService(intent)
+            startService(intent)
         }else{
             println("appdebug: userHome: Starting the service in < 26 Mode")
             startService(intent)
         }
     }
+
+
 
     override fun onStart() {
         super.onStart()

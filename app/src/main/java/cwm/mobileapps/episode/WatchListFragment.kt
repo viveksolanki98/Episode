@@ -64,7 +64,8 @@ class WatchListFragment : Fragment() {
 
                         var lastSeasonEpisodes = allShowEpisodesArray.getJSONObject(numberOfSeasons-1).getJSONArray("episodes")
                         var lastEpisodeID = lastSeasonEpisodes.getJSONObject(lastSeasonEpisodes.length()-1).getJSONObject("ids").getString("imdb")
-                        updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
+                        //updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
+                        ContentProviderHandler().safeInsert(activity!!.contentResolver, userShowID, lastEpisodeID)
 
                         for (i in 0 until numberOfSeasons) {
                             var singleSeasonData = allShowEpisodesArray.getJSONObject(i)
@@ -105,7 +106,7 @@ class WatchListFragment : Fragment() {
         var cpResultQuery = ContentProviderHandler().query(activity!!.contentResolver, showID)
         if (cpResultQuery == null){
             println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: NO RECORD EXISTS")
-            ContentProviderHandler().insert(activity!!.contentResolver, showID, episodeID)
+            ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, episodeID)
             println("appdebug: watchList: updateNextEpisodeInSQLDb: INSERT: done $showID $episodeID")
 
         }else {

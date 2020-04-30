@@ -2,6 +2,7 @@ Bugs:
 - toggle switches sometimes add episodes twice to FBDB
 - on rotate, the search results disappear in search activity
 - MyAlarmService gets destroyed after a minute or so
+- next episode is being updated to last one in the season not last one aired
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -312,3 +313,10 @@ alpha 5.3.0 30/04/2020
 FULFILLED CRITERIA
 m, o, n
 ------------------------
+
+alpha 6.0.0 30/04/2020
+- modified insert in ContentProviderHandler to check if record exists before inserting. This fixed a crash
+- added a menu item for share button
+- added oncreateoptionsmenu in show page
+- added share action provider to show page. Sharing simple text
+- bug found where next episode is being updated to last one in the season not last one aired
