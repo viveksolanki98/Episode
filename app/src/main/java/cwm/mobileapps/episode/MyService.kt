@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 //template from https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
 class MyService : Service() {
@@ -45,6 +46,7 @@ class MyService : Service() {
         createNotificationChannel()
         var newEpisodesAvailable = false
         val runable = Runnable {
+            var availableNewEpisodesList = ArrayList<String>()
             var result = ContentProviderHandler().query(contentResolver, null)
             if (result == null){
                 ShowLog("database QUERY: NO RECORD EXISTS")
@@ -53,8 +55,14 @@ class MyService : Service() {
                 result.forEach {
                     var apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
                     var latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
-                    newEpisodesAvailable = if (it.episodeID != latestEpisodeID) true else newEpisodesAvailable
+                    if (it.episodeID != latestEpisodeID){
+                        newEpisodesAvailable = true
+                        availableNewEpisodesList.add(latestEpisodeID)
+                    }
                     ShowLog("episode status for show ${it.showID} is ${it.episodeID != latestEpisodeID}")
+                }
+                if (newEpisodesAvailable){
+                    buildAndShowNotification("New Episodes", "Check your watch list, there are new episodes available to watch.")
                 }
             }
             stopSelf()
@@ -91,7 +99,7 @@ class MyService : Service() {
         }
     }
 
-    private fun buildAndShowNotification(){
+    private fun buildAndShowNotification(title: String, message : String){
         // Create an explicit intent for an Activity in your app
         val intent = Intent(this, UserHomeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -100,8 +108,10 @@ class MyService : Service() {
 
         val builder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("My notification")
-            .setContentText("Hello World!")
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(message))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             // Set the intent that will fire when the user taps the notification
             .setContentIntent(pendingIntent)

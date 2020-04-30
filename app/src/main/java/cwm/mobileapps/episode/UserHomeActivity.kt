@@ -77,10 +77,6 @@ class UserHomeActivity : AppCompatActivity() {
             println("appdebug: userHome: Starting the service in < 26 Mode")
             startService(intent)
         }
-
-        val intentBroadcast = Intent(this,MyService::class.java)
-        intentBroadcast.putExtra("triggerBy", "alarm")
-        startService(intentBroadcast)
     }
 
     override fun onStart() {

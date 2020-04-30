@@ -45,8 +45,8 @@ class MyAlarmService : Service() {
 
         // we're starting a loop in a coroutine
         GlobalScope.launch(Dispatchers.IO) {
-
-            startService()
+            //For Testing:
+            //startService()
 
             createAlarm()
             ShowLog("Created alarm from service")
@@ -91,6 +91,7 @@ class MyAlarmService : Service() {
         println("appdebug: myAlarmService: $message")
     }
 
+    //To trigger checking of new episodes om launch for testing
     fun startService(){
         val intent = Intent(this,MyService::class.java)
         intent.putExtra("triggerBy", "alarm")
