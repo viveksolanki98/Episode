@@ -16,7 +16,7 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
     override fun onCreate(db: SQLiteDatabase?) {
 
         val createTable = "CREATE TABLE " + TABLE_NAME +" (" +
-                COL_SHOW + " VARCHAR(256) PRIMARY KEY," +
+                COL_SHOW + " VARCHAR(256)," +
                 COL_EPISODE + " VARCHAR(256))"
 
         db?.execSQL(createTable)

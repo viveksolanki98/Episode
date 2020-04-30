@@ -334,3 +334,7 @@ l
 
 alpha 7.0.0 30/04/2020
 - swipe to remove from next episode list in watch list is implemented (basic function)
+
+alpha 7.0.1 30/04/2020
+- removed primary key from SQLDb structure
+- added function where if show card is swiped, it gets marked as watched.
