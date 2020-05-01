@@ -1,19 +1,13 @@
 package cwm.mobileapps.episode
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
+
 object FBDBhandler {
     lateinit var database: DatabaseReference
-
 
     fun addRecord(episodeID : String, showID : String, userID : String){
         if ((episodeID != "tt1") and (showID != "tt1")){
@@ -53,6 +47,8 @@ object FBDBhandler {
     fun queryListener(recordKey : String, recordValue : String, callBack : (DataSnapshot?) -> Unit) {
         database = Firebase.database.reference
 
+
+
         getRootRef().orderByChild(recordKey).equalTo(recordValue).addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -61,8 +57,38 @@ object FBDBhandler {
 
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                println("apperror: FBDB Error in query: $recordKey: $recordValue: ${databaseError.toException()}")
+                println("apperror: FBDB Error in queryListener: $recordKey: $recordValue: ${databaseError.toException()}")
             }
+        })
+
+    }
+
+    fun queryChildListener(recordKey : String, recordValue : String, changeCallback : (DataSnapshot?) -> Unit, addedCallback : (DataSnapshot?) -> Unit, removedCallback : (DataSnapshot?) -> Unit) {
+        database = Firebase.database.reference
+
+        getRootRef().orderByChild(recordKey).equalTo(recordValue).addChildEventListener(object : ChildEventListener{
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("apperror: FBDB Error in queryChildListener: $recordKey: $recordValue: ${databaseError.toException()}")
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, p1: String?) {
+                println("appdebug: In FBDB Query Handler onChildChanged: " + dataSnapshot.getValue())
+                changeCallback(dataSnapshot)
+            }
+
+            override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
+                println("appdebug: In FBDB Query Handler onChildAdded: " + dataSnapshot.getValue())
+                addedCallback(dataSnapshot)
+            }
+
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                println("appdebug: In FBDB Query Handler onChildRemoved: " + dataSnapshot.getValue())
+                removedCallback(dataSnapshot)
+            }
+
         })
 
     }

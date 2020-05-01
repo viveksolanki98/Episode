@@ -40,7 +40,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         userID = myPref?.getString("user_id_google", "")
 
         (holder.itemView.context as Activity?)?.runOnUiThread{
-            FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
+            FBDBhandler.query("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
                 if (episodeCheckData?.getValue() != null){
                     holder.watchedToggleSWT.isChecked = true
                 }
@@ -131,12 +131,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                 val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
 
                 markEpisodeAsWatched(showID, episodeIDs[viewHolder.adapterPosition], viewHolder.itemView.context)
-                /*
                 episodeIDs.removeAt(viewHolder.adapterPosition)
                 (viewHolder.itemView.context as Activity?)?.runOnUiThread {
                     notifyItemRemoved(viewHolder.adapterPosition)
                 }
-                */
             })
     }
 
