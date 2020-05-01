@@ -1,10 +1,11 @@
 Bugs:
+-FIXED- on rotate, the search results disappear in search activity
+-FIXED- watch list recycler when refreshed adds the same episode to tbe list multiple times
 - toggle switches sometimes add episodes twice to FBDB
-- on rotate, the search results disappear in search activity
 - MyAlarmService gets destroyed after a minute or so
 - next episode is being updated to last one in the season not last one aired
-- watch list recycler when refreshed adds the same episode to tbe list multiple times
 - in search results there can be big gabs between results that are hidden because there was not IMDb ID
+- some search results are not hidden search "hell" to recreate
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -355,3 +356,7 @@ alpha 7.1.1 01/05/2020
 FULFILLED CRITERIA
 p
 ------------------------
+
+alpha 8.0.0 01/05/2020
+- Fixed bug: on rotate, the search results disappear in search activity
+- Fixed bug: watch list recycler when refreshed adds the same episode to tbe list multiple times

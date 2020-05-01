@@ -68,7 +68,7 @@ object APIhandler {
             }
         })
     }
-
+/*
     fun fanartAPISync(urlSTR: String): Response {
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()
@@ -76,13 +76,13 @@ object APIhandler {
         println("appdebug: API Sync: $urlSTR")
         return res
     }
-
-    fun sync(urlSTR: String): Response {
+*/
+    fun sync(urlSTR: String): Response? {
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()
-        val res = clientImage.newCall(requestImage).execute()
-        println("appdebug: API Sync: $urlSTR")
-        return res
+        var res = clientImage.newCall(requestImage).execute()
+        println("appdebug: API Sync: response code ${res.code}, URL $urlSTR")
+        return if(res.code == 200) res else null
     }
 
     fun imageFromID(IDs: JSONObject): String? {
@@ -90,7 +90,7 @@ object APIhandler {
         val defaultImage = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
 
         val tmdbAPIResponse = sync("https://api.themoviedb.org/3/tv/${IDs.getString("tmdb")}/images?api_key=9b05770b260d801f3b9e84fd281f2064")
-        if(tmdbAPIResponse.code == 200) {
+        if(tmdbAPIResponse?.code == 200) {
             imageLocation = try {
                 "https://image.tmdb.org/t/p/w500/" + JSONObject(tmdbAPIResponse.body!!.string()).getJSONArray("posters").getJSONObject(0).getString("file_path")
             } catch (e: Exception) {
@@ -98,7 +98,7 @@ object APIhandler {
             }
         }else{
             val fanartAPIResponse = sync("http://webservice.fanart.tv/v3/tv/${IDs.getString("tvdb")}?api_key=cc52af8ac688a6c7a9a83e293624fe35")
-            imageLocation = if(fanartAPIResponse.code == 200) {
+            imageLocation = if(fanartAPIResponse?.code == 200) {
                 try {
                     JSONObject(fanartAPIResponse.body!!.string()).getJSONArray("tvposter").getJSONObject(0).getString("url")
                 } catch (e: Exception) {
@@ -111,4 +111,5 @@ object APIhandler {
 
         return imageLocation
     }
+    //the tvdb api key: 10ca5db52b5fce407118c1b70a16e0ec
 }

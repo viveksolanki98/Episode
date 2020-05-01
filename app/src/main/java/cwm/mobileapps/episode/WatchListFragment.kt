@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 class WatchListFragment : Fragment() {
     var userID : String? = ""
     var nextEpisodesList = ArrayList<String>()
-    var viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+    lateinit var viewAdapter : RecyclerAdapterEpisodeCard
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -30,6 +30,8 @@ class WatchListFragment : Fragment() {
 
         val nextEpisodesRV: RecyclerView? = view?.findViewById((R.id.nextEpisodes_rv))
         nextEpisodesRV?.layoutManager = LinearLayoutManager(context)
+        viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+        nextEpisodesRV?.adapter = viewAdapter
 
         val watchListNextEpisodeRefreshLayoutSRL : SwipeRefreshLayout? = view?.findViewById(R.id.watchListNextEpisodeRefreshLayout_SRL)
         watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
@@ -65,7 +67,7 @@ class WatchListFragment : Fragment() {
 
         refreshLayer?.isRefreshing = true
         FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
-            nextEpisodesList = ArrayList<String>()
+            nextEpisodesList.clear()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
@@ -97,21 +99,26 @@ class WatchListFragment : Fragment() {
                                 val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
                                 allEpisodesArr.remove(userEpisodeID)
                             }
-
+                            //this remove line prevent the episode being added multiple times into the list
+                            nextEpisodesList.remove(allEpisodesArr[0])
                             nextEpisodesList.add(allEpisodesArr[0])
+                            viewAdapter.notifyDataSetChanged()
+
+                            /*
                             if(counter == snapLength?.minus(1)){
-                                nextEpisodesList.sort()
-                                viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
-                                activity?.runOnUiThread{ nextEpisodesRV?.adapter = viewAdapter}
+                                //nextEpisodesList.sort()
+                                //viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+                                //activity?.runOnUiThread{ nextEpisodesRV?.adapter = viewAdapter}
                                 refreshLayer?.isRefreshing = false
                             }
-
+                            */
                         })
                     })
                 }
                 if(counter == snapLength?.minus(1)){
-                    viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
-                    activity?.runOnUiThread{nextEpisodesRV?.adapter = viewAdapter}
+                    //viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
+                    //activity?.runOnUiThread{nextEpisodesRV?.adapter = viewAdapter}
+                    viewAdapter.notifyDataSetChanged()
                     refreshLayer?.isRefreshing = false
                 }
             }

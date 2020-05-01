@@ -71,13 +71,12 @@ class SearchActivity : AppCompatActivity() {
             }
 
         })
-
         if (searchItem != null){
             val searchView = searchItem.actionView as SearchView
-            searchView.setQuery(mQuery,false)
+            searchView.setQuery(mQuery,true)
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    searchView.setQuery(query,false)
+                    searchView.setQuery(query,true)
                     return true
                 }
 
