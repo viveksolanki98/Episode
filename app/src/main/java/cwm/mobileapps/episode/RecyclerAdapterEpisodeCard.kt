@@ -73,6 +73,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     } catch (e: Exception) {
                         "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
                     }
+                    //imageLocation = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
                     //println("appdebug: recyclerAdapterEpisodeCard: image location: $imageLocation")
                     (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
                         holder.showTitleTXT.text = showTitle

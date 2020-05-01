@@ -54,6 +54,8 @@ class WatchListFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(nextEpisodesRV)
 
+
+
         return view
     }
 

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.lang.Exception
 
 class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
@@ -48,24 +47,16 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
             val showImageLocations = ArrayList<String>()
             for (i in 0 until result.length()) {
                 val item = result.getJSONObject(i)
-                var showData = if(section == "popular") item else item.getJSONObject("show")
+                val showData = if(section == "popular") item else item.getJSONObject("show")
 
-                val tvdbID = showData.getJSONObject("ids").getString("tvdb")
-                val imdbID = showData.getJSONObject("ids").getString("imdb")
-
-                var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
-                val imageObj = JSONObject(APIhandler.fanartAPISync(urlSTRImage).body!!.string())
-                var imageLocation = try {
-                    imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
-                }catch (e : Exception){
-                    "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
-                }
+                val imageLocation = APIhandler.imageFromID(showData.getJSONObject("ids"))
 
                 println("appdebug: imageLocation(tvdb): " + imageLocation)
 
+                val imdbID = showData.getJSONObject("ids").getString("imdb")
                 showNames.add(showData.getString("title"))
                 showIDs.add(imdbID)
-                showImageLocations.add(imageLocation)
+                showImageLocations.add(imageLocation!!)
             }
 
             (holder?.itemView?.context as Activity?)?.runOnUiThread(Runnable {

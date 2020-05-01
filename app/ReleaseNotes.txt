@@ -341,3 +341,12 @@ alpha 7.0.1 30/04/2020
 
 alpha 7.0.3 30/04/2020
 - GIT check out
+
+alpha 7.1.0 01/05/2020
+- added imageFromId() in APIhandler to use two image apis to improve reliability
+- tested this concept in RecyclerAdapterDsSection
+
+------------------------
+FULFILLED CRITERIA
+p
+------------------------

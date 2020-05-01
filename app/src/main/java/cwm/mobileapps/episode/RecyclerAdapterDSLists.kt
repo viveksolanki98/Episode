@@ -24,7 +24,6 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         userID = myPref?.getString("user_id_google", "")
 
         holder.showTitleTXT.text = showTitle[position]
-        //"https://image.tmdb.org/t/p/w500/"
         Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
 
         FBDBhandler.queryListener("UserID_ShowID", "${userID}_${showIDs[position]}", fun(data : DataSnapshot?) {
