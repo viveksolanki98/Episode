@@ -38,19 +38,11 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
             holder.showTitleTXT.text = showDataObj.getString("title")
             holder.showDescriptionTXT.text = showDataObj.getString("overview")
 
-            var tvdbID = showDataObj.getJSONObject("ids").getString("tvdb")
-            var urlSTRImage =
-                "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
+            //var tvdbID = showDataObj.getJSONObject("ids").getString("tvdb")
+            //var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
 
-            APIhandler.async(urlSTRImage, fun(data: Response) {
-                val imageObj = JSONObject(data.body!!.string())
-                println("appdebug: search results card adapter: api object: $imageObj")
-                var imageLocation = try {
-                    imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
-                } catch (e: Exception) {
-                    "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
-                }
-
+            Thread{
+                val imageLocation = APIhandler.imageFromID(showDataObj.getJSONObject("ids"))
                 (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
                     Glide.with(holder.itemView.context as Activity).load(imageLocation)
                         .into(holder.showPosterIV)
@@ -71,12 +63,9 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
                         holder.itemView.context.startActivity(intentToShowPageActivity)
                     }
                 })
-            })
+
+            }.start()
         }
-
-
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{

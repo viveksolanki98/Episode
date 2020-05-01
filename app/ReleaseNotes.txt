@@ -3,6 +3,8 @@ Bugs:
 - on rotate, the search results disappear in search activity
 - MyAlarmService gets destroyed after a minute or so
 - next episode is being updated to last one in the season not last one aired
+- watch list recycler when refreshed adds the same episode to tbe list multiple times
+- in search results there can be big gabs between results that are hidden because there was not IMDb ID
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -346,6 +348,9 @@ alpha 7.1.0 01/05/2020
 - added imageFromId() in APIhandler to use two image apis to improve reliability
 - tested this concept in RecyclerAdapterDsSection
 
+alpha 7.1.1 01/05/2020
+- changed RecyclerAdapterEpisodeCard to use imageFromId()
+- updated RecyclerAdapterSearchResultCard io use imageFromId()
 ------------------------
 FULFILLED CRITERIA
 p

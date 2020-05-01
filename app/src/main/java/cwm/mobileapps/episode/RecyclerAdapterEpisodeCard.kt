@@ -64,16 +64,9 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     val date = LocalDate.parse(airDateString, inputFormatter)
                     val airDateFormatted: String = outputFormatter.format(date)
 
+                    val imageLocation = APIhandler.imageFromID(dataObj.getJSONObject("show").getJSONObject("ids"))
 
-                    val tvdbID = dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb")
-                    val urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
-                    val imageObj = JSONObject(APIhandler.fanartAPISync(urlSTRImage).body!!.string())
-                    val imageLocation = try {
-                        imageObj.getJSONArray("tvposter").getJSONObject(0).getString("url")
-                    } catch (e: Exception) {
-                        "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
-                    }
-                    //imageLocation = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
+
                     //println("appdebug: recyclerAdapterEpisodeCard: image location: $imageLocation")
                     (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
                         holder.showTitleTXT.text = showTitle

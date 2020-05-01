@@ -90,7 +90,6 @@ object APIhandler {
         val defaultImage = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
 
         val tmdbAPIResponse = sync("https://api.themoviedb.org/3/tv/${IDs.getString("tmdb")}/images?api_key=9b05770b260d801f3b9e84fd281f2064")
-        //val aa = "https://image.tmdb.org/t/p/w500/" + JSONObject(tmdbAPIResponse.body!!.string()).getJSONArray("posters").getJSONObject(0).getString("file_path")
         if(tmdbAPIResponse.code == 200) {
             imageLocation = try {
                 "https://image.tmdb.org/t/p/w500/" + JSONObject(tmdbAPIResponse.body!!.string()).getJSONArray("posters").getJSONObject(0).getString("file_path")
