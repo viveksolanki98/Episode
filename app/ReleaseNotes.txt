@@ -365,3 +365,7 @@ alpha 8.0.1 01/05/2020
 - Fixed bug where when episode is swiped it throws a array index out of bounds when listening for the query to toggle watchedToggleSWT.isChecked
 - bug returned: watch list recycler when refreshed adds the same episode to tbe list multiple times
 - removed queryListeners to keep recyclerViews stable
+
+alpha 8.0.2 02/05/2020
+- Fixed bug: watch list recycler when refreshed adds the same episode to tbe list multiple times
+- moved refreshing trigger inside of updateNextEpisodeToWatch to stop refreshing icon when its actually done

@@ -66,8 +66,8 @@ class WatchListFragment : Fragment() {
         val myPref: SharedPreferences = context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref.getString("user_id_google", "")
 
-        watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = true
-        FBDBhandler.query("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
+        FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
+            watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = true
             nextEpisodesList.clear()
             currentlyWatchingShows.clear()
             val snapLength = data?.childrenCount?.toInt()
@@ -76,12 +76,9 @@ class WatchListFragment : Fragment() {
 
                 if (userShowID != "tt1") {
                     currentlyWatchingShows.add(userShowID)
-                    updateNextEpisodeToWatch(userShowID)
+                    updateNextEpisodeToWatch(userShowID,snapLength!!.minus(1))
                 }
-                if(counter == snapLength?.minus(1)){
-                    viewAdapter.notifyDataSetChanged()
-                    watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
-                }
+
             }
         })
     }
@@ -101,7 +98,7 @@ class WatchListFragment : Fragment() {
         }
     }
 
-    fun updateNextEpisodeToWatch(showID : String) {
+    private fun updateNextEpisodeToWatch(showID : String, numberOfShows : Int) {
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID/seasons?extended=episodes", fun(data: Response) {
             val dataString = data.body!!.string()
             val allShowEpisodesArray = JSONArray(dataString)
@@ -128,10 +125,14 @@ class WatchListFragment : Fragment() {
                     val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
                     allEpisodesArr.remove(userEpisodeID)
                 }
-                //this remove line prevent the episode being added multiple times into the list
+                // The remove line prevents the episode being added multiple times into the list
+                nextEpisodesList.remove(allEpisodesArr[0])
                 nextEpisodesList.add(allEpisodesArr[0])
-                nextEpisodesList.distinct()
-                viewAdapter.notifyDataSetChanged()
+                nextEpisodesList.sort()
+                if(nextEpisodesList.size == numberOfShows){
+                    viewAdapter.notifyDataSetChanged()
+                    watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
+                }
             })
         })
 
