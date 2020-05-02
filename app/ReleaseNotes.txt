@@ -369,3 +369,7 @@ alpha 8.0.1 01/05/2020
 alpha 8.0.2 02/05/2020
 - Fixed bug: watch list recycler when refreshed adds the same episode to tbe list multiple times
 - moved refreshing trigger inside of updateNextEpisodeToWatch to stop refreshing icon when its actually done
+
+alpha 8.1.0 02/05/2020
+- added theTVDBAPI() to APIhandler
+- this has been used to give a blurred background to the episode cards of the show banner

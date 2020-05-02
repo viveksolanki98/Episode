@@ -61,4 +61,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'androidx.core:core:1.0.0'
+    implementation 'com.uwetrottmann.thetvdb-java:thetvdb-java:2.3.0'
 }

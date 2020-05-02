@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +16,16 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
+import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlinx.android.synthetic.main.activity_show_page.*
 import kotlinx.android.synthetic.main.episode_rv_card.view.*
 import okhttp3.Response
 import org.json.JSONArray
@@ -64,7 +73,8 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     val date = LocalDate.parse(airDateString, inputFormatter)
                     val airDateFormatted: String = outputFormatter.format(date)
 
-                    val imageLocation = APIhandler.imageFromID(dataObj.getJSONObject("show").getJSONObject("ids"))
+                    val posterLocation = APIhandler.imageFromID(dataObj.getJSONObject("show").getJSONObject("ids"))
+                    val bannerLocation = APIhandler.theTVDBAPI(dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb"))
 
 
                     //println("appdebug: recyclerAdapterEpisodeCard: image location: $imageLocation")
@@ -73,7 +83,26 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                         holder.episodeTitleTXT.text = episodeTitle
                         holder.episodeDetailsTXT.text = "Season $season, Episode $episode, $airDateFormatted"
                         if (!(holder.itemView.context as Activity).isFinishing) {
-                            Glide.with(holder.itemView.context as Activity).load(imageLocation).into(holder.showPosterIV)
+                            Glide.with(holder.itemView.context as Activity).load(posterLocation).into(holder.showPosterIV)
+                            if(bannerLocation != null){
+                                Glide
+                                    .with(holder.itemView.context as Activity)
+                                    .asBitmap()
+                                    .load(bannerLocation.banner)
+                                    .apply(RequestOptions.bitmapTransform(BlurTransformation(8, 3)))
+                                    .into(object : CustomTarget<Bitmap?>(100, 100) {
+                                        override fun onResourceReady(
+                                            resource: Bitmap,
+                                            transition: Transition<in Bitmap?>?
+                                        ) {
+                                            val dr: Drawable = BitmapDrawable(holder.itemView.resources, resource)
+                                            holder.episodeCardCL.background = dr
+                                        }
+
+                                        override fun onLoadCleared(placeholder: Drawable?) {
+                                        }
+                                    })
+                            }
                         }
 
                         holder.showPosterIV.setOnClickListener {
@@ -81,7 +110,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                                 Intent(holder.itemView.context, ShowPageActivity::class.java)
                             intentToShowPageActivity.putExtra("show_title", showTitle)
                             intentToShowPageActivity.putExtra("show_id", showID)
-                            intentToShowPageActivity.putExtra("show_poster", imageLocation)
+                            intentToShowPageActivity.putExtra("show_poster", posterLocation)
 
                             holder.itemView.context.startActivity(intentToShowPageActivity)
                         }
@@ -121,6 +150,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         val episodeDetailsTXT : TextView = itemView.findViewById(R.id.episodeDetails_txt)
         val showPosterIV : ImageView = itemView.findViewById(R.id.showPoster_iv)
         val watchedToggleSWT : Switch = itemView.findViewById(R.id.watchedToggle_swt)
+        val episodeCardCL : ConstraintLayout = itemView.findViewById(R.id.episodeCard_cl)
     }
 
     fun removeItem(viewHolder: RecyclerView.ViewHolder){

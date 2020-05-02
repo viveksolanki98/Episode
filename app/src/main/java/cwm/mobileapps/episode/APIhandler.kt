@@ -2,6 +2,8 @@ package cwm.mobileapps.episode
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.uwetrottmann.thetvdb.TheTvdb
+import com.uwetrottmann.thetvdb.entities.Series
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -68,15 +70,7 @@ object APIhandler {
             }
         })
     }
-/*
-    fun fanartAPISync(urlSTR: String): Response {
-        val requestImage = Request.Builder().url(urlSTR).build()
-        val clientImage = OkHttpClient()
-        val res = clientImage.newCall(requestImage).execute()
-        println("appdebug: API Sync: $urlSTR")
-        return res
-    }
-*/
+
     fun sync(urlSTR: String): Response? {
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()
@@ -111,5 +105,23 @@ object APIhandler {
 
         return imageLocation
     }
-    //the tvdb api key: 10ca5db52b5fce407118c1b70a16e0ec
+
+    fun theTVDBAPI(id : Int): Series? {
+        //https://github.com/UweTrottmann/thetvdb-java
+        val apiResponse = TheTvdb("10ca5db52b5fce407118c1b70a16e0ec").series()
+            .series(id, "en")
+            .execute()
+        val apiData : Series?
+        if (apiResponse.code() == 200){
+            println("appdebug: APIhandler: theTVDBAPI: api SUCCESS $id")
+            apiData = apiResponse.body()?.data
+            apiData?.banner = "https://artworks.thetvdb.com/banners/" + apiData?.banner
+            apiData?.fanart = "https://artworks.thetvdb.com/banners/" + apiData?.fanart
+            apiData?.poster = "https://artworks.thetvdb.com/banners/" + apiData?.poster
+        }else{
+            println("appdebug: APIhandler: theTVDBAPI: api FAIL $id")
+            apiData = null
+        }
+        return apiData
+    }
 }
