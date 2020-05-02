@@ -80,6 +80,10 @@ class WatchListFragment : Fragment() {
                 }
 
             }
+            if(snapLength!! <= 1){
+                viewAdapter.notifyDataSetChanged()
+                watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
+            }
         })
     }
 

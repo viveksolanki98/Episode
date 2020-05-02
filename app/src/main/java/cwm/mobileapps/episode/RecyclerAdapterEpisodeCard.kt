@@ -19,17 +19,17 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.engine.Resource
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.activity_show_page.*
-import kotlinx.android.synthetic.main.episode_rv_card.view.*
 import okhttp3.Response
 import org.json.JSONArray
-import org.json.JSONObject
+import java.security.MessageDigest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -84,12 +84,14 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                         holder.episodeDetailsTXT.text = "Season $season, Episode $episode, $airDateFormatted"
                         if (!(holder.itemView.context as Activity).isFinishing) {
                             Glide.with(holder.itemView.context as Activity).load(posterLocation).into(holder.showPosterIV)
+
                             if(bannerLocation != null){
                                 Glide
                                     .with(holder.itemView.context as Activity)
                                     .asBitmap()
-                                    .load(bannerLocation.banner)
-                                    .apply(RequestOptions.bitmapTransform(BlurTransformation(8, 3)))
+                                    .load(bannerLocation.fanart)
+                                    .transform(BlurTransformation(4, 4))
+                                    //.apply(RequestOptions.bitmapTransform(BlurTransformation(8, 3)))
                                     .into(object : CustomTarget<Bitmap?>(100, 100) {
                                         override fun onResourceReady(
                                             resource: Bitmap,

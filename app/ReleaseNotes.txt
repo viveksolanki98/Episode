@@ -6,6 +6,7 @@ Bugs:
 - in search results there can be big gabs between results that are hidden because there was not IMDb ID
 - watch list recycler when refreshed adds the same episode to tbe list multiple times
 - some search results are not hidden search "hell" to recreate
+- sometimes episodes appear as already marked watched in the watchlist
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -373,3 +374,8 @@ alpha 8.0.2 02/05/2020
 alpha 8.1.0 02/05/2020
 - added theTVDBAPI() to APIhandler
 - this has been used to give a blurred background to the episode cards of the show banner
+
+alpha 8.1.1 02/05/2020
+- added app icon
+- changed episode card to have a blurred background of fanart
+- fixed bug where if there are no shows then the watch list infinately loads
