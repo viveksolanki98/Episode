@@ -46,13 +46,11 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         val myPref: SharedPreferences = holder.itemView.context!!.getSharedPreferences("Episode_pref",
             Context.MODE_PRIVATE
         )
-        userID = myPref?.getString("user_id_google", "")
+        userID = myPref.getString("user_id_google", "")
 
         (holder.itemView.context as Activity?)?.runOnUiThread{
             FBDBhandler.query("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
-                if (episodeCheckData?.getValue() != null){
-                    holder.watchedToggleSWT.isChecked = true
-                }
+                holder.watchedToggleSWT.isChecked = episodeCheckData?.getValue() != null
             })
         }
 
@@ -78,10 +76,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
 
 
                     //println("appdebug: recyclerAdapterEpisodeCard: image location: $imageLocation")
-                    (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
+                    (holder.itemView.context as Activity?)?.runOnUiThread{
                         holder.showTitleTXT.text = showTitle
                         holder.episodeTitleTXT.text = episodeTitle
-                        holder.episodeDetailsTXT.text = "Season $season, Episode $episode, $airDateFormatted"
+                        holder.episodeDetailsTXT.text = "Season ${season}, Episode ${episode}, ${airDateFormatted}"
                         if (!(holder.itemView.context as Activity).isFinishing) {
                             Glide.with(holder.itemView.context as Activity).load(posterLocation).into(holder.showPosterIV)
 
@@ -135,7 +133,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                             }
                         }
 
-                    })
+                    }
                 })
         }
     }

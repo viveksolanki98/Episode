@@ -22,7 +22,7 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val showDataObj = searchResultsArr.getJSONObject(position).getJSONObject("show")
-        if (showDataObj.getJSONObject("ids").getString("imdb") == "null"){
+        if (showDataObj.getJSONObject("ids").getString("imdb").substring(0,2) != "tt"){
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -43,7 +43,7 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
 
             Thread{
                 val imageLocation = APIhandler.imageFromID(showDataObj.getJSONObject("ids"))
-                (holder.itemView.context as Activity?)?.runOnUiThread(Runnable {
+                (holder.itemView.context as Activity?)?.runOnUiThread{
                     Glide.with(holder.itemView.context as Activity).load(imageLocation)
                         .into(holder.showPosterIV)
 
@@ -62,7 +62,7 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
 
                         holder.itemView.context.startActivity(intentToShowPageActivity)
                     }
-                })
+                }
 
             }.start()
         }

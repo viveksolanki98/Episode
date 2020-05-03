@@ -42,7 +42,7 @@ class ContentProviderHandler() {
             list = null
             println("appdebug: contentProviderHandler: QUERY: NO RECORD EXISTS")
         }
-        queryCursor.close()
+        //queryCursor.close()
         return list
 
     }

@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     //Google sign in code from: https://johncodeos.com/how-to-add-google-login-button-to-your-android-app-using-kotlin/
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = 9001
+    val USERHOME_RQ = 1200
 
 
 
@@ -37,8 +38,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Firebase.database.setPersistenceEnabled(false)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("700140263399-6u7use2ta07uanlm80d23hg3eokvrkpb.apps.googleusercontent.com")
@@ -78,11 +77,16 @@ class MainActivity : AppCompatActivity() {
                 GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
         }
+
+        if(requestCode == USERHOME_RQ){
+            finish()
+        }
     }
 
     private fun launchUser(){
         val intentToUserHomeActivity = Intent(this, UserHomeActivity::class.java)
-        startActivity(intentToUserHomeActivity)
+        startActivityForResult(intentToUserHomeActivity, USERHOME_RQ)
+        //startActivity(intentToUserHomeActivity)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -95,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     if (data?.getValue() == null) {
                         println("appdebug: Sign In: newUserAdded: " +  data?.getValue())
                         FBDBhandler.addRecord("tt1", "tt1", (account.id)!!.toString())
-                    }else{println("appdebug: Sign In: existingUser: " + data?.getValue())}
+                    }else{println("appdebug: Sign In: existingUser: " + data.getValue())}
                 })
             }
             // Signed in successfully

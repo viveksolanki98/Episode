@@ -1,12 +1,16 @@
 Bugs:
 -FIXED- on rotate, the search results disappear in search activity
+-FIXED- back button on user activity redirects back to the same page
+-FIXED- some search results are not hidden search "hell" to recreate
+-FIXED- sometimes episodes appear as already marked watched in the watchlist
+-FIXED- permission not requested when changing profile picture
+-FIXED- watch list recycler when refreshed adds the same episode to the list multiple times
+- episode cards still show when there is no episode data search 'judge judy'
 - toggle switches sometimes add episodes twice to FBDB
-- MyAlarmService gets destroyed after a minute or so
-- next episode is being updated to last one in the season not last one aired
+- app can hang while shows are being added in discover and search
 - in search results there can be big gabs between results that are hidden because there was not IMDb ID
-- watch list recycler when refreshed adds the same episode to tbe list multiple times
-- some search results are not hidden search "hell" to recreate
-- sometimes episodes appear as already marked watched in the watchlist
+- next episode is being updated to last one in the season not last one aired
+- MyAlarmService gets destroyed after a minute or so
 
 FEATURES:
 - increase swipe distance for refreshing  in watch list recycler view
@@ -375,7 +379,13 @@ alpha 8.1.0 02/05/2020
 - added theTVDBAPI() to APIhandler
 - this has been used to give a blurred background to the episode cards of the show banner
 
-alpha 8.1.1 02/05/2020
+alpha 8.1.1 02/05/2020 (MARKED AS 8.2.0 ON GIT)
 - added app icon
 - changed episode card to have a blurred background of fanart
 - fixed bug where if there are no shows then the watch list infinately loads
+
+alpha 8.2.1 03/05/2020
+- now when the back button is pressed on user home it exits the app instead of looping back to user home
+- improved filtering for null shows. checks if thte imdb id starts with 'tt'
+- fixed bug: sometimes episodes appear as already marked watched in the watchlist
+- fixed bug: permission not requested when changing profile picture -> missing permission in manifest
