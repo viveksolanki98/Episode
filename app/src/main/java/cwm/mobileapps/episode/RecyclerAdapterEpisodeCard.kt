@@ -55,8 +55,17 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         }
 
         if (episodeIDs[position] != "null") {
+            //https://api.trakt.tv/search/trakt/${episodeIDs[position]}?type=episode&extended=full
+            //https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full
+            var apiAccessURL = String()
+            if (episodeIDs[position].matches("tt\\d{7,8}".toRegex())){
+                apiAccessURL = "https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full"
+            }
+            if (episodeIDs[position].matches("\\d+".toRegex())){
+                apiAccessURL = "https://api.trakt.tv/search/trakt/${episodeIDs[position]}?type=episode&extended=full"
+            }
             APIhandler.trackitAPIAsync(
-                "https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full",
+                apiAccessURL,
                 fun(data: Response) {
                     val dataObj = JSONArray(data.body!!.string()).getJSONObject(0)
                     val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")

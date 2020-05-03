@@ -22,7 +22,8 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val showDataObj = searchResultsArr.getJSONObject(position).getJSONObject("show")
-        if (showDataObj.getJSONObject("ids").getString("imdb").substring(0,2) != "tt"){
+        val imdbID = showDataObj.getJSONObject("ids").getString("imdb")
+        if (!imdbID.matches("tt\\d{7,8}".toRegex())){
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -54,10 +55,7 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
                             "show_title",
                             showDataObj.getString("title")
                         )
-                        intentToShowPageActivity.putExtra(
-                            "show_id",
-                            showDataObj.getJSONObject("ids").getString("imdb")
-                        )
+                        intentToShowPageActivity.putExtra("show_id", imdbID)
                         intentToShowPageActivity.putExtra("show_poster", imageLocation)
 
                         holder.itemView.context.startActivity(intentToShowPageActivity)

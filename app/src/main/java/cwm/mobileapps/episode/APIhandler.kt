@@ -30,7 +30,7 @@ object APIhandler {
                 println("appdebug: API Fail: $urlSTR")
             }
 
-            @RequiresApi(Build.VERSION_CODES.O)
+            //@RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call, response: Response) {
                 println("appdebug: API Success: $urlSTR")
                 //var dataString = data.body!!.string()
@@ -74,13 +74,13 @@ object APIhandler {
     fun sync(urlSTR: String): Response? {
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()
-        var res = clientImage.newCall(requestImage).execute()
+        val res = clientImage.newCall(requestImage).execute()
         println("appdebug: API Sync: response code ${res.code}, URL $urlSTR")
         return if(res.code == 200) res else null
     }
 
     fun imageFromID(IDs: JSONObject): String? {
-        var imageLocation: String?
+        val imageLocation: String?
         val defaultImage = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
 
         val tmdbAPIResponse = sync("https://api.themoviedb.org/3/tv/${IDs.getString("tmdb")}/images?api_key=9b05770b260d801f3b9e84fd281f2064")
@@ -108,7 +108,8 @@ object APIhandler {
 
     fun theTVDBAPI(id : Int): Series? {
         //https://github.com/UweTrottmann/thetvdb-java
-        val apiResponse = TheTvdb("10ca5db52b5fce407118c1b70a16e0ec").series()
+        val apiCall = TheTvdb("10ca5db52b5fce407118c1b70a16e0ec")
+        val apiResponse = apiCall.series()
             .series(id, "en")
             .execute()
         val apiData : Series?

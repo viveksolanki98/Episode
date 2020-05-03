@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.ktx.Firebase
 import com.uwetrottmann.thetvdb.TheTvdb
+import com.uwetrottmann.thetvdb.entities.Series
 import kotlinx.android.synthetic.main.activity_user_home2.*
 
 class UserHomeActivity : AppCompatActivity() {
@@ -72,12 +73,6 @@ class UserHomeActivity : AppCompatActivity() {
         //-------------------------------------
         */
 
-
-        //TVDB API EXAMPLE---------------------
-        Thread{
-            val TVDBAPIdata = APIhandler.theTVDBAPI(83462)
-        }.start()
-        //-------------------------------------
 
         val intent = Intent(this,MyAlarmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

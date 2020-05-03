@@ -24,9 +24,10 @@ class ShowTrackingSPFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater?.inflate(R.layout.fragment_show_tracking_sp, container, false)
+        val view = inflater.inflate(R.layout.fragment_show_tracking_sp, container, false)
 
         val showID = activity?.intent?.extras?.getString("show_id")
+
 
         val IMDbShowPageBTN : Button? = view?.findViewById(R.id.IMDbShowPage_btn)
         IMDbShowPageBTN?.setOnClickListener {
@@ -51,33 +52,43 @@ class ShowTrackingSPFragment : Fragment() {
             val showStatus = showDataObj.getString("status").split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
 
             val showDetails = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
-            activity?.runOnUiThread(Runnable {
+            activity?.runOnUiThread{
                 showDescription_txt.text = showDataObj.getString("overview")
                 showDetails_txt.text = showDetails
 
-            })
+            }
         })
 
         val episodeListRV: RecyclerView? = view.findViewById((R.id.episodeList_rv))
         episodeListRV?.layoutManager = LinearLayoutManager(activity)
 
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID/seasons?extended=episodes", fun(data: Response) {
-            var dataString = data.body!!.string()
+            val dataString = data.body!!.string()
             val allShowEpisodesArray = JSONArray(dataString)
             val numberOfSeasons = allShowEpisodesArray.length()
-            var allEpisodesArr = ArrayList<String>()
+            val allEpisodesArr = ArrayList<String>()
 
             for (i in 0 until numberOfSeasons) {
-                var singleSeasonData = allShowEpisodesArray.getJSONObject(i)
-                var allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
+                val singleSeasonData = allShowEpisodesArray.getJSONObject(i)
+                val allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
                 if (singleSeasonData.getInt("number") != 0) {
                     for (j in 0 until allEpisodesInSeason.length()) {
-                        var singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
-                        allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("imdb"))
+                        val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
+                        /*
+                        val episodeID = singleEpisodeData.getJSONObject("ids").getString("imdb")
+                        if (episodeID.matches("tt\\d{7,8}".toRegex())){
+                            allEpisodesArr.add(episodeID)
+                        }
+                        */
+                        val episodeID = singleEpisodeData.getJSONObject("ids").getString("trakt")
+                        if (episodeID.matches("\\d+".toRegex())){
+                            allEpisodesArr.add(episodeID)
+                        }
+
                     }
                 }
             }
-            activity?.runOnUiThread(Runnable { episodeListRV?.adapter = RecyclerAdapterEpisodeCard(allEpisodesArr)})
+            activity?.runOnUiThread{ episodeListRV?.adapter = RecyclerAdapterEpisodeCard(allEpisodesArr)}
         })
 
 
