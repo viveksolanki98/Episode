@@ -395,3 +395,8 @@ alpha 8.2.2 03/05/2020
 - improved filtering for null shows. checks if the imdb id matched pattern "tt\\d{7,8}"
 - added support in episode card to use trakt ID as well as IMDb ID to enable more episodes to be displayed
 - regex validation is also used in the showTracking fragment for episode IDs
+
+alpha 8.2.3 03/05/2020
+- fixed bug where app crashes when airDateFormatted is "null" in episode card
+- changed default poster art if none available
+- added a third service to get poster art if the others fail

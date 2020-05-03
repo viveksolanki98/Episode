@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import okhttp3.Response
 import org.json.JSONArray
+import java.lang.Exception
 import java.security.MessageDigest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -74,12 +75,15 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     val season = dataObj.getJSONObject("episode").getInt("season")
                     val episode = dataObj.getJSONObject("episode").getInt("number")
                     val airDateString = dataObj.getJSONObject("episode").getString("first_aired")
-
-                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
-                    val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
-                    val date = LocalDate.parse(airDateString, inputFormatter)
-                    val airDateFormatted: String = outputFormatter.format(date)
-
+                    var airDateFormatted = ""
+                    if (airDateString != "null"){
+                        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+                        val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
+                        val date = LocalDate.parse(airDateString, inputFormatter)
+                        airDateFormatted = outputFormatter.format(date)
+                    }else{
+                        airDateFormatted = "No Date"
+                    }
                     val posterLocation = APIhandler.imageFromID(dataObj.getJSONObject("show").getJSONObject("ids"))
                     val bannerLocation = APIhandler.theTVDBAPI(dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb"))
 

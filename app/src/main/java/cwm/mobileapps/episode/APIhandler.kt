@@ -80,8 +80,8 @@ object APIhandler {
     }
 
     fun imageFromID(IDs: JSONObject): String? {
-        val imageLocation: String?
-        val defaultImage = "https://clipartart.com/images/vintage-movie-poster-clipart-2.jpg"
+        var imageLocation: String?
+        val defaultImage = "https://firebasestorage.googleapis.com/v0/b/episodeapp-1586776912954.appspot.com/o/No%20Poster%20Art.jpg?alt=media&token=c043f9e8-1fc7-48c3-9c21-b3c04bf4e3a3"
 
         val tmdbAPIResponse = sync("https://api.themoviedb.org/3/tv/${IDs.getString("tmdb")}/images?api_key=9b05770b260d801f3b9e84fd281f2064")
         if(tmdbAPIResponse?.code == 200) {
@@ -92,14 +92,19 @@ object APIhandler {
             }
         }else{
             val fanartAPIResponse = sync("http://webservice.fanart.tv/v3/tv/${IDs.getString("tvdb")}?api_key=cc52af8ac688a6c7a9a83e293624fe35")
-            imageLocation = if(fanartAPIResponse?.code == 200) {
+            if(fanartAPIResponse?.code == 200) {
                 try {
-                    JSONObject(fanartAPIResponse.body!!.string()).getJSONArray("tvposter").getJSONObject(0).getString("url")
+                    imageLocation = JSONObject(fanartAPIResponse.body!!.string()).getJSONArray("tvposter").getJSONObject(0).getString("url")
                 } catch (e: Exception) {
-                    defaultImage
+                    imageLocation = defaultImage
                 }
             }else{
-                defaultImage
+                val tvdbData = theTVDBAPI(IDs.getString("tvdb").toInt())
+                imageLocation = if (tvdbData != null && (tvdbData.poster.length > 41)){
+                    tvdbData.poster
+                }else{
+                    defaultImage
+                }
             }
         }
 
