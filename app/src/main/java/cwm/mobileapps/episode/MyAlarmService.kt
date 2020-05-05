@@ -18,8 +18,6 @@ import java.util.*
 
 class MyAlarmService : Service() {
     lateinit var alarmManager: AlarmManager
-    private var wakeLock: PowerManager.WakeLock? = null
-    private var isServiceStarted = false
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -34,23 +32,11 @@ class MyAlarmService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         ShowLog("onStartCommand")
 
-        //https://robertohuertas.com/2019/06/29/android_foreground_services/
-        // we need this lock so our service gets not affected by Doze Mode
-        wakeLock =
-            (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyAlarmService::lock").apply {
-                    acquire()
-                }
-            }
+        //For Testing::
+        startService()
 
-        // we're starting a loop in a coroutine
-        GlobalScope.launch(Dispatchers.IO) {
-            //For Testing::
-            //startService()
-
-            createAlarm()
-            ShowLog("Created alarm from service")
-        }
+        createAlarm()
+        ShowLog("Created alarm from service")
 
 
         //return super.onStartCommand(intent, flags, startId)
@@ -92,7 +78,7 @@ class MyAlarmService : Service() {
         println("appdebug: myAlarmService: $message")
     }
 
-    //To trigger checking of new episodes om launch for testing
+    //To trigger checking of new episodes on launch for testing
     fun startService(){
         val intent = Intent(this,MyService::class.java)
         intent.putExtra("triggerBy", "alarm")

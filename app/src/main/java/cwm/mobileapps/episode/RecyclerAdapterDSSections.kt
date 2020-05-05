@@ -34,7 +34,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
     }
 
     fun launchDiscoverSection(holder : ViewHolder?, section : String?) {
-        APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section", fun(response : Response){
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section?extended=full", fun(response : Response){
             val body = response.body!!.string()
             var result = JSONArray()
             try {
@@ -42,6 +42,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
             }catch (e :Exception){}
             println("API Search Success")
 
+            val showTrailer = ArrayList<String>()
             val showNames = ArrayList<String>()
             val showIDs = ArrayList<String>()
             val showImageLocations = ArrayList<String>()
@@ -55,12 +56,21 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
 
                 val imdbID = showData.getJSONObject("ids").getString("imdb")
                 showNames.add(showData.getString("title"))
+                try {
+                    showTrailer.add(item.getString("trailer").split("watch?v=").toTypedArray()[1])
+                }catch (e : Exception){
+                    try {
+                        showTrailer.add(showData.getString("trailer").split("watch?v=").toTypedArray()[1])
+                    }catch (e : Exception){
+                        showTrailer.add("null")
+                    }
+                }
                 showIDs.add(imdbID)
                 showImageLocations.add(imageLocation!!)
             }
 
             (holder?.itemView?.context as Activity?)?.runOnUiThread(Runnable {
-                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations)
+                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations, showTrailer)
             })
         })
     }

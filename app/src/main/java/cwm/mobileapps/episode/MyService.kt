@@ -36,6 +36,10 @@ class MyService : Service() {
             runOnAlarm()
         }
 
+        if (intent?.getStringExtra("triggerBy") == "jobScheduler"){
+            runOnAlarm()
+        }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -59,7 +63,8 @@ class MyService : Service() {
                     }
                     ShowLog("episode status for show ${it.showID} is ${it.episodeID != latestEpisodeID}")
                 }
-                if (newEpisodesAvailable){
+                //newEpisodesAvailable
+                if (true){
                     buildAndShowNotification("New Episodes", "Check your watch list, there are new episodes available to watch.")
                 }
             }
@@ -105,7 +110,7 @@ class MyService : Service() {
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle()

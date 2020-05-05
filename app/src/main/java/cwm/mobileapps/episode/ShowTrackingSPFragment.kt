@@ -74,16 +74,18 @@ class ShowTrackingSPFragment : Fragment() {
                 if (singleSeasonData.getInt("number") != 0) {
                     for (j in 0 until allEpisodesInSeason.length()) {
                         val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
-                        /*
+
                         val episodeID = singleEpisodeData.getJSONObject("ids").getString("imdb")
                         if (episodeID.matches("tt\\d{7,8}".toRegex())){
                             allEpisodesArr.add(episodeID)
                         }
-                        */
+                        /*
                         val episodeID = singleEpisodeData.getJSONObject("ids").getString("trakt")
                         if (episodeID.matches("\\d+".toRegex())){
                             allEpisodesArr.add(episodeID)
                         }
+
+                         */
 
                     }
                 }

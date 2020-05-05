@@ -11,11 +11,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
 import com.google.firebase.database.DataSnapshot
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import kotlinx.android.synthetic.main.popup_discover.view.*
+import rm.com.longpresspopup.LongPressPopupBuilder
+import java.lang.Exception
 
-class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>() {
+
+class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>, val showTrailer : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>(), YouTubePlayer.OnInitializedListener {
     var userID : String? = ""
+    lateinit var mvGroup : ViewGroup
 
     override fun getItemCount() = showTitle.size
 
@@ -49,6 +56,7 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.discover_lists_rv_card, parent, false)
+        mvGroup = parent
         return ViewHolder(view)
 
     }
@@ -57,5 +65,14 @@ class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : Ar
         val showTitleTXT: TextView = itemView.findViewById(R.id.showTitle_txt)
         val showPosterIV: ImageView = itemView.findViewById(R.id.showPoster_iv)
         val addShowBTN : Button = itemView.findViewById(R.id.addShow_btn)
+    }
+
+    override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
+        if (!wasRestored) {
+            player?.cueVideo("wKJ9KzGQq0w");
+        }
+    }
+
+    override fun onInitializationFailure(provider: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
     }
 }

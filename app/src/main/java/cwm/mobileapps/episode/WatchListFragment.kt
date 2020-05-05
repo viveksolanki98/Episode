@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_watch_list.*
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import rm.com.longpresspopup.LongPressPopupBuilder
 import kotlin.collections.ArrayList
 
 class WatchListFragment : Fragment() {
@@ -57,7 +59,16 @@ class WatchListFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(nextEpisodesRV)
 
+        //POP UP TEST-------------------------
+        val testText = TextView(this.context)
+        testText.text = "HELLO  THERE"
 
+        val popup = LongPressPopupBuilder(this.context)
+            .setTarget(view?.findViewById((R.id.watchListTitle_txt)))
+            .setPopupView(testText)
+            .build()
+        popup.register()
+        //------------------------------------
 
         return view
     }
@@ -109,10 +120,10 @@ class WatchListFragment : Fragment() {
             val numberOfSeasons = allShowEpisodesArray.length()
             val allEpisodesArr = ArrayList<String>()
 
-            val lastSeasonEpisodes = allShowEpisodesArray.getJSONObject(numberOfSeasons-1).getJSONArray("episodes")
-            val lastEpisodeID = lastSeasonEpisodes.getJSONObject(lastSeasonEpisodes.length()-1).getJSONObject("ids").getString("imdb")
+            val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${showID}/last_episode")
+            val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
             //updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
-            //ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, lastEpisodeID)
+            ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, latestEpisodeID)
 
             for (i in 0 until numberOfSeasons) {
                 val singleSeasonData = allShowEpisodesArray.getJSONObject(i)

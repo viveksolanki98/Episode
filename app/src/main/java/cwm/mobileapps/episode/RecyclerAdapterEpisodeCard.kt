@@ -40,6 +40,13 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
     var userID : String? = ""
 
     override fun getItemCount() = episodeIDs.size
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

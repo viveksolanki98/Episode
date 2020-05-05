@@ -1,10 +1,9 @@
 package cwm.mobileapps.episode
 
 import android.app.Service
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.*
 import android.drm.DrmStore.Playback.START
 import android.drm.DrmStore.Playback.STOP
 import android.net.Uri
@@ -72,6 +71,24 @@ class UserHomeActivity : AppCompatActivity() {
         }
         //-------------------------------------
         */
+
+        //JOB SCHEDULER EXAMPLE----------------
+        val componentName = ComponentName(this, MyJobService::class.java)
+        val info = JobInfo.Builder(123, componentName)
+            .setRequiresCharging(true)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            .setPersisted(true)
+            .setPeriodic(15 *60 * 1000)
+            .build()
+        val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val resCode = scheduler.schedule(info)
+        if (resCode == JobScheduler.RESULT_SUCCESS){
+            println("appdebug: userHome: Job Scheduled ")
+        }else{
+            println("appdebug: userHome: Job NOT Scheduled ")
+        }
+
+        //-------------------------------------
 
 
         val intent = Intent(this,MyAlarmService::class.java)
