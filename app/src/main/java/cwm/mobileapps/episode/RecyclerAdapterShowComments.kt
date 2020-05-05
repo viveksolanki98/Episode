@@ -30,6 +30,7 @@ class RecyclerAdapterShowComments(val commentDataArr : JSONArray) : RecyclerView
         }catch (e : Exception){
             holder.userNameTXT.text = singleCommentData.getJSONObject("user").getString("username")
         }
+        holder.likesCounterTXT.text = singleCommentData.getString("likes")
 
         val postDate = singleCommentData.getString("created_at")
 
@@ -91,6 +92,7 @@ class RecyclerAdapterShowComments(val commentDataArr : JSONArray) : RecyclerView
         val userNameTXT : TextView = itemView.findViewById(R.id.userName_txt)
         val timeSincePostTXT : TextView = itemView.findViewById(R.id.timeSincePost_txt)
         val commentBodyTXT : TextView = itemView.findViewById(R.id.commentBody_txt)
+        val likesCounterTXT : TextView = itemView.findViewById(R.id.likesCounter_txt)
         val commentProficePicIV : ImageView = itemView.findViewById(R.id.commentProficePic_iv)
 
     }

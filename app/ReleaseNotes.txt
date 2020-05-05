@@ -415,3 +415,7 @@ alpha 8.4.0 05/05/2020
 - UI updates for show comments fragment and cards
 - completed RV code for comments
 
+alpha 8.4.1 05/05/2020
+- UI adjustments
+- added like counter to comment card
+- added like counter to comment card
