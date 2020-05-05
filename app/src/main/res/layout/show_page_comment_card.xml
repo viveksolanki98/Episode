@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:cardBackgroundColor="#00000000">
+    app:cardBackgroundColor="#00000000"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/card_background"
+        android:elevation="0dp"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/commentCardTop_cl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#5800574B">
+            android:background="@drawable/comment_top_background"
+            android:elevation="0dp">
 
             <ImageView
                 android:id="@+id/commentProficePic_iv"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/default_profile_pic" />
@@ -33,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:text="User Name"
                 android:textColor="@color/design_default_color_on_secondary"
                 android:textSize="20sp"
@@ -45,16 +49,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="6dp"
                 android:text="Time Since Post"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/commentProficePic_iv" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/commentCardBottom_cl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF">
+            android:background="@drawable/comment_bottom_background">
 
             <TextView
                 android:id="@+id/commentBody_txt"

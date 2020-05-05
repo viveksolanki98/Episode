@@ -411,4 +411,7 @@ alpha 8.3.0 04/05/2020
 - created popup_discover layout file
 - created new layout file ready for comments sections
 
+alpha 8.4.0 05/05/2020
+- UI updates for show comments fragment and cards
+- completed RV code for comments
 

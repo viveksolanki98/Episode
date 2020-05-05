@@ -75,7 +75,7 @@ class UserHomeActivity : AppCompatActivity() {
         //JOB SCHEDULER EXAMPLE----------------
         val componentName = ComponentName(this, MyJobService::class.java)
         val info = JobInfo.Builder(123, componentName)
-            .setRequiresCharging(true)
+            .setRequiresCharging(false)
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
             .setPersisted(true)
             .setPeriodic(15 *60 * 1000)

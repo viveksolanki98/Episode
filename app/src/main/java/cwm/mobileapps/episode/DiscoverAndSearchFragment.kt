@@ -23,7 +23,7 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater?.inflate(R.layout.fragment_discover_and_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_discover_and_search, container, false)
 
         setHasOptionsMenu(true)
         val discoverSectionsRV: RecyclerView? = view?.findViewById((R.id.discoverSections_rv))
@@ -35,7 +35,7 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         sections.add(listOf("Most Played","played/daily"))
         sections.add(listOf("Most Saved","collected/weekly"))
         discoverSectionsRV?.adapter = RecyclerAdapterDSSections(sections as ArrayList<List<String>>)
-        discoverSectionsRV?.scrollToPosition(1)
+        //discoverSectionsRV?.scrollToPosition(1)
 
 
         /*
