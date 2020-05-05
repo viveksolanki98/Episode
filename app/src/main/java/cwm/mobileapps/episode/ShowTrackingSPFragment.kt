@@ -17,11 +17,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.math.RoundingMode
 
-/**
- * A simple [Fragment] subclass.
- */
 class ShowTrackingSPFragment : Fragment() {
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_show_tracking_sp, container, false)
@@ -29,20 +25,32 @@ class ShowTrackingSPFragment : Fragment() {
         val showID = activity?.intent?.extras?.getString("show_id")
 
 
-        val IMDbShowPageBTN : Button? = view?.findViewById(R.id.IMDbShowPage_btn)
-        IMDbShowPageBTN?.setOnClickListener {
-            //https://developer.android.com/training/basics/intents/sending#kotlin
-            // Build the intent
-            val imdbPage = Uri.parse("imdb:///title/$showID")
-            val imdbIntent = Intent(Intent.ACTION_VIEW, imdbPage)
+        val IMDBShowPageBTN : Button? = view?.findViewById(R.id.IMDbShowPage_btn)
 
-            // Verify it resolves
-            val activities: List<ResolveInfo>? = activity?.packageManager?.queryIntentActivities(imdbIntent, 0)
-            // Start an activity if it's safe
-            if (activities?.isNotEmpty()!!) {
-                startActivity(imdbIntent)
-            }
-        }
+            APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$showID", fun(apiDATA : Response) {
+                try {
+                    var imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
+                    activity?.runOnUiThread {
+                        IMDBShowPageBTN?.setOnClickListener {
+                            //https://developer.android.com/training/basics/intents/sending#kotlin
+                            // Build the intent
+                            val imdbPage = Uri.parse("imdb:///title/$imdbID")
+                            val imdbIntent = Intent(Intent.ACTION_VIEW, imdbPage)
+
+                            // Verify it resolves
+                            val activities: List<ResolveInfo>? = activity?.packageManager?.queryIntentActivities(imdbIntent, 0)
+                            // Start an activity if it's safe
+                            if (activities?.isNotEmpty()!!) {
+                                startActivity(imdbIntent)
+                            }
+                        }
+                    }
+                }catch (e : Exception) {
+                    activity?.runOnUiThread {
+                    IMDBShowPageBTN?.visibility = View.GONE
+                    }
+                }
+            })
 
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID?extended=full", fun(response : Response){
             val showDataObj = JSONObject(response.body!!.string())
@@ -75,17 +83,18 @@ class ShowTrackingSPFragment : Fragment() {
                     for (j in 0 until allEpisodesInSeason.length()) {
                         val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
 
+                        /*
                         val episodeID = singleEpisodeData.getJSONObject("ids").getString("imdb")
                         if (episodeID.matches("tt\\d{7,8}".toRegex())){
                             allEpisodesArr.add(episodeID)
                         }
-                        /*
+                        */
                         val episodeID = singleEpisodeData.getJSONObject("ids").getString("trakt")
                         if (episodeID.matches("\\d+".toRegex())){
                             allEpisodesArr.add(episodeID)
                         }
 
-                         */
+
 
                     }
                 }

@@ -56,7 +56,7 @@ class MyService : Service() {
                 ShowLog("database QUERY: RECORDS EXIST")
                 result.forEach {
                     val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
-                    val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
+                    val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("trakt")
                     if (it.episodeID != latestEpisodeID){
                         newEpisodesAvailable = true
                         availableNewEpisodesList.add(latestEpisodeID)
@@ -64,7 +64,7 @@ class MyService : Service() {
                     ShowLog("episode status for show ${it.showID} is ${it.episodeID != latestEpisodeID}")
                 }
                 //newEpisodesAvailable
-                if (true){
+                if (newEpisodesAvailable){
                     buildAndShowNotification("New Episodes", "Check your watch list, there are new episodes available to watch.")
                 }
             }

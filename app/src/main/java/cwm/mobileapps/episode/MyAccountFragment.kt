@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +18,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.fragment_my_account.*
+import org.json.JSONArray
+import org.json.JSONObject
+import okhttp3.Response
 
 
 class MyAccountFragment : Fragment() {
@@ -31,14 +34,14 @@ class MyAccountFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         // Inflate the layout for this fragment
-        val view = inflater?.inflate(R.layout.fragment_my_account, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_account, container, false)
 
         //Get user ID from shared preferences
         val myPref: SharedPreferences = this.activity!!.getSharedPreferences("Episode_pref", MODE_PRIVATE)
-        userID = myPref?.getString("user_id_google", "")
+        userID = myPref.getString("user_id_google", "")
 
         //Connect to FireBase FireStore and get profile picture reference
-        mStorageRef = FirebaseStorage.getInstance().getReference()?.child("UserProfilePics/$userID")
+        mStorageRef = FirebaseStorage.getInstance().getReference().child("UserProfilePics/$userID")
 
         val myAccountHeaddingTXT: TextView? = view?.findViewById(R.id.myAccountHeadding_txt)
         myAccountHeaddingTXT?.text = "My Account"
@@ -59,12 +62,12 @@ class MyAccountFragment : Fragment() {
                     Toast.makeText(context, "Storage permission required to change profile picture.", Toast.LENGTH_LONG).show()
                     requestPermissions(
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        1);
+                        1)
                 } else {
                     println("appdebug: myAccount: storage permission has never been requested")
                     requestPermissions(
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        1);
+                        1)
                 }
             }else {
                 // Permission is already granted
@@ -76,6 +79,12 @@ class MyAccountFragment : Fragment() {
         mStorageRef?.downloadUrl?.addOnSuccessListener {
             println("appdebug: myAccount: image location: $it")
             Glide.with(view!!.context).load(it).into(userProfileImageIV!!)
+        }
+
+        setTotalTimeWatched()
+
+        timeWatchedCounter_txt?.setOnClickListener {
+            setTotalTimeWatched()
         }
 
         return view
@@ -118,7 +127,7 @@ class MyAccountFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode==1 && resultCode==RESULT_OK && data!=null && data.data!=null){
             val imguri = data.data
-            var uploadTask = mStorageRef?.putFile(imguri!!)
+            val uploadTask = mStorageRef?.putFile(imguri!!)
 
             uploadTask?.addOnFailureListener {
                 // Handle unsuccessful uploads
@@ -132,6 +141,29 @@ class MyAccountFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setTotalTimeWatched(){
+        var totalTimeWatched : Long = 0
+
+        FBDBhandler.query("UserID_EpisodeID", "${userID}_tt1", fun(dataSnap : DataSnapshot?){
+            for(singleShowSnapshot in dataSnap!!.children){
+                val userShowID = JSONObject(singleShowSnapshot.getValue().toString()).getString("ShowID")
+
+                if(userShowID != "tt1") {
+                    APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$userShowID?extended=full", fun(apiData: Response) {
+                        val showDataObj = JSONArray(apiData.body!!.string()).getJSONObject(0)
+                        val showRunTime = showDataObj.getJSONObject("show").getInt("runtime")
+                        FBDBhandler.query("UserID_ShowID", "${userID}_$userShowID", fun(dataShowSnap: DataSnapshot?) {
+                            val numberWatched = dataShowSnap!!.children.count() - 1
+                            totalTimeWatched += (numberWatched * showRunTime)
+                            timeWatchedCounter_txt?.text = "You have spent ${totalTimeWatched} minutes watching T.V."
+                        })
+                    })
+                }
+            }
+        })
+
     }
 
 }

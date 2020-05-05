@@ -15,6 +15,7 @@ import androidx.appcompat.widget.ShareActionProvider
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuItemCompat
+import com.beust.klaxon.JsonArray
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -22,6 +23,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
+import okhttp3.Response
+import org.json.JSONArray
 
 
 class ShowPageActivity : AppCompatActivity() {
@@ -48,6 +51,8 @@ class ShowPageActivity : AppCompatActivity() {
         val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
         val posterURI =  intent.getStringExtra("show_poster")
+
+
 
         showTitle_txt.text = showTitle
         Glide
@@ -101,20 +106,27 @@ class ShowPageActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.share_menu, menu)
-        val shareItem = menu!!.findItem(R.id.action_share)
-
-        val showTitle = intent.getStringExtra("show_title")
         val showID = intent.getStringExtra("show_id")
 
-        val myShareActionProvider: ShareActionProvider = MenuItemCompat.getActionProvider(shareItem) as ShareActionProvider
-        val myShareIntent = Intent(Intent.ACTION_SEND)
-        //myShareIntent.type = "text/plain"
-        //myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle, https://www.imdb.com/title/$showID")
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$showID", fun(apiDATA : Response){
+            try {
+                var imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
+                runOnUiThread {
+                    menuInflater.inflate(R.menu.share_menu, menu)
+                    val shareItem = menu!!.findItem(R.id.action_share)
 
-        myShareIntent.type = "text/html"
-        myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle https://www.imdb.com/title/$showID")
-        myShareActionProvider.setShareIntent(myShareIntent)
+                    val showTitle = intent.getStringExtra("show_title")
+                    val myShareActionProvider: ShareActionProvider = MenuItemCompat.getActionProvider(shareItem) as ShareActionProvider
+                    val myShareIntent = Intent(Intent.ACTION_SEND)
+                    //myShareIntent.type = "text/plain"
+                    //myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle, https://www.imdb.com/title/$imdbID")
+
+                    myShareIntent.type = "text/html"
+                    myShareIntent.putExtra(Intent.EXTRA_TEXT, "I am watching this great show. You should check it out: $showTitle https://www.imdb.com/title/$imdbID")
+                    myShareActionProvider.setShareIntent(myShareIntent)
+                }
+            }catch (e : Exception){}
+        })
 
         return super.onCreateOptionsMenu(menu)
     }

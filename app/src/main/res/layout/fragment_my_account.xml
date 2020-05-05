@@ -19,11 +19,10 @@
 
     <TextView
         android:id="@+id/myAccountHeadding_txt"
-        android:layout_width="266dp"
-        android:layout_height="103dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,12 +31,22 @@
         android:id="@+id/userProfileImage_iv"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myAccountHeadding_txt"
         app:srcCompat="@drawable/default_profile_pic"
         tools:src="@drawable/default_profile_pic"
         tools:srcCompat="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/timeWatchedCounter_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Total Time Watched"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signOut_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

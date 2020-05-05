@@ -11,9 +11,11 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_show_tracking_sp.*
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import java.math.RoundingMode
 
 
 class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : RecyclerView.Adapter<RecyclerAdapterSearchResultCard.ViewHolder>() {
@@ -22,8 +24,8 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val showDataObj = searchResultsArr.getJSONObject(position).getJSONObject("show")
-        val imdbID = showDataObj.getJSONObject("ids").getString("imdb")
-        if (!imdbID.matches("tt\\d{7,8}".toRegex())){
+        val traktID = showDataObj.getJSONObject("ids").getString("trakt")
+        if (!traktID.matches("\\d+".toRegex())){
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -42,6 +44,13 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
             //var tvdbID = showDataObj.getJSONObject("ids").getString("tvdb")
             //var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
 
+
+            val showStartYear = showDataObj.getString("first_aired").split("-")[0]
+
+            val showRating = showDataObj.getDouble("rating").toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+            val showStatus = showDataObj.getString("status").split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
+            holder.showDetailsTXT.text = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
+
             Thread{
                 val imageLocation = APIhandler.imageFromID(showDataObj.getJSONObject("ids"))
                 (holder.itemView.context as Activity?)?.runOnUiThread{
@@ -55,7 +64,7 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
                             "show_title",
                             showDataObj.getString("title")
                         )
-                        intentToShowPageActivity.putExtra("show_id", imdbID)
+                        intentToShowPageActivity.putExtra("show_id", traktID)
                         intentToShowPageActivity.putExtra("show_poster", imageLocation)
 
                         holder.itemView.context.startActivity(intentToShowPageActivity)

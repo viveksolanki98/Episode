@@ -18,7 +18,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.sectionTitleTXT.text = sections[position][0].split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
-        holder.sectionRV?.layoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
+        holder.sectionRV.layoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
         launchDiscoverSection(holder, sections[position][1])
     }
 
@@ -54,7 +54,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
 
                 println("appdebug: imageLocation(tvdb): " + imageLocation)
 
-                val imdbID = showData.getJSONObject("ids").getString("imdb")
+                val traktID = showData.getJSONObject("ids").getString("trakt")
                 showNames.add(showData.getString("title"))
                 try {
                     showTrailer.add(item.getString("trailer").split("watch?v=").toTypedArray()[1])
@@ -65,13 +65,13 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
                         showTrailer.add("null")
                     }
                 }
-                showIDs.add(imdbID)
+                showIDs.add(traktID)
                 showImageLocations.add(imageLocation!!)
             }
 
-            (holder?.itemView?.context as Activity?)?.runOnUiThread(Runnable {
+            (holder?.itemView?.context as Activity?)?.runOnUiThread{
                 holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations, showTrailer)
-            })
+            }
         })
     }
 }

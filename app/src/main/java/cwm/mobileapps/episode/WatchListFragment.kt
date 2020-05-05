@@ -27,6 +27,7 @@ class WatchListFragment : Fragment() {
     var currentlyWatchingShows = ArrayList<String>()
     lateinit var viewAdapter : RecyclerAdapterEpisodeCard
     var watchListNextEpisodeRefreshLayoutSRL : SwipeRefreshLayout? = null
+    var completedShows = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -58,7 +59,7 @@ class WatchListFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(nextEpisodesRV)
-
+/*
         //POP UP TEST-------------------------
         val testText = TextView(this.context)
         testText.text = "HELLO  THERE"
@@ -70,13 +71,15 @@ class WatchListFragment : Fragment() {
         popup.register()
         //------------------------------------
 
+ */
+
         return view
     }
 
     fun populateNextEpisodeRV() {
         val myPref: SharedPreferences = context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref.getString("user_id_google", "")
-
+        completedShows = 0
         FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
             watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = true
             nextEpisodesList.clear()
@@ -121,7 +124,7 @@ class WatchListFragment : Fragment() {
             val allEpisodesArr = ArrayList<String>()
 
             val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${showID}/last_episode")
-            val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("imdb")
+            val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("trakt")
             //updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
             ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, latestEpisodeID)
 
@@ -131,20 +134,25 @@ class WatchListFragment : Fragment() {
                 if(singleSeasonData.getInt("number") != 0) {
                     for (j in 0 until allEpisodesInSeason.length()) {
                         val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
-                        allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("imdb"))
+                        allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("trakt"))
                     }
                 }
             }
+            val showsScanned = 0
             FBDBhandler.query("UserID_ShowID", "${userID}_$showID", fun(showData : DataSnapshot?){
                 for(singleShowSnapshot in showData!!.children){
                     val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
                     allEpisodesArr.remove(userEpisodeID)
                 }
                 // The remove line prevents the episode being added multiple times into the list
-                nextEpisodesList.remove(allEpisodesArr[0])
-                nextEpisodesList.add(allEpisodesArr[0])
-                nextEpisodesList.sort()
-                if(nextEpisodesList.size == numberOfShows){
+                if (allEpisodesArr.size > 0) {
+                    nextEpisodesList.remove(allEpisodesArr[0])
+                    nextEpisodesList.add(allEpisodesArr[0])
+                    nextEpisodesList.sort()
+                }else{
+                    completedShows++
+                }
+                if((nextEpisodesList.size + completedShows) == numberOfShows){
                     viewAdapter.notifyDataSetChanged()
                     watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
                 }

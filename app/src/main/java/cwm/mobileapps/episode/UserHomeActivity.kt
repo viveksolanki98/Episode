@@ -75,8 +75,7 @@ class UserHomeActivity : AppCompatActivity() {
         //JOB SCHEDULER EXAMPLE----------------
         val componentName = ComponentName(this, MyJobService::class.java)
         val info = JobInfo.Builder(123, componentName)
-            .setRequiresCharging(false)
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            //.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
             .setPersisted(true)
             .setPeriodic(15 *60 * 1000)
             .build()
@@ -89,7 +88,6 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         //-------------------------------------
-
 
         val intent = Intent(this,MyAlarmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

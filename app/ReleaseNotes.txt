@@ -418,4 +418,15 @@ alpha 8.4.0 05/05/2020
 alpha 8.4.1 05/05/2020
 - UI adjustments
 - added like counter to comment card
-- added like counter to comment card
+
+alpha 8.5.0 05/05/2020
+- UI changes myAccount
+- added minutes spent watching tv counter
+
+alpha 9.0.0 05/05/2020
+- changed whole app to use trakt ID instead of IMDbID
+- if no IMDbID exists then the imdb button and share button on show page wont be visible
+- set myService to use the newEpisodesAvailable boolean
+- fixed bug where watch list crashes if a show has all of its episodes marked watched
+- added show details to search card
+

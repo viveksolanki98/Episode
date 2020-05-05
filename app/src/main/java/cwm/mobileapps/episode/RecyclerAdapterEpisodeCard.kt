@@ -76,7 +76,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                 apiAccessURL,
                 fun(data: Response) {
                     val dataObj = JSONArray(data.body!!.string()).getJSONObject(0)
-                    val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
+                    val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("trakt")
                     val showTitle = dataObj.getJSONObject("show").getString("title")
                     val episodeTitle = dataObj.getJSONObject("episode").getString("title")
                     val season = dataObj.getJSONObject("episode").getInt("season")
@@ -158,6 +158,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  ViewHolder{
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.episode_rv_card, parent, false)
         return ViewHolder(view)
@@ -175,10 +176,10 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
 
     fun removeItem(viewHolder: RecyclerView.ViewHolder){
 
-        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/imdb/${episodeIDs[viewHolder.adapterPosition]}",
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/${episodeIDs[viewHolder.adapterPosition]}",
             fun(apiData : Response){
                 val dataObj = JSONArray(apiData.body!!.string()).getJSONObject(0)
-                val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("imdb")
+                val showID = dataObj.getJSONObject("show").getJSONObject("ids").getString("trakt")
 
                 markEpisodeAsWatched(showID, episodeIDs[viewHolder.adapterPosition], viewHolder.itemView.context)
                 episodeIDs.removeAt(viewHolder.adapterPosition)
