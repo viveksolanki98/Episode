@@ -24,7 +24,7 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
+        TODO("Not yet implemented")
     }
 
     fun insertData(dataClass : NextEpisodeDBDataClass){
