@@ -11,7 +11,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-67dp"
+        tools:layout_editor_absoluteX="53dp"
         tools:layout_editor_absoluteY="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,14 +49,15 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="Search"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="10sp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/discoverSearchTitle_txt" />
+                app:layout_constraintTop_toBottomOf="@+id/searchTextBar_sv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/discoverSections_rv"
@@ -69,6 +70,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/searchLauncher_btn">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <SearchView
+                android:id="@+id/searchTextBar_sv"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:queryHint="Something On Your Mind?"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/discoverSearchTitle_txt" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

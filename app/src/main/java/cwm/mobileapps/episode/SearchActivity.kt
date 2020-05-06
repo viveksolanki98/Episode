@@ -37,6 +37,9 @@ class SearchActivity : AppCompatActivity() {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 applySearch(query)
             }
+        }else if(intent?.getStringExtra("search_term") != null){
+            mQuery = intent.getStringExtra("search_term")
+            applySearch(mQuery)
         }
     }
 
