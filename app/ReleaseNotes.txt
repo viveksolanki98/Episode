@@ -430,11 +430,6 @@ alpha 9.0.0 05/05/2020
 - fixed bug where watch list crashes if a show has all of its episodes marked watched
 - added show details to search card
 
-alpha 9.0.1 05/05/2020
-- on back button press to go to watch list, the recycler view is refreshed
-- DS section passes the whole JSON array to the DS Lists to get the data instead of pre-loading it.
-    This changed launchDiscoverSection() a lot
-
 alpha 9.1.0 06/05/2020
 - added not watched tv posters at the top of watch list.
 - refresh is still buggy
@@ -443,3 +438,11 @@ alpha 9.1.1 06/05/2020
 - fixed refresh bug
 - refresh will display unique shows
 - fixed on initial load problem where the not started section wont load elements
+
+-----------------------------
+CHECK OUT VERSION 9.0.1
+-----------------------------
+alpha 9.2.0 06/05/2020
+- REVERT TO 9.0.1
+alpha 9.2.1 06/05/2020
+- REVERT TO 9.0.1
