@@ -53,7 +53,6 @@ class WatchListFragment : Fragment() {
         watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
             populateNextEpisodeRV()
         }
-
         populateNextEpisodeRV()
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
@@ -82,7 +81,6 @@ class WatchListFragment : Fragment() {
         //------------------------------------
 
  */
-
         return view
     }
 
