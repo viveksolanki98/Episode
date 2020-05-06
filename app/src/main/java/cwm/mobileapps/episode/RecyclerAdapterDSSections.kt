@@ -11,14 +11,26 @@ import okhttp3.*
 import org.json.JSONArray
 import java.lang.Exception
 
-class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
-
+class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>, val showIDs: ArrayList<String> =  ArrayList<String>()) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
+    var listDataSet = JSONArray()
+    var nestedFlag = true
+    lateinit var viewAdapter : RecyclerAdapterDSLists
     override fun getItemCount() = sections.size
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.sectionTitleTXT.text = sections[position][0].split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
         holder.sectionRV.layoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
+        viewAdapter = RecyclerAdapterDSLists(listDataSet,nestedFlag)
+        holder.sectionRV.adapter = viewAdapter
         launchDiscoverSection(holder, sections[position][1])
     }
 
@@ -34,18 +46,35 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
     }
 
     fun launchDiscoverSection(holder : ViewHolder?, section : String?) {
-        APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section?extended=full", fun(response : Response){
-            val body = response.body!!.string()
-            var result = JSONArray()
-            try {
-                result = JSONArray(body)
-            }catch (e :Exception){}
-            val nestedFlag = section != "popular"
-
-            (holder?.itemView?.context as Activity?)?.runOnUiThread{
-                //(showNames, showIDs, showImageLocations, showTrailer)
-                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(result, nestedFlag)
+        listDataSet = JSONArray()
+        if (section == "notStarted"){
+            var counter = 0
+            listDataSet = JSONArray()
+            showIDs.forEach {
+                APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$it?type=show", fun(response: Response) {
+                    counter++
+                    listDataSet.put(JSONArray(response.body!!.string()).getJSONObject(0))
+                    if (counter == showIDs.size){
+                        nestedFlag = true
+                        (holder?.itemView?.context as Activity?)?.runOnUiThread {
+                            viewAdapter.notifyDataSetChanged()
+                        }
+                    }
+                })
             }
-        })
+
+        }else {
+            APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section?extended=full", fun(response: Response) {
+                val body = response.body!!.string()
+                try {
+                    listDataSet = JSONArray(body)
+                } catch (e: Exception) {
+                }
+                nestedFlag = section != "popular"
+                (holder?.itemView?.context as Activity?)?.runOnUiThread {
+                    viewAdapter.notifyDataSetChanged()
+                }
+            })
+        }
     }
 }

@@ -434,3 +434,7 @@ alpha 9.0.1 05/05/2020
 - on back button press to go to watch list, the recycler view is refreshed
 - DS section passes the whole JSON array to the DS Lists to get the data instead of pre-loading it.
     This changed launchDiscoverSection() a lot
+
+alpha 9.1.0 06/05/2020
+- added not watched tv posters at the top of watch list.
+- refresh is still buggy

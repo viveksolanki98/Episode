@@ -25,7 +25,10 @@ class WatchListFragment : Fragment() {
     var userID : String? = ""
     var nextEpisodesList = ArrayList<String>()
     var currentlyWatchingShows = ArrayList<String>()
+    var notStartedShowIDs = ArrayList<String>()
+    val sections = ArrayList<List<String>>()
     lateinit var viewAdapter : RecyclerAdapterEpisodeCard
+    lateinit var viewAdapterNotStarted : RecyclerAdapterDSSections
     var watchListNextEpisodeRefreshLayoutSRL : SwipeRefreshLayout? = null
     var completedShows = 0
 
@@ -38,9 +41,16 @@ class WatchListFragment : Fragment() {
         viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
         nextEpisodesRV?.adapter = viewAdapter
 
+        //--------------------------------------------------------
+        val notWatchedYetRV: RecyclerView? = view?.findViewById((R.id.notWatchedYet_rv))
+        notWatchedYetRV?.layoutManager = LinearLayoutManager(context)
+        viewAdapterNotStarted = RecyclerAdapterDSSections(sections, notStartedShowIDs)
+        notWatchedYetRV?.adapter = viewAdapterNotStarted
+
+        //--------------------------------------------------------
+
         watchListNextEpisodeRefreshLayoutSRL = view?.findViewById(R.id.watchListNextEpisodeRefreshLayout_SRL)
         watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
-            println("appdebug: watchList: in refresh listener")
             populateNextEpisodeRV()
         }
 
@@ -84,6 +94,8 @@ class WatchListFragment : Fragment() {
             watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = true
             nextEpisodesList.clear()
             currentlyWatchingShows.clear()
+            notStartedShowIDs.clear()
+            sections.clear()
             val snapLength = data?.childrenCount?.toInt()
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
@@ -96,6 +108,7 @@ class WatchListFragment : Fragment() {
             }
             if(snapLength!! <= 1){
                 viewAdapter.notifyDataSetChanged()
+                viewAdapterNotStarted.notifyDataSetChanged()
                 watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
             }
         })
@@ -138,7 +151,7 @@ class WatchListFragment : Fragment() {
                     }
                 }
             }
-            val showsScanned = 0
+
             FBDBhandler.query("UserID_ShowID", "${userID}_$showID", fun(showData : DataSnapshot?){
                 for(singleShowSnapshot in showData!!.children){
                     val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
@@ -152,8 +165,21 @@ class WatchListFragment : Fragment() {
                 }else{
                     completedShows++
                 }
+
+                if (showData.childrenCount.toInt() == 1){
+                    notStartedShowIDs.remove(showID)
+                    notStartedShowIDs.add(showID)
+                    notStartedShowIDs.sort()
+                }
                 if((nextEpisodesList.size + completedShows) == numberOfShows){
                     viewAdapter.notifyDataSetChanged()
+                    if (notStartedShowIDs.size == 0){
+                        sections.clear()
+                    }else{
+                        sections.clear()
+                        sections.add(listOf("Not Started","notStarted"))
+                    }
+                    viewAdapterNotStarted.notifyDataSetChanged()
                     watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
                 }
             })
