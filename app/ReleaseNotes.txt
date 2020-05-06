@@ -450,3 +450,6 @@ alpha 9.2.2 06/05/2020
 - REVERT TO 9.0.1
 alpha 9.2.3 06/05/2020
 - REVERT TO 9.0.1
+
+alpha 9.3.0 06/05/2020
+- added a tab layout to user home making it easier to navigate.

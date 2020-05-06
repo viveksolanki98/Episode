@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.database.DataSnapshot
+import kotlinx.android.synthetic.main.activity_user_home2.*
 import kotlinx.android.synthetic.main.fragment_watch_list.*
 import okhttp3.Response
 import org.json.JSONArray

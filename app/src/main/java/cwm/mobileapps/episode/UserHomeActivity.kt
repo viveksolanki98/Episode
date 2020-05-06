@@ -1,35 +1,33 @@
 package cwm.mobileapps.episode
 
-import android.app.Service
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.*
-import android.drm.DrmStore.Playback.START
-import android.drm.DrmStore.Playback.STOP
-import android.net.Uri
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.insert
-import android.speech.tts.TextToSpeech.STOPPED
-import android.support.v4.media.session.PlaybackStateCompat
-import android.telephony.ServiceState
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startForegroundService
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.ktx.Firebase
-import com.uwetrottmann.thetvdb.TheTvdb
-import com.uwetrottmann.thetvdb.entities.Series
+import com.google.android.material.tabs.TabLayout
+import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.activity_user_home2.*
+
 
 class UserHomeActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
+    var userID : String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_home2)
+
+        val myPref: SharedPreferences = getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
+        userID = myPref.getString("user_id_google", "")
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("700140263399-6u7use2ta07uanlm80d23hg3eokvrkpb.apps.googleusercontent.com")
@@ -44,6 +42,39 @@ class UserHomeActivity : AppCompatActivity() {
         adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
+
+
+
+        vpTab_tl.addTab(vpTab_tl.newTab().setText("Watch List"))
+        vpTab_tl.addTab(vpTab_tl.newTab().setText("Discover"))
+        vpTab_tl.addTab(vpTab_tl.newTab().setText("My Account"))
+
+        vpTab_tl.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                userHome_vp.currentItem = tab.position
+            }
+        })
+
+        userHome_vp.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                val tab = vpTab_tl.getTabAt(position)
+                tab?.select()
+            }
+        })
+
+
+        FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
+            if(data!!.childrenCount.toInt() <= 1){
+                userHome_vp.currentItem = 1
+            }
+        })
+
 
         //CONTENT PROVIDER EXAMPLES:
         /*
