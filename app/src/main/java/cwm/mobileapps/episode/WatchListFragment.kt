@@ -164,4 +164,9 @@ class WatchListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         watchListTitle_txt.text = "My Watch List"
     }
+
+    override fun onResume() {
+        super.onResume()
+        populateNextEpisodeRV()
+    }
 }

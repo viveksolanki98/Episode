@@ -1,5 +1,6 @@
 package cwm.mobileapps.episode
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,39 +17,58 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.firebase.database.DataSnapshot
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import kotlinx.android.synthetic.main.popup_discover.view.*
+import org.json.JSONArray
 import rm.com.longpresspopup.LongPressPopupBuilder
 import java.lang.Exception
 
-
-class RecyclerAdapterDSLists(val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>, val showTrailer : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>(), YouTubePlayer.OnInitializedListener {
+///val showTitle : ArrayList<String>, val showIDs : ArrayList<String>, val showImageLocations : ArrayList<String>, val showTrailer : ArrayList<String>,
+class RecyclerAdapterDSLists(val allShowsArr : JSONArray, val nestedFlag : Boolean) : RecyclerView.Adapter<RecyclerAdapterDSLists.ViewHolder>(), YouTubePlayer.OnInitializedListener {
     var userID : String? = ""
     lateinit var mvGroup : ViewGroup
 
-    override fun getItemCount() = showTitle.size
+    override fun getItemCount() = allShowsArr.length()
+        //showTitle.size
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val myPref: SharedPreferences = holder.itemView.context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref?.getString("user_id_google", "")
 
-        holder.showTitleTXT.text = showTitle[position]
-        Glide.with(holder.itemView.context).load(showImageLocations[position]).into(holder.showPosterIV)
+        val item = allShowsArr.getJSONObject(position)
+        val showData = if(nestedFlag) item.getJSONObject("show") else item
+        val traktID = showData.getJSONObject("ids").getString("trakt")
 
-        FBDBhandler.queryListener("UserID_ShowID", "${userID}_${showIDs[position]}", fun(data : DataSnapshot?) {
+        holder.showTitleTXT.text = showData.getString("title")
+
+        Thread{
+            val imageLocation = APIhandler.imageFromID(showData.getJSONObject("ids"))
+            (holder.itemView.context as Activity?)?.runOnUiThread {
+                Glide.with(holder.itemView.context as Activity).load(imageLocation).into(holder.showPosterIV)
+            }
+
+            holder.showPosterIV.setOnClickListener {
+                val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
+                intentToShowPageActivity.putExtra("show_title", showData.getString("title"))
+                intentToShowPageActivity.putExtra("show_id", traktID)
+                intentToShowPageActivity.putExtra("show_poster", imageLocation)
+
+                holder.itemView.context.startActivity(intentToShowPageActivity)
+            }
+        }.start()
+        FBDBhandler.queryListener("UserID_ShowID", "${userID}_${traktID}", fun(data : DataSnapshot?) {
             println("appdebug: showExistsNEW: " + data!!.getValue())
             holder.addShowBTN.visibility = if (data.getValue() != null) View.GONE else View.VISIBLE
         })
 
-        holder.showPosterIV.setOnClickListener {
-            val intentToShowPageActivity = Intent(holder.itemView.context, ShowPageActivity::class.java)
-            intentToShowPageActivity.putExtra("show_title", showTitle[position])
-            intentToShowPageActivity.putExtra("show_id", showIDs[position])
-            intentToShowPageActivity.putExtra("show_poster", showImageLocations[position])
-
-            holder.itemView.context.startActivity(intentToShowPageActivity)
-        }
-
         holder.addShowBTN.setOnClickListener {
-            FBDBhandler.addRecord("tt1", showIDs[position], userID!!)
+            FBDBhandler.addRecord("tt1", traktID, userID!!)
             holder.addShowBTN.visibility = View.GONE
         }
 

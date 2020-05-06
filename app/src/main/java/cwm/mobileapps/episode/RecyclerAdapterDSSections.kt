@@ -40,37 +40,11 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
             try {
                 result = JSONArray(body)
             }catch (e :Exception){}
-            println("API Search Success")
-
-            val showTrailer = ArrayList<String>()
-            val showNames = ArrayList<String>()
-            val showIDs = ArrayList<String>()
-            val showImageLocations = ArrayList<String>()
-            for (i in 0 until result.length()) {
-                val item = result.getJSONObject(i)
-                val showData = if(section == "popular") item else item.getJSONObject("show")
-
-                val imageLocation = APIhandler.imageFromID(showData.getJSONObject("ids"))
-
-                println("appdebug: imageLocation(tvdb): " + imageLocation)
-
-                val traktID = showData.getJSONObject("ids").getString("trakt")
-                showNames.add(showData.getString("title"))
-                try {
-                    showTrailer.add(item.getString("trailer").split("watch?v=").toTypedArray()[1])
-                }catch (e : Exception){
-                    try {
-                        showTrailer.add(showData.getString("trailer").split("watch?v=").toTypedArray()[1])
-                    }catch (e : Exception){
-                        showTrailer.add("null")
-                    }
-                }
-                showIDs.add(traktID)
-                showImageLocations.add(imageLocation!!)
-            }
+            val nestedFlag = section != "popular"
 
             (holder?.itemView?.context as Activity?)?.runOnUiThread{
-                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations, showTrailer)
+                //(showNames, showIDs, showImageLocations, showTrailer)
+                holder?.sectionRV?.adapter = RecyclerAdapterDSLists(result, nestedFlag)
             }
         })
     }

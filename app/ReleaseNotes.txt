@@ -430,3 +430,7 @@ alpha 9.0.0 05/05/2020
 - fixed bug where watch list crashes if a show has all of its episodes marked watched
 - added show details to search card
 
+alpha 9.0.1 05/05/2020
+- on back button press to go to watch list, the recycler view is refreshed
+- DS section passes the whole JSON array to the DS Lists to get the data instead of pre-loading it.
+    This changed launchDiscoverSection() a lot
