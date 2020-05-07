@@ -56,6 +56,8 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         )
         userID = myPref.getString("user_id_google", "")
 
+        holder.episodeCardCL.visibility = View.GONE
+
         (holder.itemView.context as Activity?)?.runOnUiThread{
             FBDBhandler.query("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
                 holder.watchedToggleSWT.isChecked = episodeCheckData?.getValue() != null
@@ -152,7 +154,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                                     fun() {})
                             }
                         }
-
+                        holder.episodeCardCL.visibility = View.VISIBLE
                     }
                 })
         }

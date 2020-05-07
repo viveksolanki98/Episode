@@ -459,3 +459,10 @@ alpha 9.4.0 06/05/2020
 
 alpha 9.5.0 06/05/2020
 - added a tab layout to show activity making it easier to navigate.
+
+-----------------------------------
+BETA 1.0
+-----------------------------------
+
+alpha 9.5.1 06/05/2020
+- episode card hides layout until all elements are loaded
