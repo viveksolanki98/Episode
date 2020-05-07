@@ -466,3 +466,6 @@ BETA 1.0
 
 alpha 9.5.1 06/05/2020
 - episode card hides layout until all elements are loaded
+
+alpha 9.5.2 07/05/2020
+- added the user manual to the app. Can be viewed from main activity and my account fragment

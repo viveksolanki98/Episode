@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
+html {
+  scroll-behavior: smooth
+}
+
+body {
+  background-color: #008577;
+  font-family: 'Roboto', sans-serif;
+  color: white
+}
+
+#topBar {
+  display: inline-block;
+  height: 192px;
+  width: 100%
+}
+
+#topBar h1 {
+  font-size: 10vw;
+  display: inline-block;
+  margin-bottom: 10px
+}
+
+#topBar img {
+  display: inline-block;
+  width: 30%;
+  height: auto
+}
+
+#topBar p {
+  font-size: 4vw;
+  display: inline-block;
+  padding-left: 10px;
+  margin-left: 10px
+}
+
+.sectionTitle {
+  color: #EEFD47;
+  font-size: 4vw;
+  border-bottom: solid
+}
+
+.instructions {
+  font-size: 3vw
+}
+
+.imgContaner {
+  text-align: center
+}
+
+.imgContaner .screenShot {
+  box-shadow: 8px 8px 10px #222422;
+  width: 48%;
+  height: auto
+}
+
+#nextSectionBtn {
+  background-color: #008577;
+  color: #EEFD47;
+  margin: auto;
+  width: 100%;
+  height: 10%;
+  max-height: 50px;
+  transition: 0.3s
+}
+
+#nextSectionBtn i {
+  width: 100%;
+  height: 10%;
+  max-height: 50px;
+  text-align: center;
+  margin: auto;
+  font-size: 5em;
+  padding-top: 10px
+}
+
+#nextSectionBtn:hover {
+  background-color: #008577;
+  color: #EEFD47
+}

@@ -87,6 +87,12 @@ class MyAccountFragment : Fragment() {
             setTotalTimeWatched()
         }
 
+        val launchUserManualBTN : Button? = view.findViewById(R.id.launchUserManual_btn)
+        launchUserManualBTN?.setOnClickListener {
+            val intentToUserManualActivity = Intent(this.context, UserManualActivity::class.java)
+            startActivity(intentToUserManualActivity)
+        }
+
         return view
     }
 

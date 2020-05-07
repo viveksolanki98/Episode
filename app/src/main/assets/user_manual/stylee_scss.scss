@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+$primaryC : #008577;
+$secondaryC : #EEFD47;
+
+html {
+	scroll-behavior: smooth;
+};
+
+body{
+  background-color: $primaryC;
+  font-family: 'Roboto', sans-serif;
+  color: white;
+}
+
+#topBar{
+  //border-style: dotted;
+  display: inline-block;
+  height: 192px;
+  width: 100%;
+  h1{
+    font-size: 10vw;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  img{
+    display: inline-block;
+		width: 30%;
+		height: auto;
+  }
+  p{
+    font-size: 4vw;
+    display: inline-block;
+    padding-left: 10px;
+    margin-left: 10px;
+  }
+}
+
+.sectionTitle{
+  color: $secondaryC;
+  font-size: 4vw;
+  border-bottom: solid;
+}
+
+.instructions{
+  font-size: 3vw;
+}
+
+.imgContaner{
+  text-align: center;
+  .screenShot{
+    box-shadow: 8px 8px 10px #222422;
+    width: 48%;
+    height: auto;
+  }
+
+}
+
+#nextSectionBtn{
+  background-color: $primaryC;
+  color: $secondaryC;
+    i{
+      width: 100%;
+      height: 10%;
+      max-height: 50px;
+      //align-content: center;
+      text-align:center;
+      margin: auto;
+      font-size: 5em;
+      padding-top: 10px
+    };
+    margin: auto;
+    width: 100%;
+    height: 10%;
+    max-height: 50px;
+    transition: 0.3s;
+  };
+
+  #nextSectionBtn:hover{
+    background-color: $primaryC;
+    color: $secondaryC;
+  };

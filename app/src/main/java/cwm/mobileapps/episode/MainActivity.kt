@@ -50,6 +50,11 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
+        launchManual_btn.setOnClickListener {
+            val intentToUserManualActivity = Intent(this, UserManualActivity::class.java)
+            startActivity(intentToUserManualActivity)
+        }
+
 
     }
 
