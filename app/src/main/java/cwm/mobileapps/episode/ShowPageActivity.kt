@@ -15,11 +15,13 @@ import androidx.appcompat.widget.ShareActionProvider
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuItemCompat
+import androidx.viewpager.widget.ViewPager
 import com.beust.klaxon.JsonArray
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.DataSnapshot
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_show_page.*
@@ -46,6 +48,29 @@ class ShowPageActivity : AppCompatActivity() {
         adapter.addFragment(ShowTrackingSPFragment(), " Show Tracking ")
         adapter.addFragment(ShowCommentsSpFragment(), " Show Comments ")
         showPage_vp.adapter = adapter
+        //----------------------------------------------------
+        vpTabShowPage_tl.addTab(vpTabShowPage_tl.newTab().setText("Details"))
+        vpTabShowPage_tl.addTab(vpTabShowPage_tl.newTab().setText("Comments"))
+
+        vpTabShowPage_tl.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                showPage_vp.currentItem = tab.position
+            }
+        })
+
+        showPage_vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                val tab = vpTabShowPage_tl.getTabAt(position)
+                tab?.select()
+            }
+        })
+        //----------------------------------------------------
 
 
         val showTitle = intent.getStringExtra("show_title")
@@ -110,7 +135,7 @@ class ShowPageActivity : AppCompatActivity() {
 
         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$showID", fun(apiDATA : Response){
             try {
-                var imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
+                val imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
                 runOnUiThread {
                     menuInflater.inflate(R.menu.share_menu, menu)
                     val shareItem = menu!!.findItem(R.id.action_share)

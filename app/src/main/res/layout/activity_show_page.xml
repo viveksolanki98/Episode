@@ -46,5 +46,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showTitle_txt" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/vpTabShowPage_tl"
+        android:layout_width="216dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></com.google.android.material.tabs.TabLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

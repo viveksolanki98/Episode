@@ -456,3 +456,6 @@ alpha 9.3.0 06/05/2020
 
 alpha 9.4.0 06/05/2020
 - changed search button to a search bar that launches the search activity.
+
+alpha 9.5.0 06/05/2020
+- added a tab layout to show activity making it easier to navigate.
