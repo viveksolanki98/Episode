@@ -35,7 +35,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-
+//This class handles the recycler views in the watch list fragment and the show tracking fragment
 class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerView.Adapter<RecyclerAdapterEpisodeCard.ViewHolder>() {
     var userID : String? = ""
 
@@ -56,24 +56,28 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
         )
         userID = myPref.getString("user_id_google", "")
 
+        //Initially hide card
         holder.episodeCardCL.visibility = View.GONE
 
+        //If episode is in FBDB then mark as watched
         (holder.itemView.context as Activity?)?.runOnUiThread{
             FBDBhandler.query("UserID_EpisodeID", "${userID}_${episodeIDs[position]}", fun(episodeCheckData :DataSnapshot?){
                 holder.watchedToggleSWT.isChecked = episodeCheckData?.getValue() != null
             })
         }
 
+        //If episode has an ID...
         if (episodeIDs[position] != "null") {
-            //https://api.trakt.tv/search/trakt/${episodeIDs[position]}?type=episode&extended=full
-            //https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full
+
             var apiAccessURL = String()
             if (episodeIDs[position].matches("tt\\d{7,8}".toRegex())){
+                //This is to use an IMDb api call if it is given
                 apiAccessURL = "https://api.trakt.tv/search/imdb/${episodeIDs[position]}?extended=full"
-            }
-            if (episodeIDs[position].matches("\\d+".toRegex())){
+            }else if (episodeIDs[position].matches("\\d+".toRegex())){
+                //This is to use a Trakt ID if it is given
                 apiAccessURL = "https://api.trakt.tv/search/trakt/${episodeIDs[position]}?type=episode&extended=full"
             }
+            //Get Episode data
             APIhandler.trackitAPIAsync(
                 apiAccessURL,
                 fun(data: Response) {
@@ -84,7 +88,8 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     val season = dataObj.getJSONObject("episode").getInt("season")
                     val episode = dataObj.getJSONObject("episode").getInt("number")
                     val airDateString = dataObj.getJSONObject("episode").getString("first_aired")
-                    var airDateFormatted = ""
+                    //Parse air date time stamp
+                    val airDateFormatted : String
                     if (airDateString != "null"){
                         val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
                         val outputFormatter = DateTimeFormatter.ofPattern("d LLL yyyy", Locale.ENGLISH)
@@ -93,25 +98,27 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                     }else{
                         airDateFormatted = "No Date"
                     }
+                    //Get poster and banner image locations
                     val posterLocation = APIhandler.imageFromID(dataObj.getJSONObject("show").getJSONObject("ids"))
                     val bannerLocation = APIhandler.theTVDBAPI(dataObj.getJSONObject("show").getJSONObject("ids").getInt("tvdb"))
 
 
-                    //println("appdebug: recyclerAdapterEpisodeCard: image location: $imageLocation")
                     (holder.itemView.context as Activity?)?.runOnUiThread{
+                        //Assign episode data variables to UI elements
                         holder.showTitleTXT.text = showTitle
                         holder.episodeTitleTXT.text = episodeTitle
                         holder.episodeDetailsTXT.text = "Season ${season}, Episode ${episode}, ${airDateFormatted}"
                         if (!(holder.itemView.context as Activity).isFinishing) {
+                            //Put show poster in image view
                             Glide.with(holder.itemView.context as Activity).load(posterLocation).into(holder.showPosterIV)
-
+                            //If banner exists...
                             if(bannerLocation != null){
+                                //Apply the banner to the card background, blurred
                                 Glide
                                     .with(holder.itemView.context as Activity)
                                     .asBitmap()
                                     .load(bannerLocation.fanart)
                                     .transform(BlurTransformation(4, 4))
-                                    //.apply(RequestOptions.bitmapTransform(BlurTransformation(8, 3)))
                                     .into(object : CustomTarget<Bitmap?>(100, 100) {
                                         override fun onResourceReady(
                                             resource: Bitmap,
@@ -126,7 +133,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                                     })
                             }
                         }
-
+                        //IF poster clicked then move to the show page
                         holder.showPosterIV.setOnClickListener {
                             val intentToShowPageActivity =
                                 Intent(holder.itemView.context, ShowPageActivity::class.java)
@@ -137,10 +144,9 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                             holder.itemView.context.startActivity(intentToShowPageActivity)
                         }
 
+                        //If toggle switch checked then add episode to database, otherwise remove
                         holder.watchedToggleSWT.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
-                                //FBDBhandler.addRecord(episodeIDs[position], showID,userID!!)
-                                //Toast.makeText(holder.itemView.context,"Show Marked Watched!", Toast.LENGTH_SHORT).show()
                                 markEpisodeAsWatched(showID, episodeIDs[position], holder.itemView.context)
                             } else {
                                 FBDBhandler.deleteRecord("UserID_EpisodeID", "${userID}_${episodeIDs[position]}",
@@ -154,6 +160,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
                                     fun() {})
                             }
                         }
+                        //Once everything has loaded, then show the card
                         holder.episodeCardCL.visibility = View.VISIBLE
                     }
                 })
@@ -177,7 +184,9 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
     }
 
     fun removeItem(viewHolder: RecyclerView.ViewHolder){
+        //this function removes an episode from the recycler view and adds the episode to the FBDB
 
+        //Get show ID from the Episode ID
         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/${episodeIDs[viewHolder.adapterPosition]}",
             fun(apiData : Response){
                 val dataObj = JSONArray(apiData.body!!.string()).getJSONObject(0)
@@ -192,6 +201,7 @@ class RecyclerAdapterEpisodeCard(val episodeIDs : ArrayList<String>) : RecyclerV
     }
 
     private fun markEpisodeAsWatched(showID : String, episodeID : String, context : Context){
+        //This function adds the episode to the database
         FBDBhandler.addRecord(episodeID, showID, userID!!)
         (context as Activity?)?.runOnUiThread {
             Toast.makeText(context, "Show Marked Watched!", Toast.LENGTH_SHORT).show()

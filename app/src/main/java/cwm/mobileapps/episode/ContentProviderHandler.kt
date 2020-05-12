@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.net.Uri
 
-
+//This class keeps all the uses of the content provider consistent. It helps reduce repetitive code in the activity related classes
 class ContentProviderHandler() {
     var uri = Uri.parse("content://cwm.mobileapps.episode.PROVIDER")
 
@@ -23,12 +23,14 @@ class ContentProviderHandler() {
 
     fun query(contentResolver: ContentResolver, showID : String?): ArrayList<NextEpisodeDBDataClass>? {
 
+        //This If statement helps decide if a select all call is needed
         val queryCursor = if (showID ==null) {
             contentResolver.query(uri, null, null, null, null)
         }else{
             contentResolver.query(uri, null, "showID", arrayOf(showID), null)
         }
         var list : ArrayList<NextEpisodeDBDataClass>? = arrayListOf(NextEpisodeDBDataClass())
+        //iterate through the results and put into a list
         if(queryCursor!!.moveToFirst()){
             list?.removeAt(0)
             do {
@@ -42,7 +44,7 @@ class ContentProviderHandler() {
             list = null
             println("appdebug: contentProviderHandler: QUERY: NO RECORD EXISTS")
         }
-        //queryCursor.close()
+
         return list
 
     }
@@ -58,6 +60,8 @@ class ContentProviderHandler() {
     }
 
     fun safeInsert(contentResolver: ContentResolver,showID : String, episodeID : String): Int{
+        //Instead of using insert in the main app classes, this is used to make sure no errors are thrown and no duplicate records are made.
+        // It first checks if the record exists or not. If it doesn't then only it inserts.
         val res : Int
 
         if (query(contentResolver, showID) == null){

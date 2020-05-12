@@ -34,67 +34,65 @@ class WatchListFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_watch_list, container, false)
 
+        //Prepare recycler view for next episode list
         val nextEpisodesRV: RecyclerView? = view?.findViewById((R.id.nextEpisodes_rv))
         nextEpisodesRV?.layoutManager = LinearLayoutManager(context)
         viewAdapter = RecyclerAdapterEpisodeCard(nextEpisodesList)
         nextEpisodesRV?.adapter = viewAdapter
 
+        //Pull down to refresh listener
         watchListNextEpisodeRefreshLayoutSRL = view?.findViewById(R.id.watchListNextEpisodeRefreshLayout_SRL)
         watchListNextEpisodeRefreshLayoutSRL?.setOnRefreshListener {
             println("appdebug: watchList: in refresh listener")
             populateNextEpisodeRV()
         }
 
+        //Initialise list
         populateNextEpisodeRV()
 
+        //Swipe to mark as watched
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                //If swiped mark as watched and remove from recycler view
                 viewAdapter.removeItem(viewHolder)
             }
 
         }
-
+        //Add listener to recycler view
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(nextEpisodesRV)
-/*
-        //POP UP TEST-------------------------
-        val testText = TextView(this.context)
-        testText.text = "HELLO  THERE"
-
-        val popup = LongPressPopupBuilder(this.context)
-            .setTarget(view?.findViewById((R.id.watchListTitle_txt)))
-            .setPopupView(testText)
-            .build()
-        popup.register()
-        //------------------------------------
-
- */
 
         return view
     }
 
     fun populateNextEpisodeRV() {
+        //This function gets all the episodes that are next to watch
+        //get user id
         val myPref: SharedPreferences = context!!.getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref.getString("user_id_google", "")
+
         completedShows = 0
+        //Get all the shows the user has added
         FBDBhandler.queryListener("UserID_EpisodeID", "${userID}_tt1", fun(data : DataSnapshot?){
             watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = true
             nextEpisodesList.clear()
             currentlyWatchingShows.clear()
             val snapLength = data?.childrenCount?.toInt()
+            //For each show in the FBDB they are watching...
             for ((counter, singleSnapshot) in data!!.children.withIndex()) {
                 val userShowID = JSONObject(singleSnapshot?.getValue().toString()).getString("ShowID")
-
+                //Skip acount initializer
                 if (userShowID != "tt1") {
                     currentlyWatchingShows.add(userShowID)
                     updateNextEpisodeToWatch(userShowID,snapLength!!.minus(1))
                 }
 
             }
+            //If no shows then stop the refresh spinner
             if(snapLength!! <= 1){
                 viewAdapter.notifyDataSetChanged()
                 watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
@@ -102,49 +100,43 @@ class WatchListFragment : Fragment() {
         })
     }
 
-    private fun updateNextEpisodeInSQLDb(showID : String, episodeID : String){
-
-        val cpResultQuery = ContentProviderHandler().query(activity!!.contentResolver, showID)
-        if (cpResultQuery == null){
-            println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: NO RECORD EXISTS")
-            ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, episodeID)
-            println("appdebug: watchList: updateNextEpisodeInSQLDb: INSERT: done $showID $episodeID")
-
-        }else {
-            println("appdebug: watchList: updateNextEpisodeInSQLDb: QUERY: ${cpResultQuery.get(0).showID} ${cpResultQuery.get(0).episodeID}")
-            val updateRes = ContentProviderHandler().update(activity!!.contentResolver, showID, episodeID)
-            println("appdebug: watchList: updateNextEpisodeInSQLDb: UPDATE: $updateRes $showID $episodeID")
-        }
-    }
-
     private fun updateNextEpisodeToWatch(showID : String, numberOfShows : Int) {
+        //This function works out which episode is next to watch given a show id
+        //get all the episodes for a show
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID/seasons?extended=episodes", fun(data: Response) {
             val dataString = data.body!!.string()
             val allShowEpisodesArray = JSONArray(dataString)
             val numberOfSeasons = allShowEpisodesArray.length()
             val allEpisodesArr = ArrayList<String>()
 
+            //Add the latest aired show to the SQL database
             val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${showID}/last_episode")
             val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("trakt")
-            //updateNextEpisodeInSQLDb(userShowID, lastEpisodeID)
             ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, latestEpisodeID)
 
+            //For each season...
             for (i in 0 until numberOfSeasons) {
                 val singleSeasonData = allShowEpisodesArray.getJSONObject(i)
                 val allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
                 if(singleSeasonData.getInt("number") != 0) {
+                    //For each episode in season
                     for (j in 0 until allEpisodesInSeason.length()) {
                         val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
                         allEpisodesArr.add(singleEpisodeData.getJSONObject("ids").getString("trakt"))
                     }
                 }
             }
-            val showsScanned = 0
+            //Get all the episodes the user has watched from the FBDB
             FBDBhandler.query("UserID_ShowID", "${userID}_$showID", fun(showData : DataSnapshot?){
+                //For each episode
                 for(singleShowSnapshot in showData!!.children){
                     val userEpisodeID = JSONObject(singleShowSnapshot?.getValue().toString()).getString("EpisodeID")
+                    //Remove from the array since it has been watched
                     allEpisodesArr.remove(userEpisodeID)
                 }
+                //Now allEpisodesArr[0] is the next one to watch since allEpisodesArr contains all the episodes
+                //that haven't been watched and is in air date order
+
                 // The remove line prevents the episode being added multiple times into the list
                 if (allEpisodesArr.size > 0) {
                     nextEpisodesList.remove(allEpisodesArr[0])
@@ -154,6 +146,7 @@ class WatchListFragment : Fragment() {
                     completedShows++
                 }
                 if((nextEpisodesList.size + completedShows) == numberOfShows){
+                    //Once all the episodes have been found, notify change
                     viewAdapter.notifyDataSetChanged()
                     watchListNextEpisodeRefreshLayoutSRL?.isRefreshing = false
                 }

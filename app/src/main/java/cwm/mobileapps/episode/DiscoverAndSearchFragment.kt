@@ -2,9 +2,6 @@ package cwm.mobileapps.episode
 
 
 
-
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,33 +27,21 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
         val discoverSectionsRV: RecyclerView? = view?.findViewById((R.id.discoverSections_rv))
         discoverSectionsRV?.layoutManager = LinearLayoutManager(context)
 
-        //listOf("Section Title", "API path")
+        //What each element means: listOf("Section Title", "API path")
         sections.add(listOf("Trending", "trending"))
         sections.add(listOf("Popular", "popular"))
         sections.add(listOf("Most Played","played/daily"))
         sections.add(listOf("Most Saved","collected/weekly"))
+        //create recycler view
         discoverSectionsRV?.adapter = RecyclerAdapterDSSections(sections as ArrayList<List<String>>)
-        //discoverSectionsRV?.scrollToPosition(1)
 
-
-        /*
-        val homeLaunchBTN: Button? = view?.findViewById(R.id.homeLaunch_btn)
-        homeLaunchBTN?.setOnClickListener {
-            val intentToMainActivity = Intent(activity, MainActivity::class.java)
-            startActivity(intentToMainActivity)
-        }
-        */
-
-        val searchLaunchBTN : Button? = view?.findViewById(R.id.searchLauncher_btn)
+        //This handles the search bar in the fragment
         val intentToSearchActivity = Intent(context, SearchActivity::class.java)
-        searchLaunchBTN?.setOnClickListener {
-            intentToSearchActivity.putExtra("search_term", "")
-            startActivity(intentToSearchActivity)
-        }
-
         val searchTextBarSV : SearchView? = view?.findViewById(R.id.searchTextBar_sv)
+        //create the listener
         searchTextBarSV?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                //On submit move to the search activity
                 println("appdebug: discoverAndSearch: inside of submit listener: $query")
                 intentToSearchActivity.putExtra("search_term", query)
                 startActivity(intentToSearchActivity)
@@ -65,13 +50,11 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                println("appdebug: discoverAndSearch: inside of change listener: $newText")
                 return true
             }
         })
 
-
-
+        //Assign the fragment title
         val discoverSearchTitleTXT: TextView? = view?.findViewById(R.id.discoverSearchTitle_txt)
         discoverSearchTitleTXT?.text = "Discover & Search"
 
@@ -80,9 +63,7 @@ class DiscoverAndSearchFragment : androidx.fragment.app.Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        println("appdebug: discover and search: scroll position: ${discoverSectionsRV?.verticalScrollbarPosition}")
-
+        //this is stored to keep scroll position of the recycler view consistent when rotating
         discoverSectionsRV?.verticalScrollbarPosition?.let {
             outState.putInt("scroll_position_sections",
                 it

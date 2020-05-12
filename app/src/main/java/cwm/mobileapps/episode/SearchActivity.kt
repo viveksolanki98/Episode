@@ -22,11 +22,10 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        //val searchResultRV: RecyclerView? = findViewById((R.id.searchResult_rv))
+        //Prepare recycler view for the results
         searchResult_rv.layoutManager = LinearLayoutManager(this)
         searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)
-
+        //Get search query if exists
         mQuery = savedInstanceState?.getString("search_query")
 
         handleIntent(intent)
@@ -59,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
         }
-
+        //Expand search bar.
         val searchItem = menu.findItem(R.id.menu_search)
         searchItem.expandActionView()
 
@@ -69,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                //If the back button pressed in search bar then end activity
                 finish()
                 return true
             }
@@ -76,6 +76,7 @@ class SearchActivity : AppCompatActivity() {
         })
         if (searchItem != null){
             val searchView = searchItem.actionView as SearchView
+            //Submit current query
             searchView.setQuery(mQuery,true)
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -84,7 +85,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-
+                    //If the search term is not empty then apply the query
                     if (newText!!.isNotEmpty()){
                         mQuery = newText
                         applySearch(newText)
@@ -100,25 +101,27 @@ class SearchActivity : AppCompatActivity() {
         }
 
         return super.onCreateOptionsMenu(menu)
-        //return super.onCreateOptionsMenu(menu, inflater)
-
     }
 
     private fun applySearch(searchTerm : String?){
+        //Get the search results object form api
         APIhandler.trackitAPIAsync("https://api.trakt.tv/search/show?query=$searchTerm&extended=full", fun(response : Response){
             apiResultsArray = JSONArray(response.body!!.string())
             println("appdebug: search activity: API get search results: $apiResultsArray")
+            //Send object to recycler view adapter
             runOnUiThread{searchResult_rv.adapter = RecyclerAdapterSearchResultCard(apiResultsArray)}
         })
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        //get search term if there is a saved state
         mQuery = savedInstanceState.getString("search_query")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        //store search term is changes in lifecycle
         outState.putString("search_query", mQuery)
     }
 }

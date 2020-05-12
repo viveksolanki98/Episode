@@ -16,6 +16,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
+//this a service is used to create an alarm to trigger the notification check
 class MyAlarmService : Service() {
     lateinit var alarmManager: AlarmManager
 
@@ -33,13 +34,10 @@ class MyAlarmService : Service() {
         ShowLog("onStartCommand")
 
         //For Testing::
-        startService()
+        //startService()
 
         createAlarm()
         ShowLog("Created alarm from service")
-
-
-        //return super.onStartCommand(intent, flags, startId)
         return  START_STICKY
     }
 
@@ -57,15 +55,13 @@ class MyAlarmService : Service() {
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT)
         println("appdebug: myAlarmService: Create Alarm: ${Date()} TRIGGER")
 
-        //From android documentation
+        //From android documentation, to start alarm at specific time each day
         val calendar: Calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 22)
-            set(Calendar.MINUTE, 17)
+            set(Calendar.HOUR_OF_DAY, 19)
+            set(Calendar.MINUTE, 15)
         }
 
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,

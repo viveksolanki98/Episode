@@ -11,14 +11,17 @@ import okhttp3.*
 import org.json.JSONArray
 import java.lang.Exception
 
+//This is the recycler adapter for the show posters recycler in the discover and search fragment
 class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : RecyclerView.Adapter<RecyclerAdapterDSSections.ViewHolder>() {
 
     override fun getItemCount() = sections.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
+        //apply section title
         holder.sectionTitleTXT.text = sections[position][0].split(" ").joinToString(" ") { it.capitalize() }.trimEnd()
+        //create recycler view
         holder.sectionRV.layoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
+        //get data and launch section
         launchDiscoverSection(holder, sections[position][1])
     }
 
@@ -34,6 +37,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
     }
 
     fun launchDiscoverSection(holder : ViewHolder?, section : String?) {
+        //This function gets the relevant data for the RecyclerAdapterDSLists adapter
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$section?extended=full", fun(response : Response){
             val body = response.body!!.string()
             var result = JSONArray()
@@ -46,8 +50,10 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
             val showNames = ArrayList<String>()
             val showIDs = ArrayList<String>()
             val showImageLocations = ArrayList<String>()
+            //for each show in the section...
             for (i in 0 until result.length()) {
                 val item = result.getJSONObject(i)
+                //The popular section has a different JSON structure to the rest hence the if statement
                 val showData = if(section == "popular") item else item.getJSONObject("show")
 
                 val imageLocation = APIhandler.imageFromID(showData.getJSONObject("ids"))
@@ -68,7 +74,7 @@ class RecyclerAdapterDSSections(val sections : ArrayList<List<String>>) : Recycl
                 showIDs.add(traktID)
                 showImageLocations.add(imageLocation!!)
             }
-
+            //Launch RecyclerAdapterDSLists for this section
             (holder?.itemView?.context as Activity?)?.runOnUiThread{
                 holder?.sectionRV?.adapter = RecyclerAdapterDSLists(showNames, showIDs, showImageLocations, showTrailer)
             }

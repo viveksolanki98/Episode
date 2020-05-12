@@ -17,14 +17,16 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.math.RoundingMode
 
-
+//This adapter handles the recycler view in the search activity
 class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : RecyclerView.Adapter<RecyclerAdapterSearchResultCard.ViewHolder>() {
 
     override fun getItemCount() = searchResultsArr.length()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        //Get a single show data object
         val showDataObj = searchResultsArr.getJSONObject(position).getJSONObject("show")
         val traktID = showDataObj.getJSONObject("ids").getString("trakt")
+        //If the show id is not a valid one then hide the card, else build the card.
         if (!traktID.matches("\\d+".toRegex())){
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -41,10 +43,6 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
             holder.showTitleTXT.text = showDataObj.getString("title")
             holder.showDescriptionTXT.text = showDataObj.getString("overview")
 
-            //var tvdbID = showDataObj.getJSONObject("ids").getString("tvdb")
-            //var urlSTRImage = "http://webservice.fanart.tv/v3/tv/$tvdbID?api_key=cc52af8ac688a6c7a9a83e293624fe35"
-
-
             val showStartYear = showDataObj.getString("first_aired").split("-")[0]
 
             val showRating = showDataObj.getDouble("rating").toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
@@ -52,11 +50,12 @@ class RecyclerAdapterSearchResultCard(val searchResultsArr : JSONArray) : Recycl
             holder.showDetailsTXT.text = "$showStartYear, ${showDataObj.getString("network")}, $showStatus, $showRating"
 
             Thread{
+                //Apply image to image view
                 val imageLocation = APIhandler.imageFromID(showDataObj.getJSONObject("ids"))
                 (holder.itemView.context as Activity?)?.runOnUiThread{
                     Glide.with(holder.itemView.context as Activity).load(imageLocation)
                         .into(holder.showPosterIV)
-
+                    //If posert is clicked then move to show page activity
                     holder.showPosterIV.setOnClickListener {
                         val intentToShowPageActivity =
                             Intent(holder.itemView.context, ShowPageActivity::class.java)

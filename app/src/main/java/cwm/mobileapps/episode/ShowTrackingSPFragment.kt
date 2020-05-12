@@ -23,35 +23,36 @@ class ShowTrackingSPFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_show_tracking_sp, container, false)
 
         val showID = activity?.intent?.extras?.getString("show_id")
-
-
         val IMDBShowPageBTN : Button? = view?.findViewById(R.id.IMDbShowPage_btn)
 
-            APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$showID", fun(apiDATA : Response) {
-                try {
-                    var imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
-                    activity?.runOnUiThread {
-                        IMDBShowPageBTN?.setOnClickListener {
-                            //https://developer.android.com/training/basics/intents/sending#kotlin
-                            // Build the intent
-                            val imdbPage = Uri.parse("imdb:///title/$imdbID")
-                            val imdbIntent = Intent(Intent.ACTION_VIEW, imdbPage)
+        APIhandler.trackitAPIAsync("https://api.trakt.tv/search/trakt/$showID", fun(apiDATA : Response) {
+            //Get IMDb ID if exists
+            try {
+                val imdbID = JSONArray(apiDATA.body!!.string()).getJSONObject(0).getJSONObject("show").getJSONObject("ids").getString("imdb")
+                activity?.runOnUiThread {
+                    IMDBShowPageBTN?.setOnClickListener {
+                        //https://developer.android.com/training/basics/intents/sending#kotlin
+                        // Build the intent
+                        val imdbPage = Uri.parse("imdb:///title/$imdbID")
+                        val imdbIntent = Intent(Intent.ACTION_VIEW, imdbPage)
 
-                            // Verify it resolves
-                            val activities: List<ResolveInfo>? = activity?.packageManager?.queryIntentActivities(imdbIntent, 0)
-                            // Start an activity if it's safe
-                            if (activities?.isNotEmpty()!!) {
-                                startActivity(imdbIntent)
-                            }
+                        // Verify it resolves (does IMDb exist?)
+                        val activities: List<ResolveInfo>? = activity?.packageManager?.queryIntentActivities(imdbIntent, 0)
+                        // Start an activity if it's safe
+                        if (activities?.isNotEmpty()!!) {
+                            startActivity(imdbIntent)
                         }
                     }
-                }catch (e : Exception) {
-                    activity?.runOnUiThread {
-                    IMDBShowPageBTN?.visibility = View.GONE
-                    }
                 }
-            })
+            }catch (e : Exception) {
+                //Hide the IMDb button if no valid id exists
+                activity?.runOnUiThread {
+                IMDBShowPageBTN?.visibility = View.GONE
+                }
+            }
+        })
 
+        //Get show data from API and apply to UI elements
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID?extended=full", fun(response : Response){
             val showDataObj = JSONObject(response.body!!.string())
             val showStartYear = showDataObj.getString("first_aired").split("-")[0]
@@ -66,7 +67,7 @@ class ShowTrackingSPFragment : Fragment() {
 
             }
         })
-
+        //Prepare recycler view for episodes
         val episodeListRV: RecyclerView? = view.findViewById((R.id.episodeList_rv))
         episodeListRV?.layoutManager = LinearLayoutManager(activity)
 
@@ -75,35 +76,26 @@ class ShowTrackingSPFragment : Fragment() {
             val allShowEpisodesArray = JSONArray(dataString)
             val numberOfSeasons = allShowEpisodesArray.length()
             val allEpisodesArr = ArrayList<String>()
-
+            //for each season...
             for (i in 0 until numberOfSeasons) {
                 val singleSeasonData = allShowEpisodesArray.getJSONObject(i)
                 val allEpisodesInSeason = singleSeasonData.getJSONArray("episodes")
+                //Skip the pre show material
                 if (singleSeasonData.getInt("number") != 0) {
+                    //For each episode in each season...
                     for (j in 0 until allEpisodesInSeason.length()) {
                         val singleEpisodeData = allEpisodesInSeason.getJSONObject(j)
-
-                        /*
-                        val episodeID = singleEpisodeData.getJSONObject("ids").getString("imdb")
-                        if (episodeID.matches("tt\\d{7,8}".toRegex())){
-                            allEpisodesArr.add(episodeID)
-                        }
-                        */
+                        //add the episode id to the big id array
                         val episodeID = singleEpisodeData.getJSONObject("ids").getString("trakt")
                         if (episodeID.matches("\\d+".toRegex())){
                             allEpisodesArr.add(episodeID)
                         }
-
-
-
                     }
                 }
             }
+            //once all episodes are retrieved then call adapter
             activity?.runOnUiThread{ episodeListRV?.adapter = RecyclerAdapterEpisodeCard(allEpisodesArr)}
         })
-
-
-
         return view
     }
 

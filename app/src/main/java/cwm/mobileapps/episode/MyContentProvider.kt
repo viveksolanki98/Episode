@@ -1,16 +1,14 @@
 package cwm.mobileapps.episode
 
-import android.app.PendingIntent.getActivity
+
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
-import android.widget.Toast
 
+//This class defines the content provider and handles any requests
 class MyContentProvider : ContentProvider() {
-    val DATABASE_NAME = "MyDB"
     val TABLE_NAME = "NextEpisode"
-
     private var dbHandler: DataBaseHandler? = null
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {

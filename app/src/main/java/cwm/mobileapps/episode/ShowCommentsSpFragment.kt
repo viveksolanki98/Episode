@@ -17,7 +17,7 @@ class ShowCommentsSpFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_show_comments_sp, container, false)
 
-
+        //Prepare comments recycler view
         val showCommentsRV : RecyclerView? = view?.findViewById(R.id.showComments_rv)
         showCommentsRV?.layoutManager  = LinearLayoutManager(context)
         populateShowComments(showCommentsRV)
@@ -26,6 +26,7 @@ class ShowCommentsSpFragment : Fragment() {
     }
 
     private fun populateShowComments(showCommentsRV: RecyclerView?) {
+        //This function gets the show comments from the API and sends it to the recycler view adapter
         val showID = activity?.intent?.getStringExtra("show_id")
         APIhandler.trackitAPIAsync("https://api.trakt.tv/shows/$showID/comments/highest?spoiler=false&extended=full", fun(data : Response){
             val apiCommentArray = JSONArray(data.body!!.string())

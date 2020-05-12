@@ -1,10 +1,11 @@
 package cwm.mobileapps.episode
 
-import android.icu.text.CaseMap
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
+//This class handles all the view pager elements
 class viewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
     private val fragmentList : MutableList<Fragment> = ArrayList()
     private val titleList : MutableList<String> = ArrayList()

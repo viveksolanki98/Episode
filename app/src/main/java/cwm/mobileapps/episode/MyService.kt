@@ -9,16 +9,12 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
-
+//This service checks if there are any newly aired episodes to watch from the users watch list
 //template from: https://github.com/kmvignesh/MyServiceExample/blob/master/app/src/main/java/com/example/vicky/myserviceexample/MyService.kt
 class MyService : Service() {
-    val TAG = "MyService"
     lateinit var notificationManager : NotificationManager
-    lateinit var notificationChannel : NotificationChannel
-    lateinit var builder : Notification.Builder
     private var channelId : String = ""
     private val description = "Test notification"
-    lateinit var alarmManager: AlarmManager
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -49,14 +45,18 @@ class MyService : Service() {
         var newEpisodesAvailable = false
         val runable = Runnable {
             val availableNewEpisodesList = ArrayList<String>()
+            //get all the records in the database
             val result = ContentProviderHandler().query(contentResolver, null)
             if (result == null){
                 ShowLog("database QUERY: NO RECORD EXISTS")
             }else {
                 ShowLog("database QUERY: RECORDS EXIST")
+                //for each record in the database...
                 result.forEach {
+                    //Get the latest aired episode from the api
                     val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${it.showID}/last_episode")
                     val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("trakt")
+                    //if its not the same as in the database then there is a new episode to watch
                     if (it.episodeID != latestEpisodeID){
                         newEpisodesAvailable = true
                         availableNewEpisodesList.add(latestEpisodeID)
@@ -64,6 +64,7 @@ class MyService : Service() {
                     ShowLog("episode status for show ${it.showID} is ${it.episodeID != latestEpisodeID}")
                 }
                 //newEpisodesAvailable
+                //If a new episode was found then trigger a notification
                 if (newEpisodesAvailable){
                     buildAndShowNotification("New Episodes", "Check your watch list, there are new episodes available to watch.")
                 }
@@ -85,8 +86,7 @@ class MyService : Service() {
     }
 
     private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
+        //This function builds the notification framework
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val descriptionText = "An app to track watched T.V. shows and discover new ones. Episode"
             val channel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_DEFAULT).apply {
@@ -103,7 +103,7 @@ class MyService : Service() {
     }
 
     private fun buildAndShowNotification(title: String, message : String){
-        // Create an explicit intent for an Activity in your app
+        //This function applies configuration settings to the notification and adds the message. Then launches it.
         val intent = Intent(this, UserHomeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -121,7 +121,6 @@ class MyService : Service() {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
             notify(1234, builder.build())
         }
 

@@ -4,6 +4,7 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.content.Intent
 
+//This is the job service that triggers the other service that checks for new episodes to watch
 class MyJobService : JobService() {
     var jobCancelled = false
     override fun onStopJob(params: JobParameters?): Boolean {
@@ -19,17 +20,6 @@ class MyJobService : JobService() {
     }
 
     private fun workingMethod(params: JobParameters?){
-        /*
-        Thread{
-            for(i in 1..10){
-                if (jobCancelled){
-                    return@Thread
-                }
-                println("appdebug: myJobService: workingMethod: $i")
-                Thread.sleep(1000)
-            }
-        }.start()
-        */
         startService()
         println("appdebug: myJobService: workingMethod: finished")
         jobFinished(params,false)

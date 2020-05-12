@@ -25,30 +25,31 @@ class UserHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_home2)
-
+        //Get User Id
         val myPref: SharedPreferences = getSharedPreferences("Episode_pref", Context.MODE_PRIVATE)
         userID = myPref.getString("user_id_google", "")
 
+        //Define google sign in object ready for sign put trigger
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("700140263399-6u7use2ta07uanlm80d23hg3eokvrkpb.apps.googleusercontent.com")
             .requestEmail()
             .build()
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
 
+        //Define view pager and set fragments
         val adapter = viewPagerAdapter(supportFragmentManager)
         adapter.addFragment(WatchListFragment(), " Watch List ")
         adapter.addFragment(DiscoverAndSearchFragment(), " D & S")
         adapter.addFragment(MyAccountFragment(), " Watch List ")
         userHome_vp.adapter = adapter
 
-
-
+        //add tabs to the tab layout
         vpTab_tl.addTab(vpTab_tl.newTab().setText("Watch List"))
         vpTab_tl.addTab(vpTab_tl.newTab().setText("Discover"))
         vpTab_tl.addTab(vpTab_tl.newTab().setText("My Account"))
 
+        //On tab selected, change visible fragment to selected one
         vpTab_tl.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -58,7 +59,7 @@ class UserHomeActivity : AppCompatActivity() {
                 userHome_vp.currentItem = tab.position
             }
         })
-
+        //On fragment changed by swiping, change the selected tab in the tab layout
         userHome_vp.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -76,34 +77,9 @@ class UserHomeActivity : AppCompatActivity() {
         })
 
 
-        //CONTENT PROVIDER EXAMPLES:
-        /*
-        //INSERT--------------------------------
-        ContentProviderHandler().insert(contentResolver, "ttHELLO", "ttTHERE")
-        println("appdebug: userHome: database results with CP Handler: INSERTED")
-        //--------------------------------------
 
-        //UPDATE--------------------------------
-        var updateRes = ContentProviderHandler().update(contentResolver, "ttHELLO", "ttBYEEE")
-        println("appdebug: userHome: database UPDATE with CP Handler: $updateRes")
-        //--------------------------------------
 
-        //DELETE--------------------------------
-        var numberOfDeleted = ContentProviderHandler().delete(contentResolver, "ttHELLO")
-        println("appdebug: userHome: database DELETE with CP Handler: $numberOfDeleted")
-        //--------------------------------------
-
-        //QUERY--------------------------------
-        var result = ContentProviderHandler().query(contentResolver, "ttHELLO")
-        if (result == null){
-            println("appdebug: userHome: database QUERY with CP Handler 3: NO RECORD EXISTS")
-        }else {
-            println("appdebug: userHome: database QUERY with CP Handler 3: ${result.get(0).showID} ${result.get(0).episodeID}")
-        }
-        //-------------------------------------
-        */
-
-        //JOB SCHEDULER EXAMPLE----------------
+        //JOB SCHEDULER DEFINITION----------------
         val componentName = ComponentName(this, MyJobService::class.java)
         val info = JobInfo.Builder(123, componentName)
             //.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
@@ -119,7 +95,7 @@ class UserHomeActivity : AppCompatActivity() {
         }
 
         //-------------------------------------
-
+        //Start the service to define the alarm
         val intent = Intent(this,MyAlarmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             println("appdebug: userHome: Starting the service in >=26 Mode")
@@ -135,7 +111,6 @@ class UserHomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -146,6 +121,7 @@ class UserHomeActivity : AppCompatActivity() {
     }
 
     fun signOut() {
+        //Sign the user out of the app
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
                 val intentToMainActivity = Intent(this, MainActivity::class.java)

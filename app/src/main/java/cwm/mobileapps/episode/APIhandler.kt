@@ -8,12 +8,14 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
+//This object handles all the API requests. Making this object means that I can keep all calls consistent
 object APIhandler {
     //API Documentation
     //https://trakt.docs.apiary.io/ -> https://trakt.tv/
     //https://fanarttv.docs.apiary.io/ -> https://fanart.tv/
 
     fun trackitAPIAsync(urlSTR: String, callback : (Response) -> Unit){
+        //This is a asynchronous call for the Trakt API
 
         val request = Request
             .Builder()
@@ -30,7 +32,6 @@ object APIhandler {
                 println("appdebug: API Fail: $urlSTR")
             }
 
-            //@RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call, response: Response) {
                 println("appdebug: API Success: $urlSTR")
                 //var dataString = data.body!!.string()
@@ -40,6 +41,7 @@ object APIhandler {
     }
 
     fun trackitAPISync(urlSTR: String): Response {
+        //This is a synchronous call for the Trakt API
         val requestImage = Request.Builder().url(urlSTR)
             .addHeader("Content-Type","application/json")
             .addHeader("trakt-api-version","2")
@@ -52,6 +54,7 @@ object APIhandler {
     }
 
     fun async(urlSTR: String, callback : (Response) -> Unit){
+        //This is a general asynchronous call without any headers
 
         val request = Request.Builder().url(urlSTR).build()
 
@@ -72,6 +75,7 @@ object APIhandler {
     }
 
     fun sync(urlSTR: String): Response? {
+        //This is a general synchronous call without any headers
         val requestImage = Request.Builder().url(urlSTR).build()
         val clientImage = OkHttpClient()
         val res = clientImage.newCall(requestImage).execute()
@@ -80,6 +84,7 @@ object APIhandler {
     }
 
     fun imageFromID(IDs: JSONObject): String? {
+        //This function returns the poster art for a T.V. show. It tries multiple sources before applying the default image.
         var imageLocation: String?
         val defaultImage = "https://firebasestorage.googleapis.com/v0/b/episodeapp-1586776912954.appspot.com/o/No%20Poster%20Art.jpg?alt=media&token=c043f9e8-1fc7-48c3-9c21-b3c04bf4e3a3"
 
@@ -112,6 +117,7 @@ object APIhandler {
     }
 
     fun theTVDBAPI(id : Int): Series? {
+        //This function handles the TVDB api using a java library that was developed.
         //https://github.com/UweTrottmann/thetvdb-java
         val apiCall = TheTvdb("10ca5db52b5fce407118c1b70a16e0ec")
         val apiResponse = apiCall.series()
