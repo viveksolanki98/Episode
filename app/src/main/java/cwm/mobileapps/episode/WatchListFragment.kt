@@ -112,7 +112,9 @@ class WatchListFragment : Fragment() {
             //Add the latest aired show to the SQL database
             val apiRes = APIhandler.trackitAPISync("https://api.trakt.tv/shows/${showID}/last_episode")
             val latestEpisodeID = JSONObject(apiRes.body!!.string()).getJSONObject("ids").getString("trakt")
-            ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, latestEpisodeID)
+            try {
+                ContentProviderHandler().safeInsert(activity!!.contentResolver, showID, latestEpisodeID)
+            }catch (e : Exception){}
 
             //For each season...
             for (i in 0 until numberOfSeasons) {
