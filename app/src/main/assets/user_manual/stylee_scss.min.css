@@ -10,7 +10,9 @@ body {
 }
 
 #topBar {
-  height: 192px;
+  position: relative;
+  display: inline-block;
+  height: auto;
   width: 100%
 }
 
@@ -21,6 +23,7 @@ body {
 }
 
 #topBar img {
+  position: relative;
   display: inline-block;
   width: 30%;
   height: auto
@@ -71,9 +74,4 @@ body {
   margin: auto;
   font-size: 5em;
   padding-top: 10px
-}
-
-#nextSectionBtn:hover {
-  background-color: #008577;
-  color: #EEFD47
 }

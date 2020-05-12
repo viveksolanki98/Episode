@@ -477,3 +477,6 @@ BETA 1.1
 alpha 9.5.3 11/05/2020
 - added comments to code
 - Updated user manual
+
+alpha 9.5.4 12/05/2020
+- updates to user manual

@@ -14,21 +14,25 @@ body{
 
 #topBar{
   //border-style: dotted;
-  //display: inline-block;
-  height: 192px;
+	position: relative;
+  display: inline-block;
+  height: auto;
   width: 100%;
   h1{
     font-size: 10vw;
+		//position: relative;
     display: inline-block;
     margin-bottom: 10px;
   }
   img{
-    display: inline-block;
+		position: relative;
+		display: inline-block;
 		width: 30%;
 		height: auto;
   }
   p{
     font-size: 4vw;
+		//position: relative;
     display: inline-block;
     padding-left: 10px;
     margin-left: 10px;
@@ -56,26 +60,21 @@ body{
 }
 
 #nextSectionBtn{
-  background-color: $primaryC;
-  color: $secondaryC;
-    i{
-      width: 100%;
-      height: 10%;
-      max-height: 50px;
-      //align-content: center;
-      text-align:center;
-      margin: auto;
-      font-size: 5em;
-      padding-top: 10px
-    };
-    margin: auto;
+	background-color: $primaryC;
+	color: $secondaryC;
+  i{
     width: 100%;
     height: 10%;
     max-height: 50px;
-    transition: 0.3s;
+    //align-content: center;
+    text-align:center;
+    margin: auto;
+    font-size: 5em;
+    padding-top: 10px
   };
-
-  #nextSectionBtn:hover{
-    background-color: $primaryC;
-    color: $secondaryC;
-  };
+  margin: auto;
+  width: 100%;
+  height: 10%;
+  max-height: 50px;
+  transition: 0.3s;
+};
